@@ -62,6 +62,8 @@ public abstract class ContentDao<TModel extends Model>
     @NonNull
     protected List<TModel> createModelList(
         @IntRange(from = 0, to = Integer.MAX_VALUE) final int capacity) {
+        Contracts.requireInRange(capacity, 0, Integer.MAX_VALUE);
+
         return new ArrayList<>(capacity);
     }
 

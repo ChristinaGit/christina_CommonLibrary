@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import org.jetbrains.annotations.Contract;
 
 public final class Contracts {
+    // region Require
+
     @Contract("false, _ -> fail")
     public static void require(boolean condition, @Nullable Throwable throwable) {
         if (!condition) {
@@ -27,6 +29,10 @@ public final class Contracts {
         require(condition, (String) null);
     }
 
+    // endregion
+
+    // region Unreachable
+
     @Contract("_ -> fail")
     public static void unreachable(@Nullable Throwable throwable) {
         require(false, throwable);
@@ -41,6 +47,10 @@ public final class Contracts {
     public static void unreachable() {
         unreachable((String) null);
     }
+
+    // endregion
+
+    // region Require NonNull
 
     @Contract("null, _ -> fail")
     public static void requireNonNull(@Nullable Object object, @Nullable Throwable throwable) {
@@ -57,6 +67,10 @@ public final class Contracts {
         requireNonNull(object, (String) null);
     }
 
+    // endregion
+
+    // region Require null
+
     @Contract("!null, _ -> fail")
     public static void requireNull(@Nullable Object object, @Nullable Throwable throwable) {
         require(object == null, throwable);
@@ -72,18 +86,51 @@ public final class Contracts {
         requireNull(object, (String) null);
     }
 
+    // region Require in range
+
+    public static void requireInRange(int value, int min, int max, @Nullable Throwable throwable) {
+        require(min <= value && value <= max, throwable);
+    }
+
+    public static void requireInRange(int value, int min, int max, @Nullable String message) {
+        requireInRange(value, min, max, new ContractException(message));
+    }
+
+    public static void requireInRange(int value, int min, int max) {
+        requireInRange(value, min, max, (String) null);
+    }
+
+    public static void requireInRange(long value, long min, long max,
+                                      @Nullable Throwable throwable) {
+        require(min <= value && value <= max, throwable);
+    }
+
+    public static void requireInRange(long value, long min, long max, @Nullable String message) {
+        requireInRange(value, min, max, new ContractException(message));
+    }
+
+    public static void requireInRange(long value, long min, long max) {
+        requireInRange(value, min, max, (String) null);
+    }
+
+    // endregion Require main thread
+
     public static void requireMainThread(@Nullable Throwable throwable) {
         require(Thread.currentThread().getId() == Looper.getMainLooper().getThread().getId(),
                 throwable);
     }
 
     public static void requireMainThread(@Nullable String message) {
-        requireMainThread(new Exception(message));
+        requireMainThread(new ContractException(message));
     }
 
     public static void requireMainThread() {
         requireMainThread((String) null);
     }
+
+    // endregion
+
+    // region Require worker thread
 
     public static void requireWorkerThread(@Nullable Throwable throwable) {
         require(Thread.currentThread().getId() != Looper.getMainLooper().getThread().getId(),
@@ -97,6 +144,8 @@ public final class Contracts {
     public static void requireWorkerThread() {
         requireWorkerThread((String) null);
     }
+
+    // endregion
 
     private Contracts() {
     }
