@@ -24,5 +24,4 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.4'
 
     compile 'com.android.support:support-annotations:23.1.1'
-    compile 'com.android.support:design:23.1.1'
 }
