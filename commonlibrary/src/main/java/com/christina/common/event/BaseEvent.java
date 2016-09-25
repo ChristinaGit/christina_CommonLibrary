@@ -39,7 +39,7 @@ public final class BaseEvent<TEventArgs extends EventArgs> implements Event<TEve
         }
     }
 
-    public final void onEvent(@NonNull final TEventArgs eventArgs) {
+    public final void rise(@NonNull final TEventArgs eventArgs) {
         Contracts.requireNonNull(eventArgs, "eventArgs == null");
 
         synchronized (_lock) {
