@@ -11,6 +11,8 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 public final class UriUtils {
+    public static final String NUMBER_PLACEHOLDER = "#";
+
     public static final String PATH_SEPARATOR = "/";
 
     public static final String SCHEMA_SEPARATOR = "://";

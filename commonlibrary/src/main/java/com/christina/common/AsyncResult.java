@@ -7,12 +7,12 @@ import com.christina.common.contract.Contracts;
 
 public final class AsyncResult<TResult, TError> {
     @NonNull
-    public static <TResult, TError> AsyncResult<TResult, TError> result() {
-        return result(null);
+    public static <TResult, TError> AsyncResult<TResult, TError> success() {
+        return success(null);
     }
 
     @NonNull
-    public static <TResult, TError> AsyncResult<TResult, TError> result(
+    public static <TResult, TError> AsyncResult<TResult, TError> success(
         @Nullable final TResult result) {
         return new AsyncResult<>(result, null);
     }
@@ -26,10 +26,10 @@ public final class AsyncResult<TResult, TError> {
     }
 
     @Nullable
-    public final TResult result;
+    public final TError error;
 
     @Nullable
-    public final TError error;
+    public final TResult result;
 
     private AsyncResult(@Nullable final TResult result, @Nullable final TError error) {
         this.result = result;

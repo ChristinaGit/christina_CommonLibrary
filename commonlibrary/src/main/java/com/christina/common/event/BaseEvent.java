@@ -8,8 +8,7 @@ import com.christina.common.contract.Contracts;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public final class BaseEvent<TEventArgs extends EventArgs>
-    implements Event<TEventArgs> {
+public final class BaseEvent<TEventArgs extends EventArgs> implements Event<TEventArgs> {
     private static final int INITIAL_HANDLERS_COLLECTION_CAPACITY = 2;
 
     @Override
@@ -40,14 +39,13 @@ public final class BaseEvent<TEventArgs extends EventArgs>
         }
     }
 
-    public final void onEvent(@NonNull Object sender, @NonNull TEventArgs eventArgs) {
-        Contracts.requireNonNull(sender, "sender == null");
+    public final void onEvent(@NonNull TEventArgs eventArgs) {
         Contracts.requireNonNull(eventArgs, "eventArgs == null");
 
         synchronized (_lock) {
             if (_handlers != null) {
                 for (final EventHandler<TEventArgs> handler : _handlers) {
-                    handler.onEvent(sender, eventArgs);
+                    handler.onEvent(eventArgs);
                 }
             }
         }

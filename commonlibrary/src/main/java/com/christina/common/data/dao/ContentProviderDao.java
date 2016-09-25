@@ -13,8 +13,7 @@ import com.christina.common.data.model.Model;
 
 import java.util.List;
 
-public abstract class ContentProviderDao<TModel extends Model>
-    extends ContentDao<TModel> {
+public abstract class ContentProviderDao<TModel extends Model> extends ContentDao<TModel> {
     @Nullable
     @Override
     public TModel create() {
@@ -71,28 +70,6 @@ public abstract class ContentProviderDao<TModel extends Model>
         _contentResolver = contentResolver;
     }
 
-    @NonNull
-    protected abstract Uri getModelUri(long id);
-
-    @NonNull
-    protected abstract Uri getModelUri();
-
-    protected abstract long extractId(@NonNull Uri modelUri);
-
-    @Nullable
-    protected final Uri insert(@NonNull final Uri url, @Nullable final ContentValues values) {
-        Contracts.requireNonNull(url, "url == null");
-
-        return getContentResolver().insert(url, values);
-    }
-
-    @Nullable
-    protected final Uri insert(@NonNull final Uri url) {
-        Contracts.requireNonNull(url, "url == null");
-
-        return getContentResolver().insert(url, null);
-    }
-
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     protected final int bulkInsert(@NonNull final Uri url, @NonNull final ContentValues[] values) {
         Contracts.requireNonNull(url, "url == null");
@@ -123,99 +100,64 @@ public abstract class ContentProviderDao<TModel extends Model>
         return getContentResolver().delete(url, null, null);
     }
 
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int update(@NonNull final Uri uri, @Nullable final ContentValues values,
-                               @Nullable final String where,
-                               @Nullable final String[] selectionArgs) {
-        Contracts.requireNonNull(uri, "uri == null");
-
-        return getContentResolver().update(uri, values, where, selectionArgs);
-    }
-
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int update(@NonNull final Uri uri, @Nullable final ContentValues values,
-                               @Nullable final String where) {
-        Contracts.requireNonNull(uri, "uri == null");
-
-        return getContentResolver().update(uri, values, where, null);
-    }
-
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int update(@NonNull final Uri uri, @Nullable final ContentValues values) {
-        Contracts.requireNonNull(uri, "uri == null");
-
-        return getContentResolver().update(uri, values, null, null);
-    }
-
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int update(@NonNull final Uri uri) {
-        Contracts.requireNonNull(uri, "uri == null");
-
-        return getContentResolver().update(uri, null, null, null);
+    @NonNull
+    protected final ContentResolver getContentResolver() {
+        return _contentResolver;
     }
 
     @Nullable
-    protected final TModel selectSingle(@NonNull final Uri uri, @Nullable final String selection,
-                                        @Nullable final String[] selectionArgs,
-                                        @Nullable final String sortOrder) {
-        Contracts.requireNonNull(uri, "uri == null");
+    protected final Uri insert(@NonNull final Uri url, @Nullable final ContentValues values) {
+        Contracts.requireNonNull(url, "url == null");
 
-        TModel result = null;
-
-        try (final Cursor cursor = query(uri, getFullProjection(), selection, selectionArgs,
-                                         sortOrder)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                result = createModel(cursor);
-            }
-        }
-
-        return result;
+        return getContentResolver().insert(url, values);
     }
 
     @Nullable
-    protected final TModel selectSingle(@NonNull final Uri uri, @Nullable final String selection,
-                                        @Nullable final String[] selectionArgs) {
-        Contracts.requireNonNull(uri, "uri == null");
+    protected final Uri insert(@NonNull final Uri url) {
+        Contracts.requireNonNull(url, "url == null");
 
-        TModel result = null;
-
-        try (final Cursor cursor = query(uri, getFullProjection(), selection, selectionArgs)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                result = createModel(cursor);
-            }
-        }
-
-        return result;
+        return getContentResolver().insert(url, null);
     }
 
     @Nullable
-    protected final TModel selectSingle(@NonNull final Uri uri, @Nullable final String selection) {
+    protected final Cursor query(@NonNull final Uri uri, @Nullable final String[] projection,
+                                 @Nullable final String selection,
+                                 @Nullable final String[] selectionArgs,
+                                 @Nullable final String sortOrder) {
         Contracts.requireNonNull(uri, "uri == null");
 
-        TModel result = null;
-
-        try (final Cursor cursor = query(uri, getFullProjection(), selection)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                result = createModel(cursor);
-            }
-        }
-
-        return result;
+        return getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
     }
 
     @Nullable
-    protected final TModel selectSingle(@NonNull final Uri uri) {
+    protected final Cursor query(@NonNull final Uri uri, @Nullable final String[] projection,
+                                 @Nullable final String selection,
+                                 @Nullable final String[] selectionArgs) {
         Contracts.requireNonNull(uri, "uri == null");
 
-        TModel result = null;
+        return getContentResolver().query(uri, projection, selection, selectionArgs, null);
+    }
 
-        try (final Cursor cursor = query(uri, getFullProjection())) {
-            if (cursor != null) {
-                result = createModel(cursor);
-            }
-        }
+    @Nullable
+    protected final Cursor query(@NonNull final Uri uri, @Nullable final String[] projection,
+                                 @Nullable final String selection) {
+        Contracts.requireNonNull(uri, "uri == null");
 
-        return result;
+        return getContentResolver().query(uri, projection, selection, null, null);
+    }
+
+    @Nullable
+    protected final Cursor query(@NonNull final Uri uri, @Nullable final String[] projection) {
+        Contracts.requireNonNull(uri, "uri == null");
+
+        return getContentResolver().query(uri, projection, null, null, null);
+    }
+
+    @Nullable
+    protected final Cursor query(@NonNull final Uri uri) {
+        Contracts.requireNonNull(uri, "uri == null");
+
+        return getContentResolver().query(uri, null, null, null, null);
     }
 
     @Nullable
@@ -283,50 +225,107 @@ public abstract class ContentProviderDao<TModel extends Model>
     }
 
     @Nullable
-    protected final Cursor query(@NonNull final Uri uri, @Nullable final String[] projection,
-                                 @Nullable final String selection,
-                                 @Nullable final String[] selectionArgs,
-                                 @Nullable final String sortOrder) {
+    protected final TModel selectSingle(@NonNull final Uri uri, @Nullable final String selection,
+                                        @Nullable final String[] selectionArgs,
+                                        @Nullable final String sortOrder) {
         Contracts.requireNonNull(uri, "uri == null");
 
-        return getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        TModel result = null;
+
+        try (final Cursor cursor = query(uri, getFullProjection(), selection, selectionArgs,
+                                         sortOrder)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                result = createModel(cursor);
+            }
+        }
+
+        return result;
     }
 
     @Nullable
-    protected final Cursor query(@NonNull final Uri uri, @Nullable final String[] projection,
-                                 @Nullable final String selection,
-                                 @Nullable final String[] selectionArgs) {
+    protected final TModel selectSingle(@NonNull final Uri uri, @Nullable final String selection,
+                                        @Nullable final String[] selectionArgs) {
         Contracts.requireNonNull(uri, "uri == null");
 
-        return getContentResolver().query(uri, projection, selection, selectionArgs, null);
+        TModel result = null;
+
+        try (final Cursor cursor = query(uri, getFullProjection(), selection, selectionArgs)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                result = createModel(cursor);
+            }
+        }
+
+        return result;
     }
 
     @Nullable
-    protected final Cursor query(@NonNull final Uri uri, @Nullable final String[] projection,
-                                 @Nullable final String selection) {
+    protected final TModel selectSingle(@NonNull final Uri uri, @Nullable final String selection) {
         Contracts.requireNonNull(uri, "uri == null");
 
-        return getContentResolver().query(uri, projection, selection, null, null);
+        TModel result = null;
+
+        try (final Cursor cursor = query(uri, getFullProjection(), selection)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                result = createModel(cursor);
+            }
+        }
+
+        return result;
     }
 
     @Nullable
-    protected final Cursor query(@NonNull final Uri uri, @Nullable final String[] projection) {
+    protected final TModel selectSingle(@NonNull final Uri uri) {
         Contracts.requireNonNull(uri, "uri == null");
 
-        return getContentResolver().query(uri, projection, null, null, null);
+        TModel result = null;
+
+        try (final Cursor cursor = query(uri, getFullProjection())) {
+            if (cursor != null) {
+                result = createModel(cursor);
+            }
+        }
+
+        return result;
     }
 
-    @Nullable
-    protected final Cursor query(@NonNull final Uri uri) {
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    protected final int update(@NonNull final Uri uri, @Nullable final ContentValues values,
+                               @Nullable final String where,
+                               @Nullable final String[] selectionArgs) {
         Contracts.requireNonNull(uri, "uri == null");
 
-        return getContentResolver().query(uri, null, null, null, null);
+        return getContentResolver().update(uri, values, where, selectionArgs);
     }
+
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    protected final int update(@NonNull final Uri uri, @Nullable final ContentValues values,
+                               @Nullable final String where) {
+        Contracts.requireNonNull(uri, "uri == null");
+
+        return getContentResolver().update(uri, values, where, null);
+    }
+
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    protected final int update(@NonNull final Uri uri, @Nullable final ContentValues values) {
+        Contracts.requireNonNull(uri, "uri == null");
+
+        return getContentResolver().update(uri, values, null, null);
+    }
+
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    protected final int update(@NonNull final Uri uri) {
+        Contracts.requireNonNull(uri, "uri == null");
+
+        return getContentResolver().update(uri, null, null, null);
+    }
+
+    protected abstract long extractId(@NonNull Uri modelUri);
 
     @NonNull
-    protected final ContentResolver getContentResolver() {
-        return _contentResolver;
-    }
+    protected abstract Uri getModelUri();
+
+    @NonNull
+    protected abstract Uri getModelUri(long id);
 
     @NonNull
     private final ContentResolver _contentResolver;
