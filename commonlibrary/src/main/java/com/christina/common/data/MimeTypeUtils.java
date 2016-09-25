@@ -6,8 +6,8 @@ import com.christina.common.contract.Contracts;
 
 public final class MimeTypeUtils {
     @NonNull
-    public static String combineDirContentType(@NonNull String companyName,
-                                               @NonNull String contentTypeSimpleName) {
+    public static String combineDirContentType(@NonNull final String companyName,
+                                               @NonNull final String contentTypeSimpleName) {
         Contracts.requireNonNull(companyName, "companyName == null");
         Contracts.requireNonNull(contentTypeSimpleName, "contentTypeSimpleName == null");
 
@@ -15,8 +15,8 @@ public final class MimeTypeUtils {
     }
 
     @NonNull
-    public static String combineItemContentType(@NonNull String companyName,
-                                                @NonNull String contentTypeSimpleName) {
+    public static String combineItemContentType(@NonNull final String companyName,
+                                                @NonNull final String contentTypeSimpleName) {
         Contracts.requireNonNull(companyName, "companyName == null");
         Contracts.requireNonNull(contentTypeSimpleName, "contentTypeSimpleName == null");
 

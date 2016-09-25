@@ -12,7 +12,7 @@ public final class BaseEvent<TEventArgs extends EventArgs> implements Event<TEve
     private static final int INITIAL_HANDLERS_COLLECTION_CAPACITY = 2;
 
     @Override
-    public final void addHandler(@NonNull EventHandler<TEventArgs> handler) {
+    public final void addHandler(@NonNull final EventHandler<TEventArgs> handler) {
         Contracts.requireNonNull(handler, "handler == null");
 
         synchronized (_lock) {
@@ -25,7 +25,7 @@ public final class BaseEvent<TEventArgs extends EventArgs> implements Event<TEve
     }
 
     @Override
-    public final void removeHandler(@NonNull EventHandler<TEventArgs> handler) {
+    public final void removeHandler(@NonNull final EventHandler<TEventArgs> handler) {
         Contracts.requireNonNull(handler, "handler == null");
 
         synchronized (_lock) {
@@ -39,7 +39,7 @@ public final class BaseEvent<TEventArgs extends EventArgs> implements Event<TEve
         }
     }
 
-    public final void onEvent(@NonNull TEventArgs eventArgs) {
+    public final void onEvent(@NonNull final TEventArgs eventArgs) {
         Contracts.requireNonNull(eventArgs, "eventArgs == null");
 
         synchronized (_lock) {

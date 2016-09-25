@@ -33,13 +33,14 @@ public abstract class ContentProviderBase extends ContentProvider {
         return _database;
     }
 
-    protected final void notifyChange(@NonNull Uri uri) {
+    protected final void notifyChange(@NonNull final Uri uri) {
         Contracts.requireNonNull(uri, "uri == null");
 
         notifyChange(uri, null);
     }
 
-    protected final void notifyChange(@NonNull Uri uri, @Nullable ContentObserver contentObserver) {
+    protected final void notifyChange(@NonNull final Uri uri,
+                                      @Nullable final ContentObserver contentObserver) {
         Contracts.requireNonNull(uri, "uri == null");
 
         final Context context = getContext();

@@ -24,7 +24,7 @@ public abstract class ContentDao<TModel extends Model> implements Dao<TModel> {
     }
 
     @NonNull
-    protected List<TModel> createModelList(@NonNull Cursor cursor) {
+    protected List<TModel> createModelList(@NonNull final Cursor cursor) {
         Contracts.requireNonNull(cursor, "cursor == null");
 
         final int entryCount = cursor.getCount();
@@ -46,7 +46,7 @@ public abstract class ContentDao<TModel extends Model> implements Dao<TModel> {
     }
 
     @NonNull
-    protected ContentValues[] getContentValues(@NonNull TModel[] models) {
+    protected ContentValues[] getContentValues(@NonNull final TModel[] models) {
         Contracts.requireNonNull(models, "models == null");
 
         final int modelsCount = models.length;
@@ -72,5 +72,5 @@ public abstract class ContentDao<TModel extends Model> implements Dao<TModel> {
     protected abstract ContentValues getContentValues(@NonNull TModel model);
 
     @NonNull
-    private String[] _fullProjection;
+    private final String[] _fullProjection;
 }

@@ -31,7 +31,7 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     @Override
-    public int delete(long id) {
+    public int delete(final long id) {
         return delete(QueryUtils.whereEquals(getIdColumnName(), String.valueOf(id)));
     }
 
@@ -43,13 +43,13 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
 
     @Override
     @Nullable
-    public TModel get(long id) {
+    public TModel get(final long id) {
         return selectSingle(whereIdEquals(id));
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     @Override
-    public int update(@NonNull TModel model) {
+    public int update(@NonNull final TModel model) {
         Contracts.requireNonNull(model, "model == null");
         DaoContracts.requireId(model);
 
@@ -71,17 +71,17 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @NonNull
-    protected final String appendWhereIdEquals(@Nullable String where, long id) {
+    protected final String appendWhereIdEquals(@Nullable final String where, final long id) {
         return QueryUtils.appendWhereEquals(where, getIdColumnName(), String.valueOf(id));
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int delete(@Nullable String whereClause, @Nullable String[] whereArgs) {
+    protected final int delete(@Nullable final String whereClause, @Nullable final String[] whereArgs) {
         return getDatabase().delete(getTableName(), whereClause, whereArgs);
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int delete(@Nullable String whereClause) {
+    protected final int delete(@Nullable final String whereClause) {
         return getDatabase().delete(getTableName(), whereClause);
     }
 
@@ -212,7 +212,7 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @Nullable
-    protected final Cursor query(@Nullable String[] columns) {
+    protected final Cursor query(@Nullable final String[] columns) {
         return getDatabase().query(getTableName(), columns);
     }
 
@@ -381,8 +381,8 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int update(@NonNull TModel model, @Nullable String whereClause,
-                               @Nullable String[] whereArgs) {
+    protected final int update(@NonNull final TModel model, @Nullable final String whereClause,
+                               @Nullable final String[] whereArgs) {
         DaoContracts.requireId(model);
 
         return getDatabase().update(getTableName(), getContentValues(model),
@@ -390,7 +390,7 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int update(@NonNull TModel model, @Nullable String whereClause) {
+    protected final int update(@NonNull final TModel model, @Nullable final String whereClause) {
         DaoContracts.requireId(model);
 
         return getDatabase().update(getTableName(), getContentValues(model),
@@ -398,7 +398,7 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @NonNull
-    protected final String whereIdEquals(long id) {
+    protected final String whereIdEquals(final long id) {
         return QueryUtils.whereEquals(getIdColumnName(), String.valueOf(id));
     }
 

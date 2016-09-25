@@ -15,28 +15,28 @@ public final class Logger {
         _loggerTag = loggerTag;
     }
 
-    public final void d(@Nullable String scopeName, @Nullable String message) {
+    public final void d(@Nullable final String scopeName, @Nullable final String message) {
         d(scopeName, message, null);
     }
 
-    public final void d(@Nullable String scopeName, @Nullable String message,
-                        @Nullable Throwable throwable) {
+    public final void d(@Nullable final String scopeName, @Nullable final String message,
+                        @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.DEBUG)) {
             Log.d(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
         }
     }
 
-    public final void e(@Nullable String scopeName, @Nullable String message) {
+    public final void e(@Nullable final String scopeName, @Nullable final String message) {
         e(scopeName, message, null);
     }
 
-    public final void e(@Nullable String scopeName, @Nullable Throwable throwable) {
+    public final void e(@Nullable final String scopeName, @Nullable final Throwable throwable) {
         e(scopeName, throwable != null ? throwable.getMessage() : null, throwable);
     }
 
-    public final void e(@Nullable String scopeName, @Nullable String message,
-                        @Nullable Throwable throwable) {
+    public final void e(@Nullable final String scopeName, @Nullable final String message,
+                        @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.ERROR)) {
             Log.e(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
@@ -53,12 +53,12 @@ public final class Logger {
         return _loggerTag;
     }
 
-    public final void i(@Nullable String scopeName, @Nullable String message) {
+    public final void i(@Nullable final String scopeName, @Nullable final String message) {
         i(scopeName, message, null);
     }
 
-    public final void i(@Nullable String scopeName, @Nullable String message,
-                        @Nullable Throwable throwable) {
+    public final void i(@Nullable final String scopeName, @Nullable final String message,
+                        @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.INFO)) {
             Log.i(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
@@ -71,28 +71,28 @@ public final class Logger {
         return logLevel.compareTo(getLogLevel()) >= 0;
     }
 
-    public final void v(@Nullable String scopeName, @Nullable String message) {
+    public final void v(@Nullable final String scopeName, @Nullable final String message) {
         v(scopeName, message, null);
     }
 
-    public final void v(@Nullable String scopeName, @Nullable String message,
-                        @Nullable Throwable throwable) {
+    public final void v(@Nullable final String scopeName, @Nullable final String message,
+                        @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.VERBOSE)) {
             Log.v(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
         }
     }
 
-    public final void w(@Nullable String scopeName, @Nullable String message) {
+    public final void w(@Nullable final String scopeName, @Nullable final String message) {
         w(scopeName, message, null);
     }
 
-    public final void w(@Nullable String scopeName, @Nullable Throwable throwable) {
+    public final void w(@Nullable final String scopeName, @Nullable final Throwable throwable) {
         w(scopeName, throwable != null ? throwable.getMessage() : null, throwable);
     }
 
-    public final void w(@Nullable String scopeName, @Nullable String message,
-                        @Nullable Throwable throwable) {
+    public final void w(@Nullable final String scopeName, @Nullable final String message,
+                        @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.WARNING)) {
             Log.w(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
@@ -116,7 +116,8 @@ public final class Logger {
     private LogLevel _logLevel;
 
     @Nullable
-    private String combineLogMessage(@Nullable String scopeName, @Nullable String message) {
+    private String combineLogMessage(@Nullable final String scopeName,
+                                     @Nullable final String message) {
         if (scopeName == null && message == null) {
             return null;
         }

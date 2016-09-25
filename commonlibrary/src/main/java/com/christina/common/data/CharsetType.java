@@ -22,7 +22,7 @@ public enum CharsetType {
 
     private final String _charsetName;
 
-    CharsetType(@NonNull String charsetName) {
+    CharsetType(@NonNull final String charsetName) {
         _charsetName = charsetName;
     }
 }

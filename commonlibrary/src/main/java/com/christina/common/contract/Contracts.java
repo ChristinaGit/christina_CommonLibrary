@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Contract;
 
 public final class Contracts {
     @Contract("false, _ -> fail")
-    public static void require(boolean condition, @Nullable Throwable throwable) {
+    public static void require(final boolean condition, @Nullable final Throwable throwable) {
         if (!condition) {
             if (throwable instanceof RuntimeException) {
                 throw (RuntimeException) throwable;
@@ -18,43 +18,47 @@ public final class Contracts {
     }
 
     @Contract("false, _ -> fail")
-    public static void require(boolean condition, @Nullable String message) {
+    public static void require(final boolean condition, @Nullable final String message) {
         require(condition, new ContractException(message));
     }
 
     @Contract("false -> fail")
-    public static void require(boolean condition) {
+    public static void require(final boolean condition) {
         require(condition, (String) null);
     }
 
-    public static void requireInRange(int value, int min, int max, @Nullable Throwable throwable) {
+    public static void requireInRange(final int value, final int min, final int max,
+                                      @Nullable final Throwable throwable) {
         require(min <= value && value <= max, throwable);
     }
 
-    public static void requireInRange(int value, int min, int max, @Nullable String message) {
+    public static void requireInRange(final int value, final int min, final int max,
+                                      @Nullable final String message) {
         requireInRange(value, min, max, new ContractException(message));
     }
 
-    public static void requireInRange(int value, int min, int max) {
+    public static void requireInRange(final int value, final int min, final int max) {
         requireInRange(value, min, max, (String) null);
     }
 
-    public static void requireInRange(long value, long min, long max,
-                                      @Nullable Throwable throwable) {
+    public static void requireInRange(final long value, final long min, final long max,
+                                      @Nullable final Throwable throwable) {
         require(min <= value && value <= max, throwable);
     }
 
-    public static void requireInRange(long value, long min, long max, @Nullable String message) {
+    public static void requireInRange(final long value, final long min, final long max,
+                                      @Nullable final String message) {
         requireInRange(value, min, max, new ContractException(message));
     }
 
-    public static void requireInRange(long value, long min, long max) {
+    public static void requireInRange(final long value, final long min, final long max) {
         requireInRange(value, min, max, (String) null);
     }
 
     @Contract("null, _, _, _ -> fail")
-    public static <T> void requireInRange(@Nullable Comparable<T> value, @Nullable T min,
-                                          @Nullable T max, @Nullable Throwable throwable) {
+    public static <T> void requireInRange(@Nullable final Comparable<T> value,
+                                          @Nullable final T min, @Nullable final T max,
+                                          @Nullable final Throwable throwable) {
         boolean condition = value != null;
         if (condition && min != null) {
             condition = value.compareTo(min) >= 0;
@@ -66,23 +70,24 @@ public final class Contracts {
     }
 
     @Contract("null, _, _, _ -> fail")
-    public static <T> void requireInRange(@Nullable Comparable<T> value, @Nullable T min,
-                                          @Nullable T max, @Nullable String message) {
+    public static <T> void requireInRange(@Nullable final Comparable<T> value,
+                                          @Nullable final T min, @Nullable final T max,
+                                          @Nullable final String message) {
         requireInRange(value, min, max, new ContractException(message));
     }
 
     @Contract("null, _, _ -> fail")
-    public static <T> void requireInRange(@Nullable Comparable<T> value, @Nullable T min,
-                                          @Nullable T max) {
+    public static <T> void requireInRange(@Nullable final Comparable<T> value,
+                                          @Nullable final T min, @Nullable final T max) {
         requireInRange(value, min, max, (String) null);
     }
 
-    public static void requireMainThread(@Nullable Throwable throwable) {
+    public static void requireMainThread(@Nullable final Throwable throwable) {
         require(Thread.currentThread().getId() == Looper.getMainLooper().getThread().getId(),
                 throwable);
     }
 
-    public static void requireMainThread(@Nullable String message) {
+    public static void requireMainThread(@Nullable final String message) {
         requireMainThread(new ContractException(message));
     }
 
@@ -91,41 +96,44 @@ public final class Contracts {
     }
 
     @Contract("null, _ -> fail")
-    public static void requireNonNull(@Nullable Object object, @Nullable Throwable throwable) {
+    public static void requireNonNull(@Nullable final Object object,
+                                      @Nullable final Throwable throwable) {
         require(object != null, throwable);
     }
 
     @Contract("null, _ -> fail")
-    public static void requireNonNull(@Nullable Object object, @Nullable String message) {
+    public static void requireNonNull(@Nullable final Object object,
+                                      @Nullable final String message) {
         requireNonNull(object, new ContractException(message));
     }
 
     @Contract("null -> fail")
-    public static void requireNonNull(@Nullable Object object) {
+    public static void requireNonNull(@Nullable final Object object) {
         requireNonNull(object, (String) null);
     }
 
     @Contract("!null, _ -> fail")
-    public static void requireNull(@Nullable Object object, @Nullable Throwable throwable) {
+    public static void requireNull(@Nullable final Object object,
+                                   @Nullable final Throwable throwable) {
         require(object == null, throwable);
     }
 
     @Contract("!null, _ -> fail")
-    public static void requireNull(@Nullable Object object, @Nullable String message) {
+    public static void requireNull(@Nullable final Object object, @Nullable final String message) {
         requireNull(object, new ContractException(message));
     }
 
     @Contract("!null -> fail")
-    public static void requireNull(@Nullable Object object) {
+    public static void requireNull(@Nullable final Object object) {
         requireNull(object, (String) null);
     }
 
-    public static void requireWorkerThread(@Nullable Throwable throwable) {
+    public static void requireWorkerThread(@Nullable final Throwable throwable) {
         require(Thread.currentThread().getId() != Looper.getMainLooper().getThread().getId(),
                 throwable);
     }
 
-    public static void requireWorkerThread(@Nullable String message) {
+    public static void requireWorkerThread(@Nullable final String message) {
         requireWorkerThread(new ContractException(message));
     }
 
@@ -134,12 +142,12 @@ public final class Contracts {
     }
 
     @Contract("_ -> fail")
-    public static void unreachable(@Nullable Throwable throwable) {
+    public static void unreachable(@Nullable final Throwable throwable) {
         require(false, throwable);
     }
 
     @Contract("_ -> fail")
-    public static void unreachable(@Nullable String message) {
+    public static void unreachable(@Nullable final String message) {
         unreachable(new ContractException(message));
     }
 

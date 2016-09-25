@@ -20,19 +20,29 @@ public final class AsyncResult<TResult, TError> {
     @NonNull
     public static <TResult, TError> AsyncResult<TResult, TError> error(
         @NonNull final TError error) {
-        Contracts.requireNonNull(error, "error == null");
+        Contracts.requireNonNull(error, "_error == null");
 
         return new AsyncResult<>(null, error);
     }
 
     @Nullable
-    public final TError error;
+    public TError getError() {
+        return _error;
+    }
 
     @Nullable
-    public final TResult result;
+    public TResult getResult() {
+        return _result;
+    }
+
+    @Nullable
+    private final TError _error;
+
+    @Nullable
+    private final TResult _result;
 
     private AsyncResult(@Nullable final TResult result, @Nullable final TError error) {
-        this.result = result;
-        this.error = error;
+        _result = result;
+        _error = error;
     }
 }

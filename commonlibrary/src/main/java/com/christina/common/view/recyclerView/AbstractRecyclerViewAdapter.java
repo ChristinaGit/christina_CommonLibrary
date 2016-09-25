@@ -19,13 +19,13 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
     AbstractRecyclerViewHolder>
     extends RecyclerView.Adapter<TViewHolder> {
 
-    public final void addItem(int location, @NonNull TItem item) {
+    public final void addItem(final int location, @NonNull final TItem item) {
         Contracts.requireNonNull(item, "item == null");
 
         addItem(location, item, true);
     }
 
-    public final void addItem(int location, @NonNull TItem item, boolean notify) {
+    public final void addItem(final int location, @NonNull final TItem item, final boolean notify) {
         Contracts.requireNonNull(item, "item == null");
 
         final ListItem listItem = onWrapItem(item);
@@ -36,37 +36,38 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
         }
     }
 
-    public final void addItem(@NonNull TItem item) {
+    public final void addItem(@NonNull final TItem item) {
         Contracts.requireNonNull(item, "item == null");
 
         addItem(item, true);
     }
 
-    public final void addItem(@NonNull TItem item, boolean notify) {
+    public final void addItem(@NonNull final TItem item, final boolean notify) {
         Contracts.requireNonNull(item, "item == null");
 
         addItem(getItemCount(), item, notify);
     }
 
-    public final void addItems(@NonNull Collection<TItem> items) {
+    public final void addItems(@NonNull final Collection<TItem> items) {
         Contracts.requireNonNull(items, "items == null");
 
         addItems(items, true);
     }
 
-    public final void addItems(@NonNull Collection<TItem> items, boolean notify) {
+    public final void addItems(@NonNull final Collection<TItem> items, final boolean notify) {
         Contracts.requireNonNull(items, "items == null");
 
         addItems(getItemCount(), items, notify);
     }
 
-    public final void addItems(int location, @NonNull Collection<TItem> items) {
+    public final void addItems(final int location, @NonNull final Collection<TItem> items) {
         Contracts.requireNonNull(items, "items == null");
 
         addItems(location, items, true);
     }
 
-    public final void addItems(int location, @NonNull Collection<TItem> items, boolean notify) {
+    public final void addItems(final int location, @NonNull final Collection<TItem> items,
+                               final boolean notify) {
         Contracts.requireNonNull(items, "items == null");
 
         final Collection<ListItem> listItems = wrapItems(items);
@@ -87,19 +88,19 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
         });
     }
 
-    public final void removeItem(long id) {
+    public final void removeItem(final long id) {
         removeItem(id, true);
     }
 
-    public final void removeItem(long id, boolean notify) {
+    public final void removeItem(final long id, final boolean notify) {
         removeItem(getItemPosition(id), notify);
     }
 
-    public final void removeItem(int position) {
+    public final void removeItem(final int position) {
         removeItem(position, true);
     }
 
-    public final void removeItem(int position, boolean notify) {
+    public final void removeItem(final int position, final boolean notify) {
         getListItems().remove(position);
 
         if (notify) {
@@ -111,7 +112,7 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
         removeItems(true);
     }
 
-    public final void removeItems(boolean notify) {
+    public final void removeItems(final boolean notify) {
         final List<ListItem> listItems = getListItems();
 
         final int listItemsCount = listItems.size();
@@ -123,11 +124,11 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
         }
     }
 
-    public final void setItems(@NonNull Collection<TItem> items) {
+    public final void setItems(@NonNull final Collection<TItem> items) {
         setItems(items, true);
     }
 
-    public final void setItems(@NonNull Collection<TItem> items, final boolean notify) {
+    public final void setItems(@NonNull final Collection<TItem> items, final boolean notify) {
         final List<ListItem> listItems = getListItems();
         final Collection<ListItem> newListItems = wrapItems(items);
 
@@ -154,13 +155,13 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
         }
     }
 
-    public final void updateItem(@NonNull TItem item) {
+    public final void updateItem(@NonNull final TItem item) {
         Contracts.requireNonNull(item, "item == null");
 
         updateItem(item, true);
     }
 
-    public final void updateItem(@NonNull TItem item, boolean notify) {
+    public final void updateItem(@NonNull final TItem item, final boolean notify) {
         Contracts.requireNonNull(item, "item == null");
 
         final ListItem listItem = onWrapItem(item);
@@ -194,7 +195,7 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
     }
 
     @NonNull
-    protected final ListItem getListItem(int position) {
+    protected final ListItem getListItem(final int position) {
         return getListItems().get(position);
     }
 
@@ -204,14 +205,14 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
     }
 
     @NonNull
-    protected final Collection<ListItem> wrapItems(@NonNull Collection<TItem> items) {
+    protected final Collection<ListItem> wrapItems(@NonNull final Collection<TItem> items) {
         Contracts.requireNonNull(items, "items == null");
 
         return CollectionUtils.collect(items, _listItemTransformer);
     }
 
-    protected void onBindViewHolder(@NonNull final TViewHolder holder, @NonNull ListItem listItem,
-                                    final int position) {
+    protected void onBindViewHolder(@NonNull final TViewHolder holder,
+                                    @NonNull final ListItem listItem, final int position) {
     }
 
     @NonNull

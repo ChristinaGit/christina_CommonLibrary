@@ -18,31 +18,31 @@ public final class UriUtils {
     public static final String SCHEMA_SEPARATOR = "://";
 
     @NonNull
-    public static String encode(@NonNull String str, @NonNull CharsetType charsetType) {
+    public static String encode(@NonNull final String str, @NonNull final CharsetType charsetType) {
         Contracts.requireNonNull(str, "str == null");
         Contracts.requireNonNull(charsetType, "charsetType == null");
 
         try {
             return URLEncoder.encode(str, charsetType.getCharsetName());
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             return str;
         }
     }
 
     @NonNull
-    public static String decode(@NonNull String str, @NonNull CharsetType charsetType) {
+    public static String decode(@NonNull final String str, @NonNull final CharsetType charsetType) {
         Contracts.requireNonNull(str, "str == null");
         Contracts.requireNonNull(charsetType, "charsetType == null");
 
         try {
             return URLDecoder.decode(str, charsetType.getCharsetName());
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             return str;
         }
     }
 
     @NonNull
-    public static String combine(@NonNull String... pathSegments) {
+    public static String combine(@NonNull final String... pathSegments) {
         Contracts.requireNonNull(pathSegments, "pathSegments == null");
 
         return StringUtils.join(pathSegments, PATH_SEPARATOR);
