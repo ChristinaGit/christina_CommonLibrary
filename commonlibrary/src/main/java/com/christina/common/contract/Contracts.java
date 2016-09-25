@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import org.jetbrains.annotations.Contract;
 
 public final class Contracts {
-    //region Require
-
     @Contract("false, _ -> fail")
     public static void require(boolean condition, @Nullable Throwable throwable) {
         if (!condition) {
@@ -28,65 +26,6 @@ public final class Contracts {
     public static void require(boolean condition) {
         require(condition, (String) null);
     }
-
-    //endregion
-
-    //region Unreachable
-
-    @Contract("_ -> fail")
-    public static void unreachable(@Nullable Throwable throwable) {
-        require(false, throwable);
-    }
-
-    @Contract("_ -> fail")
-    public static void unreachable(@Nullable String message) {
-        unreachable(new ContractException(message));
-    }
-
-    @Contract("-> fail")
-    public static void unreachable() {
-        unreachable((String) null);
-    }
-
-    //endregion
-
-    //region Require NonNull
-
-    @Contract("null, _ -> fail")
-    public static void requireNonNull(@Nullable Object object, @Nullable Throwable throwable) {
-        require(object != null, throwable);
-    }
-
-    @Contract("null, _ -> fail")
-    public static void requireNonNull(@Nullable Object object, @Nullable String message) {
-        requireNonNull(object, new ContractException(message));
-    }
-
-    @Contract("null -> fail")
-    public static void requireNonNull(@Nullable Object object) {
-        requireNonNull(object, (String) null);
-    }
-
-    //endregion
-
-    //region Require null
-
-    @Contract("!null, _ -> fail")
-    public static void requireNull(@Nullable Object object, @Nullable Throwable throwable) {
-        require(object == null, throwable);
-    }
-
-    @Contract("!null, _ -> fail")
-    public static void requireNull(@Nullable Object object, @Nullable String message) {
-        requireNull(object, new ContractException(message));
-    }
-
-    @Contract("!null -> fail")
-    public static void requireNull(@Nullable Object object) {
-        requireNull(object, (String) null);
-    }
-
-    //region Require in range
 
     public static void requireInRange(int value, int min, int max, @Nullable Throwable throwable) {
         require(min <= value && value <= max, throwable);
@@ -138,10 +77,6 @@ public final class Contracts {
         requireInRange(value, min, max, (String) null);
     }
 
-    //endregion Require in range
-
-    //region Require main thread
-
     public static void requireMainThread(@Nullable Throwable throwable) {
         require(Thread.currentThread().getId() == Looper.getMainLooper().getThread().getId(),
                 throwable);
@@ -155,9 +90,35 @@ public final class Contracts {
         requireMainThread((String) null);
     }
 
-    //endregion
+    @Contract("null, _ -> fail")
+    public static void requireNonNull(@Nullable Object object, @Nullable Throwable throwable) {
+        require(object != null, throwable);
+    }
 
-    //region Require worker thread
+    @Contract("null, _ -> fail")
+    public static void requireNonNull(@Nullable Object object, @Nullable String message) {
+        requireNonNull(object, new ContractException(message));
+    }
+
+    @Contract("null -> fail")
+    public static void requireNonNull(@Nullable Object object) {
+        requireNonNull(object, (String) null);
+    }
+
+    @Contract("!null, _ -> fail")
+    public static void requireNull(@Nullable Object object, @Nullable Throwable throwable) {
+        require(object == null, throwable);
+    }
+
+    @Contract("!null, _ -> fail")
+    public static void requireNull(@Nullable Object object, @Nullable String message) {
+        requireNull(object, new ContractException(message));
+    }
+
+    @Contract("!null -> fail")
+    public static void requireNull(@Nullable Object object) {
+        requireNull(object, (String) null);
+    }
 
     public static void requireWorkerThread(@Nullable Throwable throwable) {
         require(Thread.currentThread().getId() != Looper.getMainLooper().getThread().getId(),
@@ -172,7 +133,20 @@ public final class Contracts {
         requireWorkerThread((String) null);
     }
 
-    //endregion
+    @Contract("_ -> fail")
+    public static void unreachable(@Nullable Throwable throwable) {
+        require(false, throwable);
+    }
+
+    @Contract("_ -> fail")
+    public static void unreachable(@Nullable String message) {
+        unreachable(new ContractException(message));
+    }
+
+    @Contract("-> fail")
+    public static void unreachable() {
+        unreachable((String) null);
+    }
 
     private Contracts() {
     }

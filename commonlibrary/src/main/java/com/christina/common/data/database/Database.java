@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public interface Database {
-    long insert(@NonNull String tableName, @NonNull ContentValues values);
+    void beginTransaction();
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     int delete(@NonNull String table, @Nullable String whereClause, @Nullable String[] whereArgs);
@@ -18,15 +18,9 @@ public interface Database {
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     int delete(@NonNull String table);
 
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    int update(@NonNull String table, @Nullable ContentValues values, @Nullable String whereClause,
-               @Nullable String[] whereArgs);
+    void endTransaction();
 
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    int update(@NonNull String table, @Nullable ContentValues values, @Nullable String whereClause);
-
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    int update(@NonNull String table, @Nullable ContentValues values);
+    long insert(@NonNull String tableName, @NonNull ContentValues values);
 
     @Nullable
     Cursor query(boolean distinct, @NonNull String table, @Nullable String[] columns,
@@ -95,7 +89,13 @@ public interface Database {
     @Nullable
     Cursor query(@NonNull String table);
 
-    void beginTransaction();
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    int update(@NonNull String table, @Nullable ContentValues values, @Nullable String whereClause,
+               @Nullable String[] whereArgs);
 
-    void endTransaction();
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    int update(@NonNull String table, @Nullable ContentValues values, @Nullable String whereClause);
+
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    int update(@NonNull String table, @Nullable ContentValues values);
 }

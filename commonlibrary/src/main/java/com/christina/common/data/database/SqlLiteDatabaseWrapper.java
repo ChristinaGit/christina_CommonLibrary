@@ -12,25 +12,10 @@ import android.support.annotation.Nullable;
 
 import com.christina.common.contract.Contracts;
 
-public abstract class SqlLiteDatabaseWrapper
-    extends SQLiteOpenHelper
-    implements Database {
+public abstract class SqlLiteDatabaseWrapper extends SQLiteOpenHelper implements Database {
     @Override
     public void beginTransaction() {
         getWritableDatabase().beginTransaction();
-    }
-
-    @Override
-    public void endTransaction() {
-        getWritableDatabase().endTransaction();
-    }
-
-    @Override
-    public final long insert(@NonNull final String tableName, @NonNull final ContentValues values) {
-        Contracts.requireNonNull(tableName, "tableName == null");
-        Contracts.requireNonNull(values, "values == null");
-
-        return getWritableDatabase().insert(tableName, null, values);
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
@@ -58,31 +43,17 @@ public abstract class SqlLiteDatabaseWrapper
         return getWritableDatabase().delete(tableName, null, null);
     }
 
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
     @Override
-    public final int update(@NonNull final String tableName, @Nullable final ContentValues values,
-                            @Nullable final String whereClause,
-                            @Nullable final String[] whereArgs) {
-        Contracts.requireNonNull(tableName, "tableName == null");
-
-        return getWritableDatabase().update(tableName, values, whereClause, whereArgs);
+    public void endTransaction() {
+        getWritableDatabase().endTransaction();
     }
 
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
     @Override
-    public final int update(@NonNull final String tableName, @Nullable final ContentValues values,
-                            @Nullable final String whereClause) {
+    public final long insert(@NonNull final String tableName, @NonNull final ContentValues values) {
         Contracts.requireNonNull(tableName, "tableName == null");
+        Contracts.requireNonNull(values, "values == null");
 
-        return getWritableDatabase().update(tableName, values, whereClause, null);
-    }
-
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    @Override
-    public final int update(@NonNull final String tableName, @Nullable final ContentValues values) {
-        Contracts.requireNonNull(tableName, "tableName == null");
-
-        return getWritableDatabase().update(tableName, values, null, null);
+        return getWritableDatabase().insert(tableName, null, values);
     }
 
     @Nullable
@@ -260,6 +231,33 @@ public abstract class SqlLiteDatabaseWrapper
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(tableName, null, null, null, null, null, null);
+    }
+
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    @Override
+    public final int update(@NonNull final String tableName, @Nullable final ContentValues values,
+                            @Nullable final String whereClause,
+                            @Nullable final String[] whereArgs) {
+        Contracts.requireNonNull(tableName, "tableName == null");
+
+        return getWritableDatabase().update(tableName, values, whereClause, whereArgs);
+    }
+
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    @Override
+    public final int update(@NonNull final String tableName, @Nullable final ContentValues values,
+                            @Nullable final String whereClause) {
+        Contracts.requireNonNull(tableName, "tableName == null");
+
+        return getWritableDatabase().update(tableName, values, whereClause, null);
+    }
+
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    @Override
+    public final int update(@NonNull final String tableName, @Nullable final ContentValues values) {
+        Contracts.requireNonNull(tableName, "tableName == null");
+
+        return getWritableDatabase().update(tableName, values, null, null);
     }
 
     protected SqlLiteDatabaseWrapper(@NonNull final Context context, @NonNull final String name,

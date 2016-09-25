@@ -11,8 +11,7 @@ import com.christina.common.data.model.Model;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ContentDao<TModel extends Model>
-    implements Dao<TModel> {
+public abstract class ContentDao<TModel extends Model> implements Dao<TModel> {
     protected ContentDao(@NonNull final String[] fullProjection) {
         Contracts.requireNonNull(fullProjection, "fullProjection == null");
 
@@ -20,17 +19,31 @@ public abstract class ContentDao<TModel extends Model>
     }
 
     @NonNull
-    protected abstract TModel createModel();
+    protected final String[] getFullProjection() {
+        return _fullProjection;
+    }
 
     @NonNull
-    protected abstract TModel createModel(@NonNull Cursor cursor);
+    protected List<TModel> createModelList(@NonNull Cursor cursor) {
+        Contracts.requireNonNull(cursor, "cursor == null");
+
+        final int entryCount = cursor.getCount();
+        final List<TModel> models = createModelList(entryCount);
+        for (int i = 0; i < entryCount; i++) {
+            cursor.moveToPosition(i);
+            models.add(i, createModel(cursor));
+        }
+
+        return models;
+    }
 
     @NonNull
-    protected abstract ContentValues getContentValues(@NonNull TModel model);
+    protected List<TModel> createModelList(
+        @IntRange(from = 0, to = Integer.MAX_VALUE) final int capacity) {
+        Contracts.requireInRange(capacity, 0, Integer.MAX_VALUE);
 
-    @NonNull
-    protected abstract TModel[] createModelArray(
-        @IntRange(from = 0, to = Integer.MAX_VALUE) final int size);
+        return new ArrayList<>(capacity);
+    }
 
     @NonNull
     protected ContentValues[] getContentValues(@NonNull TModel[] models) {
@@ -46,31 +59,17 @@ public abstract class ContentDao<TModel extends Model>
     }
 
     @NonNull
-    protected List<TModel> createModelList(@NonNull Cursor cursor) {
-        Contracts.requireNonNull(cursor, "cursor == null");
-
-        final int entryCount = cursor.getCount();
-        final List<TModel> models = createModelList(entryCount);
-        for (int i = 0; i < entryCount; i++) {
-            cursor.moveToPosition(i);
-            models.set(i, createModel(cursor));
-        }
-
-        return models;
-    }
+    protected abstract TModel createModel();
 
     @NonNull
-    protected List<TModel> createModelList(
-        @IntRange(from = 0, to = Integer.MAX_VALUE) final int capacity) {
-        Contracts.requireInRange(capacity, 0, Integer.MAX_VALUE);
-
-        return new ArrayList<>(capacity);
-    }
+    protected abstract TModel createModel(@NonNull Cursor cursor);
 
     @NonNull
-    protected final String[] getFullProjection() {
-        return _fullProjection;
-    }
+    protected abstract TModel[] createModelArray(
+        @IntRange(from = 0, to = Integer.MAX_VALUE) final int size);
+
+    @NonNull
+    protected abstract ContentValues getContentValues(@NonNull TModel model);
 
     @NonNull
     private String[] _fullProjection;

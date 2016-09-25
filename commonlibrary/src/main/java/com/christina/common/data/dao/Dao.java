@@ -11,13 +11,13 @@ public interface Dao<TModel extends Model> {
     @Nullable
     TModel create();
 
-    @Nullable
-    TModel get(long id);
+    int delete(long id);
 
     @Nullable
     List<TModel> get();
 
-    int delete(long id);
+    @Nullable
+    TModel get(long id);
 
     int update(@NonNull TModel model);
 }

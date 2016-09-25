@@ -11,8 +11,7 @@ import android.support.annotation.Nullable;
 import com.christina.common.contract.Contracts;
 import com.christina.common.data.database.Database;
 
-public abstract class ContentProviderBase
-    extends ContentProvider {
+public abstract class ContentProviderBase extends ContentProvider {
     @CallSuper
     @Override
     public boolean onCreate() {
@@ -28,7 +27,17 @@ public abstract class ContentProviderBase
     }
 
     @NonNull
-    protected abstract Database onCreateDatabase(@NonNull Context context);
+    protected final Database getDatabase() {
+        Contracts.requireNonNull(_database, "Content provider is not created");
+
+        return _database;
+    }
+
+    protected final void notifyChange(@NonNull Uri uri) {
+        Contracts.requireNonNull(uri, "uri == null");
+
+        notifyChange(uri, null);
+    }
 
     protected final void notifyChange(@NonNull Uri uri, @Nullable ContentObserver contentObserver) {
         Contracts.requireNonNull(uri, "uri == null");
@@ -39,18 +48,8 @@ public abstract class ContentProviderBase
         }
     }
 
-    protected final void notifyChange(@NonNull Uri uri) {
-        Contracts.requireNonNull(uri, "uri == null");
-
-        notifyChange(uri, null);
-    }
-
     @NonNull
-    protected final Database getDatabase() {
-        Contracts.requireNonNull(_database, "Content provider is not created");
-
-        return _database;
-    }
+    protected abstract Database onCreateDatabase(@NonNull Context context);
 
     @Nullable
     private Database _database;

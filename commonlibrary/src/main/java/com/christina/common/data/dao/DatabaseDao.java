@@ -12,36 +12,7 @@ import com.christina.common.data.model.Model;
 
 import java.util.List;
 
-public abstract class DatabaseDao<TModel extends Model>
-    extends ContentDao<TModel> {
-    @Override
-    @Nullable
-    public TModel get(long id) {
-        return selectSingle(whereIdEquals(id));
-    }
-
-    @Override
-    @Nullable
-    public List<TModel> get() {
-        return select();
-    }
-
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    @Override
-    public int delete(long id) {
-        return delete(QueryUtils.whereEquals(getIdColumnName(), String.valueOf(id)));
-    }
-
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    @Override
-    public int update(@NonNull TModel model) {
-        Contracts.requireNonNull(model, "model == null");
-        DaoContracts.requireId(model);
-
-        return getDatabase().update(getTableName(), getContentValues(model),
-                                    whereIdEquals(model.getId()));
-    }
-
+public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TModel> {
     @Override
     @Nullable
     public TModel create() {
@@ -58,6 +29,34 @@ public abstract class DatabaseDao<TModel extends Model>
         return model;
     }
 
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    @Override
+    public int delete(long id) {
+        return delete(QueryUtils.whereEquals(getIdColumnName(), String.valueOf(id)));
+    }
+
+    @Override
+    @Nullable
+    public List<TModel> get() {
+        return select();
+    }
+
+    @Override
+    @Nullable
+    public TModel get(long id) {
+        return selectSingle(whereIdEquals(id));
+    }
+
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    @Override
+    public int update(@NonNull TModel model) {
+        Contracts.requireNonNull(model, "model == null");
+        DaoContracts.requireId(model);
+
+        return getDatabase().update(getTableName(), getContentValues(model),
+                                    whereIdEquals(model.getId()));
+    }
+
     protected DatabaseDao(final @NonNull Database database, final @NonNull String idColumnName,
                           final @NonNull String[] fullProjection, final @NonNull String tableName) {
         super(fullProjection);
@@ -71,163 +70,39 @@ public abstract class DatabaseDao<TModel extends Model>
         _tableName = tableName;
     }
 
-    @Nullable
-    protected final List<TModel> select() {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query()) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final String appendWhereIdEquals(@Nullable String where, long id) {
+        return QueryUtils.appendWhereEquals(where, getIdColumnName(), String.valueOf(id));
     }
 
-    @Nullable
-    protected final List<TModel> select(final boolean distinct, @Nullable final String selection,
-                                        @Nullable final String[] selectionArgs,
-                                        @Nullable final String orderBy,
-                                        @Nullable final String limit) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(distinct, getFullProjection(), selection, selectionArgs,
-                                         orderBy, limit)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    protected final int delete(@Nullable String whereClause, @Nullable String[] whereArgs) {
+        return getDatabase().delete(getTableName(), whereClause, whereArgs);
     }
 
-    @Nullable
-    protected final TModel selectSingle(@Nullable final String selection,
-                                        @Nullable final String[] selectionArgs) {
-        TModel result = null;
-
-        try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs)) {
-            if (cursor != null) {
-                result = createModel(cursor);
-            }
-        }
-
-        return result;
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    protected final int delete(@Nullable String whereClause) {
+        return getDatabase().delete(getTableName(), whereClause);
     }
 
-    @Nullable
-    protected final TModel selectSingle(@Nullable final String selection) {
-        TModel result = null;
-
-        try (final Cursor cursor = query(getFullProjection(), selection)) {
-            if (cursor != null) {
-                result = createModel(cursor);
-            }
-        }
-
-        return result;
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    protected final int delete() {
+        return getDatabase().delete(getTableName());
     }
 
-    @Nullable
-    protected final List<TModel> select(final boolean distinct, @Nullable final String selection,
-                                        @Nullable final String[] selectionArgs,
-                                        @Nullable final String orderBy) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(distinct, getFullProjection(), selection, selectionArgs,
-                                         orderBy)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final Database getDatabase() {
+        return _database;
     }
 
-    @Nullable
-    protected final List<TModel> select(final boolean distinct, @Nullable final String selection,
-                                        @Nullable final String[] selectionArgs) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(distinct, getFullProjection(), selection, selectionArgs)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final String getIdColumnName() {
+        return _idColumnName;
     }
 
-    @Nullable
-    protected final List<TModel> select(final boolean distinct, @Nullable final String selection) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(distinct, getFullProjection(), selection)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
-    }
-
-    @Nullable
-    protected final List<TModel> select(@Nullable final String selection,
-                                        @Nullable final String[] selectionArgs,
-                                        @Nullable final String orderBy,
-                                        @Nullable final String limit) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs, orderBy,
-                                         limit)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
-    }
-
-    @Nullable
-    protected final List<TModel> select(@Nullable final String selection,
-                                        @Nullable final String[] selectionArgs,
-                                        @Nullable final String orderBy) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs, orderBy)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
-    }
-
-    @Nullable
-    protected final List<TModel> select(@Nullable final String selection,
-                                        @Nullable final String[] selectionArgs) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
-    }
-
-    @Nullable
-    protected final List<TModel> select(@Nullable final String selection) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(getFullProjection(), selection)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final String getTableName() {
+        return _tableName;
     }
 
     @Nullable
@@ -346,6 +221,165 @@ public abstract class DatabaseDao<TModel extends Model>
         return getDatabase().query(getTableName());
     }
 
+    @Nullable
+    protected final List<TModel> select() {
+        List<TModel> result = null;
+
+        try (final Cursor cursor = query()) {
+            if (cursor != null) {
+                result = createModelList(cursor);
+            }
+        }
+
+        return result;
+    }
+
+    @Nullable
+    protected final List<TModel> select(final boolean distinct, @Nullable final String selection,
+                                        @Nullable final String[] selectionArgs,
+                                        @Nullable final String orderBy,
+                                        @Nullable final String limit) {
+        List<TModel> result = null;
+
+        try (final Cursor cursor = query(distinct, getFullProjection(), selection, selectionArgs,
+                                         orderBy, limit)) {
+            if (cursor != null) {
+                result = createModelList(cursor);
+            }
+        }
+
+        return result;
+    }
+
+    @Nullable
+    protected final List<TModel> select(final boolean distinct, @Nullable final String selection,
+                                        @Nullable final String[] selectionArgs,
+                                        @Nullable final String orderBy) {
+        List<TModel> result = null;
+
+        try (final Cursor cursor = query(distinct, getFullProjection(), selection, selectionArgs,
+                                         orderBy)) {
+            if (cursor != null) {
+                result = createModelList(cursor);
+            }
+        }
+
+        return result;
+    }
+
+    @Nullable
+    protected final List<TModel> select(final boolean distinct, @Nullable final String selection,
+                                        @Nullable final String[] selectionArgs) {
+        List<TModel> result = null;
+
+        try (final Cursor cursor = query(distinct, getFullProjection(), selection, selectionArgs)) {
+            if (cursor != null) {
+                result = createModelList(cursor);
+            }
+        }
+
+        return result;
+    }
+
+    @Nullable
+    protected final List<TModel> select(final boolean distinct, @Nullable final String selection) {
+        List<TModel> result = null;
+
+        try (final Cursor cursor = query(distinct, getFullProjection(), selection)) {
+            if (cursor != null) {
+                result = createModelList(cursor);
+            }
+        }
+
+        return result;
+    }
+
+    @Nullable
+    protected final List<TModel> select(@Nullable final String selection,
+                                        @Nullable final String[] selectionArgs,
+                                        @Nullable final String orderBy,
+                                        @Nullable final String limit) {
+        List<TModel> result = null;
+
+        try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs, orderBy,
+                                         limit)) {
+            if (cursor != null) {
+                result = createModelList(cursor);
+            }
+        }
+
+        return result;
+    }
+
+    @Nullable
+    protected final List<TModel> select(@Nullable final String selection,
+                                        @Nullable final String[] selectionArgs,
+                                        @Nullable final String orderBy) {
+        List<TModel> result = null;
+
+        try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs, orderBy)) {
+            if (cursor != null) {
+                result = createModelList(cursor);
+            }
+        }
+
+        return result;
+    }
+
+    @Nullable
+    protected final List<TModel> select(@Nullable final String selection,
+                                        @Nullable final String[] selectionArgs) {
+        List<TModel> result = null;
+
+        try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs)) {
+            if (cursor != null) {
+                result = createModelList(cursor);
+            }
+        }
+
+        return result;
+    }
+
+    @Nullable
+    protected final List<TModel> select(@Nullable final String selection) {
+        List<TModel> result = null;
+
+        try (final Cursor cursor = query(getFullProjection(), selection)) {
+            if (cursor != null) {
+                result = createModelList(cursor);
+            }
+        }
+
+        return result;
+    }
+
+    @Nullable
+    protected final TModel selectSingle(@Nullable final String selection,
+                                        @Nullable final String[] selectionArgs) {
+        TModel result = null;
+
+        try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs)) {
+            if (cursor != null) {
+                result = createModel(cursor);
+            }
+        }
+
+        return result;
+    }
+
+    @Nullable
+    protected final TModel selectSingle(@Nullable final String selection) {
+        TModel result = null;
+
+        try (final Cursor cursor = query(getFullProjection(), selection)) {
+            if (cursor != null) {
+                result = createModel(cursor);
+            }
+        }
+
+        return result;
+    }
+
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     protected final int update(@NonNull TModel model, @Nullable String whereClause,
                                @Nullable String[] whereArgs) {
@@ -366,41 +400,6 @@ public abstract class DatabaseDao<TModel extends Model>
     @NonNull
     protected final String whereIdEquals(long id) {
         return QueryUtils.whereEquals(getIdColumnName(), String.valueOf(id));
-    }
-
-    @NonNull
-    protected final String appendWhereIdEquals(@Nullable String where, long id) {
-        return QueryUtils.appendWhereEquals(where, getIdColumnName(), String.valueOf(id));
-    }
-
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int delete(@Nullable String whereClause, @Nullable String[] whereArgs) {
-        return getDatabase().delete(getTableName(), whereClause, whereArgs);
-    }
-
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int delete(@Nullable String whereClause) {
-        return getDatabase().delete(getTableName(), whereClause);
-    }
-
-    @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int delete() {
-        return getDatabase().delete(getTableName());
-    }
-
-    @NonNull
-    protected final Database getDatabase() {
-        return _database;
-    }
-
-    @NonNull
-    protected final String getIdColumnName() {
-        return _idColumnName;
-    }
-
-    @NonNull
-    protected final String getTableName() {
-        return _tableName;
     }
 
     @NonNull

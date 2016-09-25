@@ -2,8 +2,7 @@ package com.christina.common.contract;
 
 import android.support.annotation.Nullable;
 
-public class ContractException
-    extends RuntimeException {
+public class ContractException extends RuntimeException {
     private static final long serialVersionUID = 8013008906294169410L;
 
     public ContractException() {

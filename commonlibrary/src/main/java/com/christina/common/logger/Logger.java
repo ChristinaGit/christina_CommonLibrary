@@ -15,14 +15,37 @@ public final class Logger {
         _loggerTag = loggerTag;
     }
 
-    public void initialize(@NonNull final LogLevel logLevel) {
-        Contracts.requireNonNull(logLevel);
+    public final void d(@Nullable String scopeName, @Nullable String message) {
+        d(scopeName, message, null);
+    }
 
-        if (_logLevel != null) {
-            throw new IllegalStateException("Logger is already initialized.");
+    public final void d(@Nullable String scopeName, @Nullable String message,
+                        @Nullable Throwable throwable) {
+
+        if (isLoggable(LogLevel.DEBUG)) {
+            Log.d(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
         }
+    }
 
-        _logLevel = logLevel;
+    public final void e(@Nullable String scopeName, @Nullable String message) {
+        e(scopeName, message, null);
+    }
+
+    public final void e(@Nullable String scopeName, @Nullable Throwable throwable) {
+        e(scopeName, throwable != null ? throwable.getMessage() : null, throwable);
+    }
+
+    public final void e(@Nullable String scopeName, @Nullable String message,
+                        @Nullable Throwable throwable) {
+
+        if (isLoggable(LogLevel.ERROR)) {
+            Log.e(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
+        }
+    }
+
+    @NonNull
+    public final LogLevel getLogLevel() {
+        return _logLevel != null ? _logLevel : LogLevel.ERROR;
     }
 
     @NonNull
@@ -30,9 +53,16 @@ public final class Logger {
         return _loggerTag;
     }
 
-    @NonNull
-    public final LogLevel getLogLevel() {
-        return _logLevel != null ? _logLevel : LogLevel.ERROR;
+    public final void i(@Nullable String scopeName, @Nullable String message) {
+        i(scopeName, message, null);
+    }
+
+    public final void i(@Nullable String scopeName, @Nullable String message,
+                        @Nullable Throwable throwable) {
+
+        if (isLoggable(LogLevel.INFO)) {
+            Log.i(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
+        }
     }
 
     public final boolean isLoggable(@NonNull final LogLevel logLevel) {
@@ -53,30 +83,6 @@ public final class Logger {
         }
     }
 
-    public final void d(@Nullable String scopeName, @Nullable String message) {
-        d(scopeName, message, null);
-    }
-
-    public final void d(@Nullable String scopeName, @Nullable String message,
-                        @Nullable Throwable throwable) {
-
-        if (isLoggable(LogLevel.DEBUG)) {
-            Log.d(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
-        }
-    }
-
-    public final void i(@Nullable String scopeName, @Nullable String message) {
-        i(scopeName, message, null);
-    }
-
-    public final void i(@Nullable String scopeName, @Nullable String message,
-                        @Nullable Throwable throwable) {
-
-        if (isLoggable(LogLevel.INFO)) {
-            Log.i(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
-        }
-    }
-
     public final void w(@Nullable String scopeName, @Nullable String message) {
         w(scopeName, message, null);
     }
@@ -93,20 +99,14 @@ public final class Logger {
         }
     }
 
-    public final void e(@Nullable String scopeName, @Nullable String message) {
-        e(scopeName, message, null);
-    }
+    public void initialize(@NonNull final LogLevel logLevel) {
+        Contracts.requireNonNull(logLevel);
 
-    public final void e(@Nullable String scopeName, @Nullable Throwable throwable) {
-        e(scopeName, throwable != null ? throwable.getMessage() : null, throwable);
-    }
-
-    public final void e(@Nullable String scopeName, @Nullable String message,
-                        @Nullable Throwable throwable) {
-
-        if (isLoggable(LogLevel.ERROR)) {
-            Log.e(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
+        if (_logLevel != null) {
+            throw new IllegalStateException("Logger is already initialized.");
         }
+
+        _logLevel = logLevel;
     }
 
     @NonNull
