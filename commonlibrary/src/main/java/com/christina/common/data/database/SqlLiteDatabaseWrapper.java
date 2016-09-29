@@ -21,7 +21,7 @@ public abstract class SqlLiteDatabaseWrapper extends SQLiteOpenHelper implements
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     @Override
     public final int delete(@NonNull final String tableName, @Nullable final String whereClause,
-                            @Nullable final String[] whereArgs) {
+        @Nullable final String[] whereArgs) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getWritableDatabase().delete(tableName, whereClause, whereArgs);
@@ -59,153 +59,146 @@ public abstract class SqlLiteDatabaseWrapper extends SQLiteOpenHelper implements
     @Nullable
     @Override
     public final Cursor query(final boolean distinct, @NonNull final String tableName,
-                              @Nullable final String[] columns, @Nullable final String selection,
-                              @Nullable final String[] selectionArgs,
-                              @Nullable final String groupBy, @Nullable final String having,
-                              @Nullable final String orderBy, @Nullable final String limit) {
+        @Nullable final String[] columns, @Nullable final String selection,
+        @Nullable final String[] selectionArgs, @Nullable final String groupBy,
+        @Nullable final String having, @Nullable final String orderBy,
+        @Nullable final String limit) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(distinct, tableName, columns, selection, selectionArgs,
-                                           groupBy, having, orderBy, limit);
+            groupBy, having, orderBy, limit);
     }
 
     @Nullable
     @Override
     public final Cursor query(final boolean distinct, @NonNull final String tableName,
-                              @Nullable final String[] columns, @Nullable final String selection,
-                              @Nullable final String[] selectionArgs,
-                              @Nullable final String groupBy, @Nullable final String having,
-                              @Nullable final String orderBy) {
+        @Nullable final String[] columns, @Nullable final String selection,
+        @Nullable final String[] selectionArgs, @Nullable final String groupBy,
+        @Nullable final String having, @Nullable final String orderBy) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(distinct, tableName, columns, selection, selectionArgs,
-                                           groupBy, having, orderBy, null);
+            groupBy, having, orderBy, null);
     }
 
     @Nullable
     @Override
     public final Cursor query(final boolean distinct, @NonNull final String tableName,
-                              @Nullable final String[] columns, @Nullable final String selection,
-                              @Nullable final String[] selectionArgs,
-                              @Nullable final String groupBy, @Nullable final String having) {
+        @Nullable final String[] columns, @Nullable final String selection,
+        @Nullable final String[] selectionArgs, @Nullable final String groupBy,
+        @Nullable final String having) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(distinct, tableName, columns, selection, selectionArgs,
-                                           groupBy, having, null, null);
+            groupBy, having, null, null);
     }
 
     @Nullable
     @Override
     public final Cursor query(final boolean distinct, @NonNull final String tableName,
-                              @Nullable final String[] columns, @Nullable final String selection,
-                              @Nullable final String[] selectionArgs,
-                              @Nullable final String groupBy) {
+        @Nullable final String[] columns, @Nullable final String selection,
+        @Nullable final String[] selectionArgs, @Nullable final String groupBy) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(distinct, tableName, columns, selection, selectionArgs,
-                                           groupBy, null, null, null);
+            groupBy, null, null, null);
     }
 
     @Nullable
     @Override
     public final Cursor query(final boolean distinct, @NonNull final String tableName,
-                              @Nullable final String[] columns, @Nullable final String selection,
-                              @Nullable final String[] selectionArgs) {
+        @Nullable final String[] columns, @Nullable final String selection,
+        @Nullable final String[] selectionArgs) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(distinct, tableName, columns, selection, selectionArgs,
-                                           null, null, null, null);
+            null, null, null, null);
     }
 
     @Nullable
     @Override
     public final Cursor query(final boolean distinct, @NonNull final String tableName,
-                              @Nullable final String[] columns, @Nullable final String selection) {
+        @Nullable final String[] columns, @Nullable final String selection) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(distinct, tableName, columns, selection, null, null,
-                                           null, null, null);
+            null, null, null);
     }
 
     @Nullable
     @Override
     public final Cursor query(@NonNull final String tableName, @Nullable final String[] columns,
-                              @Nullable final String selection,
-                              @Nullable final String[] selectionArgs,
-                              @Nullable final String groupBy, @Nullable final String having,
-                              @Nullable final String orderBy, @Nullable final String limit) {
+        @Nullable final String selection, @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy, @Nullable final String having,
+        @Nullable final String orderBy, @Nullable final String limit) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(tableName, columns, selection, selectionArgs, groupBy,
-                                           having, orderBy, limit);
+            having, orderBy, limit);
     }
 
     @Nullable
     @Override
     public final Cursor query(@NonNull final String tableName, @Nullable final String[] columns,
-                              @Nullable final String selection,
-                              @Nullable final String[] selectionArgs,
-                              @Nullable final String groupBy, @Nullable final String having,
-                              @Nullable final String orderBy) {
+        @Nullable final String selection, @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy, @Nullable final String having,
+        @Nullable final String orderBy) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(tableName, columns, selection, selectionArgs, groupBy,
-                                           having, orderBy, null);
+            having, orderBy, null);
     }
 
     @Nullable
     @Override
     public final Cursor query(@NonNull final String tableName, @Nullable final String[] columns,
-                              @Nullable final String selection,
-                              @Nullable final String[] selectionArgs,
-                              @Nullable final String groupBy, @Nullable final String having) {
+        @Nullable final String selection, @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy, @Nullable final String having) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(tableName, columns, selection, selectionArgs, groupBy,
-                                           having, null, null);
+            having, null, null);
     }
 
     @Nullable
     @Override
     public final Cursor query(@NonNull final String tableName, @Nullable final String[] columns,
-                              @Nullable final String selection,
-                              @Nullable final String[] selectionArgs,
-                              @Nullable final String groupBy) {
+        @Nullable final String selection, @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(tableName, columns, selection, selectionArgs, groupBy,
-                                           null, null, null);
+            null, null, null);
     }
 
     @Nullable
     @Override
     public final Cursor query(@NonNull final String tableName, @Nullable final String[] columns,
-                              @Nullable final String selection,
-                              @Nullable final String[] selectionArgs) {
+        @Nullable final String selection, @Nullable final String[] selectionArgs) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(tableName, columns, selection, selectionArgs, null, null,
-                                           null, null);
+            null, null);
     }
 
     @Nullable
     @Override
     public final Cursor query(@NonNull final String tableName, @Nullable final String[] columns,
-                              @Nullable final String selection) {
+        @Nullable final String selection) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(tableName, columns, selection, null, null, null, null,
-                                           null);
+            null);
     }
 
     @Nullable
     @Override
     public final Cursor query(final boolean distinct, @NonNull final String tableName,
-                              @Nullable final String[] columns) {
+        @Nullable final String[] columns) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(distinct, tableName, columns, null, null, null, null,
-                                           null, null);
+            null, null);
     }
 
     @Nullable
@@ -214,7 +207,7 @@ public abstract class SqlLiteDatabaseWrapper extends SQLiteOpenHelper implements
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getReadableDatabase().query(distinct, tableName, null, null, null, null, null, null,
-                                           null);
+            null);
     }
 
     @Nullable
@@ -236,8 +229,7 @@ public abstract class SqlLiteDatabaseWrapper extends SQLiteOpenHelper implements
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     @Override
     public final int update(@NonNull final String tableName, @Nullable final ContentValues values,
-                            @Nullable final String whereClause,
-                            @Nullable final String[] whereArgs) {
+        @Nullable final String whereClause, @Nullable final String[] whereArgs) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getWritableDatabase().update(tableName, values, whereClause, whereArgs);
@@ -246,7 +238,7 @@ public abstract class SqlLiteDatabaseWrapper extends SQLiteOpenHelper implements
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     @Override
     public final int update(@NonNull final String tableName, @Nullable final ContentValues values,
-                            @Nullable final String whereClause) {
+        @Nullable final String whereClause) {
         Contracts.requireNonNull(tableName, "tableName == null");
 
         return getWritableDatabase().update(tableName, values, whereClause, null);
@@ -261,15 +253,13 @@ public abstract class SqlLiteDatabaseWrapper extends SQLiteOpenHelper implements
     }
 
     protected SqlLiteDatabaseWrapper(@NonNull final Context context, @NonNull final String name,
-                                     @Nullable final SQLiteDatabase.CursorFactory factory,
-                                     final int version) {
+        @Nullable final SQLiteDatabase.CursorFactory factory, final int version) {
         super(context, name, factory, version);
     }
 
     protected SqlLiteDatabaseWrapper(@NonNull final Context context, @NonNull final String name,
-                                     @Nullable final SQLiteDatabase.CursorFactory factory,
-                                     final int version,
-                                     @Nullable final DatabaseErrorHandler errorHandler) {
+        @Nullable final SQLiteDatabase.CursorFactory factory, final int version,
+        @Nullable final DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);
     }
 }

@@ -40,7 +40,7 @@ public abstract class ContentProviderBase extends ContentProvider {
     }
 
     protected final void notifyChange(@NonNull final Uri uri,
-                                      @Nullable final ContentObserver contentObserver) {
+        @Nullable final ContentObserver contentObserver) {
         Contracts.requireNonNull(uri, "uri == null");
 
         final Context context = getContext();

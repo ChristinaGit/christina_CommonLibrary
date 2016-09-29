@@ -20,7 +20,7 @@ public final class Logger {
     }
 
     public final void d(@Nullable final String scopeName, @Nullable final String message,
-                        @Nullable final Throwable throwable) {
+        @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.DEBUG)) {
             Log.d(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
@@ -36,7 +36,7 @@ public final class Logger {
     }
 
     public final void e(@Nullable final String scopeName, @Nullable final String message,
-                        @Nullable final Throwable throwable) {
+        @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.ERROR)) {
             Log.e(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
@@ -58,7 +58,7 @@ public final class Logger {
     }
 
     public final void i(@Nullable final String scopeName, @Nullable final String message,
-                        @Nullable final Throwable throwable) {
+        @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.INFO)) {
             Log.i(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
@@ -76,7 +76,7 @@ public final class Logger {
     }
 
     public final void v(@Nullable final String scopeName, @Nullable final String message,
-                        @Nullable final Throwable throwable) {
+        @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.VERBOSE)) {
             Log.v(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
@@ -92,7 +92,7 @@ public final class Logger {
     }
 
     public final void w(@Nullable final String scopeName, @Nullable final String message,
-                        @Nullable final Throwable throwable) {
+        @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.WARNING)) {
             Log.w(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
@@ -117,7 +117,7 @@ public final class Logger {
 
     @Nullable
     private String combineLogMessage(@Nullable final String scopeName,
-                                     @Nullable final String message) {
+        @Nullable final String message) {
         if (scopeName == null && message == null) {
             return null;
         }

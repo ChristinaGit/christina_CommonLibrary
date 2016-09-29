@@ -1,15 +1,14 @@
 package com.christina.common.data.dao;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.christina.common.contract.Contracts;
 import com.christina.common.data.model.Model;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.christina.common.data.model.factory.ContentModelCollectionFactory;
+import com.christina.common.data.model.factory.ContentModelFactory;
+import com.christina.common.data.model.factory.ModelContentExtractor;
 
 public abstract class ContentDao<TModel extends Model> implements Dao<TModel> {
     protected ContentDao(@NonNull final String[] fullProjection) {
@@ -24,52 +23,18 @@ public abstract class ContentDao<TModel extends Model> implements Dao<TModel> {
     }
 
     @NonNull
-    protected List<TModel> createModelList(@NonNull final Cursor cursor) {
-        Contracts.requireNonNull(cursor, "cursor == null");
-
-        final int entryCount = cursor.getCount();
-        final List<TModel> models = createModelList(entryCount);
-        for (int i = 0; i < entryCount; i++) {
-            cursor.moveToPosition(i);
-            models.add(i, createModel(cursor));
-        }
-
-        return models;
+    protected DaoCollectionResult<TModel> createDaoCollectionResult(@Nullable final Cursor cursor) {
+        return new DaoCursorCollectionResult<>(cursor, getModelCollectionFactory());
     }
 
     @NonNull
-    protected List<TModel> createModelList(
-        @IntRange(from = 0, to = Integer.MAX_VALUE) final int capacity) {
-        Contracts.requireInRange(capacity, 0, Integer.MAX_VALUE);
-
-        return new ArrayList<>(capacity);
-    }
+    protected abstract ContentModelCollectionFactory<TModel> getModelCollectionFactory();
 
     @NonNull
-    protected ContentValues[] getContentValues(@NonNull final TModel[] models) {
-        Contracts.requireNonNull(models, "models == null");
-
-        final int modelsCount = models.length;
-        final ContentValues[] contentValues = new ContentValues[modelsCount];
-        for (int i = 0; i < modelsCount; i++) {
-            contentValues[i] = getContentValues(models[i]);
-        }
-
-        return contentValues;
-    }
+    protected abstract ModelContentExtractor<TModel> getModelContentExtractor();
 
     @NonNull
-    protected abstract TModel createModel();
-
-    @NonNull
-    protected abstract TModel createModel(@NonNull Cursor cursor);
-
-    @NonNull
-    protected abstract TModel[] createModelArray(
-        @IntRange(from = 0, to = Integer.MAX_VALUE) final int size);
-
-    @NonNull
-    protected abstract ContentValues getContentValues(@NonNull TModel model);
+    protected abstract ContentModelFactory<TModel> getModelFactory();
 
     @NonNull
     private final String[] _fullProjection;

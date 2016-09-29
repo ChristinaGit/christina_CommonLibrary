@@ -10,15 +10,14 @@ import com.christina.common.data.QueryUtils;
 import com.christina.common.data.database.Database;
 import com.christina.common.data.model.Model;
 
-import java.util.List;
-
 public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TModel> {
     @Override
     @Nullable
     public TModel create() {
-        TModel model = createModel();
+        TModel model = getModelFactory().create();
 
-        final long id = getDatabase().insert(getTableName(), getContentValues(model));
+        final long id =
+            getDatabase().insert(getTableName(), getModelContentExtractor().extract(model));
 
         if (id >= 0) {
             model.setId(id);
@@ -35,9 +34,9 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
         return delete(QueryUtils.whereEquals(getIdColumnName(), String.valueOf(id)));
     }
 
+    @NonNull
     @Override
-    @Nullable
-    public List<TModel> get() {
+    public DaoCollectionResult<TModel> get() {
         return select();
     }
 
@@ -53,12 +52,12 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
         Contracts.requireNonNull(model, "model == null");
         DaoContracts.requireId(model);
 
-        return getDatabase().update(getTableName(), getContentValues(model),
-                                    whereIdEquals(model.getId()));
+        return getDatabase().update(getTableName(), getModelContentExtractor().extract(model),
+            whereIdEquals(model.getId()));
     }
 
     protected DatabaseDao(final @NonNull Database database, final @NonNull String idColumnName,
-                          final @NonNull String[] fullProjection, final @NonNull String tableName) {
+        final @NonNull String[] fullProjection, final @NonNull String tableName) {
         super(fullProjection);
 
         Contracts.requireNonNull(database, "database == null");
@@ -76,7 +75,8 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int delete(@Nullable final String whereClause, @Nullable final String[] whereArgs) {
+    protected final int delete(@Nullable final String whereClause,
+        @Nullable final String[] whereArgs) {
         return getDatabase().delete(getTableName(), whereClause, whereArgs);
     }
 
@@ -112,97 +112,90 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
 
     @Nullable
     protected final Cursor query(final boolean distinct, @Nullable final String[] columns,
-                                 @Nullable final String selection,
-                                 @Nullable final String[] selectionArgs,
-                                 @Nullable final String groupBy, @Nullable final String having,
-                                 @Nullable final String orderBy, @Nullable final String limit) {
+        @Nullable final String selection, @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy, @Nullable final String having,
+        @Nullable final String orderBy, @Nullable final String limit) {
         return getDatabase().query(distinct, getTableName(), columns, selection, selectionArgs,
-                                   groupBy, having, orderBy, limit);
+            groupBy, having, orderBy, limit);
     }
 
     @Nullable
     protected final Cursor query(final boolean distinct, @Nullable final String[] columns,
-                                 @Nullable final String selection,
-                                 @Nullable final String[] selectionArgs,
-                                 @Nullable final String groupBy, @Nullable final String having,
-                                 @Nullable final String orderBy) {
+        @Nullable final String selection, @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy, @Nullable final String having,
+        @Nullable final String orderBy) {
         return getDatabase().query(distinct, getTableName(), columns, selection, selectionArgs,
-                                   groupBy, having, orderBy);
+            groupBy, having, orderBy);
     }
 
     @Nullable
     protected final Cursor query(final boolean distinct, @Nullable final String[] columns,
-                                 @Nullable final String selection,
-                                 @Nullable final String[] selectionArgs,
-                                 @Nullable final String groupBy, @Nullable final String having) {
+        @Nullable final String selection, @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy, @Nullable final String having) {
         return getDatabase().query(distinct, getTableName(), columns, selection, selectionArgs,
-                                   groupBy, having);
+            groupBy, having);
     }
 
     @Nullable
     protected final Cursor query(final boolean distinct, @Nullable final String[] columns,
-                                 @Nullable final String selection,
-                                 @Nullable final String[] selectionArgs,
-                                 @Nullable final String groupBy) {
+        @Nullable final String selection, @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy) {
         return getDatabase().query(distinct, getTableName(), columns, selection, selectionArgs,
-                                   groupBy);
+            groupBy);
     }
 
     @Nullable
     protected final Cursor query(final boolean distinct, @Nullable final String[] columns,
-                                 @Nullable final String selection,
-                                 @Nullable final String[] selectionArgs) {
+        @Nullable final String selection, @Nullable final String[] selectionArgs) {
         return getDatabase().query(distinct, getTableName(), columns, selection, selectionArgs);
     }
 
     @Nullable
     protected final Cursor query(final boolean distinct, @Nullable final String[] columns,
-                                 @Nullable final String selection) {
+        @Nullable final String selection) {
         return getDatabase().query(distinct, getTableName(), columns, selection);
     }
 
     @Nullable
     protected final Cursor query(@Nullable final String[] columns, @Nullable final String selection,
-                                 @Nullable final String[] selectionArgs,
-                                 @Nullable final String groupBy, @Nullable final String having,
-                                 @Nullable final String orderBy, @Nullable final String limit) {
+        @Nullable final String[] selectionArgs, @Nullable final String groupBy,
+        @Nullable final String having, @Nullable final String orderBy,
+        @Nullable final String limit) {
         return getDatabase().query(getTableName(), columns, selection, selectionArgs, groupBy,
-                                   having, orderBy, limit);
+            having, orderBy, limit);
     }
 
     @Nullable
     protected final Cursor query(@Nullable final String[] columns, @Nullable final String selection,
-                                 @Nullable final String[] selectionArgs,
-                                 @Nullable final String groupBy, @Nullable final String having,
-                                 @Nullable final String orderBy) {
+        @Nullable final String[] selectionArgs, @Nullable final String groupBy,
+        @Nullable final String having, @Nullable final String orderBy) {
         return getDatabase().query(getTableName(), columns, selection, selectionArgs, groupBy,
-                                   having, orderBy);
+            having, orderBy);
     }
 
     @Nullable
     protected final Cursor query(@Nullable final String[] columns, @Nullable final String selection,
-                                 @Nullable final String[] selectionArgs,
-                                 @Nullable final String groupBy, @Nullable final String having) {
+        @Nullable final String[] selectionArgs, @Nullable final String groupBy,
+        @Nullable final String having) {
         return getDatabase().query(getTableName(), columns, selection, selectionArgs, groupBy,
-                                   having);
+            having);
     }
 
     @Nullable
     protected final Cursor query(@Nullable final String[] columns, @Nullable final String selection,
-                                 @Nullable final String[] selectionArgs,
-                                 @Nullable final String groupBy) {
+        @Nullable final String[] selectionArgs, @Nullable final String groupBy) {
         return getDatabase().query(getTableName(), columns, selection, selectionArgs, groupBy);
     }
 
     @Nullable
     protected final Cursor query(@Nullable final String[] columns, @Nullable final String selection,
-                                 @Nullable final String[] selectionArgs) {
+        @Nullable final String[] selectionArgs) {
         return getDatabase().query(getTableName(), columns, selection, selectionArgs);
     }
 
     @Nullable
     protected final Cursor query(@Nullable final String[] columns,
-                                 @Nullable final String selection) {
+        @Nullable final String selection) {
         return getDatabase().query(getTableName(), columns, selection);
     }
 
@@ -221,146 +214,74 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
         return getDatabase().query(getTableName());
     }
 
-    @Nullable
-    protected final List<TModel> select() {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query()) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final DaoCollectionResult<TModel> select() {
+        return createDaoCollectionResult(query());
     }
 
-    @Nullable
-    protected final List<TModel> select(final boolean distinct, @Nullable final String selection,
-                                        @Nullable final String[] selectionArgs,
-                                        @Nullable final String orderBy,
-                                        @Nullable final String limit) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(distinct, getFullProjection(), selection, selectionArgs,
-                                         orderBy, limit)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final DaoCollectionResult<TModel> select(final boolean distinct,
+        @Nullable final String selection, @Nullable final String[] selectionArgs,
+        @Nullable final String orderBy, @Nullable final String limit) {
+        return createDaoCollectionResult(
+            query(distinct, getFullProjection(), selection, selectionArgs, orderBy, limit));
     }
 
-    @Nullable
-    protected final List<TModel> select(final boolean distinct, @Nullable final String selection,
-                                        @Nullable final String[] selectionArgs,
-                                        @Nullable final String orderBy) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(distinct, getFullProjection(), selection, selectionArgs,
-                                         orderBy)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final DaoCollectionResult<TModel> select(final boolean distinct,
+        @Nullable final String selection, @Nullable final String[] selectionArgs,
+        @Nullable final String orderBy) {
+        return createDaoCollectionResult(
+            query(distinct, getFullProjection(), selection, selectionArgs, orderBy));
     }
 
-    @Nullable
-    protected final List<TModel> select(final boolean distinct, @Nullable final String selection,
-                                        @Nullable final String[] selectionArgs) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(distinct, getFullProjection(), selection, selectionArgs)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final DaoCollectionResult<TModel> select(final boolean distinct,
+        @Nullable final String selection, @Nullable final String[] selectionArgs) {
+        return createDaoCollectionResult(
+            query(distinct, getFullProjection(), selection, selectionArgs));
     }
 
-    @Nullable
-    protected final List<TModel> select(final boolean distinct, @Nullable final String selection) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(distinct, getFullProjection(), selection)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final DaoCollectionResult<TModel> select(final boolean distinct,
+        @Nullable final String selection) {
+        return createDaoCollectionResult(query(distinct, getFullProjection(), selection));
     }
 
-    @Nullable
-    protected final List<TModel> select(@Nullable final String selection,
-                                        @Nullable final String[] selectionArgs,
-                                        @Nullable final String orderBy,
-                                        @Nullable final String limit) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs, orderBy,
-                                         limit)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final DaoCollectionResult<TModel> select(@Nullable final String selection,
+        @Nullable final String[] selectionArgs, @Nullable final String orderBy,
+        @Nullable final String limit) {
+        return createDaoCollectionResult(
+            query(getFullProjection(), selection, selectionArgs, orderBy, limit));
     }
 
-    @Nullable
-    protected final List<TModel> select(@Nullable final String selection,
-                                        @Nullable final String[] selectionArgs,
-                                        @Nullable final String orderBy) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs, orderBy)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final DaoCollectionResult<TModel> select(@Nullable final String selection,
+        @Nullable final String[] selectionArgs, @Nullable final String orderBy) {
+        return createDaoCollectionResult(
+            query(getFullProjection(), selection, selectionArgs, orderBy));
     }
 
-    @Nullable
-    protected final List<TModel> select(@Nullable final String selection,
-                                        @Nullable final String[] selectionArgs) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final DaoCollectionResult<TModel> select(@Nullable final String selection,
+        @Nullable final String[] selectionArgs) {
+        return createDaoCollectionResult(query(getFullProjection(), selection, selectionArgs));
     }
 
-    @Nullable
-    protected final List<TModel> select(@Nullable final String selection) {
-        List<TModel> result = null;
-
-        try (final Cursor cursor = query(getFullProjection(), selection)) {
-            if (cursor != null) {
-                result = createModelList(cursor);
-            }
-        }
-
-        return result;
+    @NonNull
+    protected final DaoCollectionResult<TModel> select(@Nullable final String selection) {
+        return createDaoCollectionResult(query(getFullProjection(), selection));
     }
 
     @Nullable
     protected final TModel selectSingle(@Nullable final String selection,
-                                        @Nullable final String[] selectionArgs) {
+        @Nullable final String[] selectionArgs) {
         TModel result = null;
 
         try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs)) {
             if (cursor != null) {
-                result = createModel(cursor);
+                result = getModelFactory().create(cursor);
             }
         }
 
@@ -373,7 +294,7 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
 
         try (final Cursor cursor = query(getFullProjection(), selection)) {
             if (cursor != null) {
-                result = createModel(cursor);
+                result = getModelFactory().create(cursor);
             }
         }
 
@@ -382,19 +303,19 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     protected final int update(@NonNull final TModel model, @Nullable final String whereClause,
-                               @Nullable final String[] whereArgs) {
+        @Nullable final String[] whereArgs) {
         DaoContracts.requireId(model);
 
-        return getDatabase().update(getTableName(), getContentValues(model),
-                                    appendWhereIdEquals(whereClause, model.getId()), whereArgs);
+        return getDatabase().update(getTableName(), getModelContentExtractor().extract(model),
+            appendWhereIdEquals(whereClause, model.getId()), whereArgs);
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     protected final int update(@NonNull final TModel model, @Nullable final String whereClause) {
         DaoContracts.requireId(model);
 
-        return getDatabase().update(getTableName(), getContentValues(model),
-                                    appendWhereIdEquals(whereClause, model.getId()));
+        return getDatabase().update(getTableName(), getModelContentExtractor().extract(model),
+            appendWhereIdEquals(whereClause, model.getId()));
     }
 
     @NonNull

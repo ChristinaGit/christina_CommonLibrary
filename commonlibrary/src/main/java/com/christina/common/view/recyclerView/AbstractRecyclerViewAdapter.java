@@ -67,7 +67,7 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
     }
 
     public final void addItems(final int location, @NonNull final Collection<TItem> items,
-                               final boolean notify) {
+        final boolean notify) {
         Contracts.requireNonNull(items, "items == null");
 
         final Collection<ListItem> listItems = wrapItems(items);
@@ -212,7 +212,7 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
     }
 
     protected void onBindViewHolder(@NonNull final TViewHolder holder,
-                                    @NonNull final ListItem listItem, final int position) {
+        @NonNull final ListItem listItem, final int position) {
     }
 
     @NonNull
