@@ -12,11 +12,11 @@ public final class AnimationViewUtils {
     public static void animateSetVisibility(@NonNull final View view, final int visibility) {
         Contracts.requireNonNull(view, "view == null");
 
-        animateSetVisibility(view, visibility, android.R.anim.fade_out, android.R.anim.fade_in);
+        animateSetVisibility(view, visibility, android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     public static void animateSetVisibility(@NonNull final View view, final int visibility,
-        @AnimRes final int out, @AnimRes final int in) {
+        @AnimRes final int in, @AnimRes final int out) {
         Contracts.requireNonNull(view, "view == null");
 
         if (visibility != view.getVisibility()) {

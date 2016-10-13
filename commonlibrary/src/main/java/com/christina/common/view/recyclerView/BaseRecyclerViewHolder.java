@@ -7,13 +7,13 @@ import android.view.View;
 
 import com.christina.common.contract.Contracts;
 
-public abstract class AbstractRecyclerViewHolder extends RecyclerView.ViewHolder {
+public abstract class BaseRecyclerViewHolder extends RecyclerView.ViewHolder {
     @NonNull
     public final Context getContext() {
         return _context;
     }
 
-    protected AbstractRecyclerViewHolder(@NonNull final View itemView) {
+    protected BaseRecyclerViewHolder(@NonNull final View itemView) {
         super(itemView);
 
         Contracts.requireNonNull(itemView, "itemView == null");

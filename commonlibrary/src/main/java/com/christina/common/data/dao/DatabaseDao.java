@@ -6,9 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.christina.common.contract.Contracts;
-import com.christina.common.data.QueryUtils;
 import com.christina.common.data.database.Database;
 import com.christina.common.data.model.Model;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TModel> {
     @Override
@@ -31,7 +32,7 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     @Override
     public int delete(final long id) {
-        return delete(QueryUtils.whereEquals(getIdColumnName(), String.valueOf(id)));
+        return delete(getIdColumnName() + "=?", new String[]{String.valueOf(id)});
     }
 
     @NonNull
@@ -43,7 +44,7 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     @Override
     @Nullable
     public TModel get(final long id) {
-        return selectSingle(whereIdEquals(id));
+        return selectSingle(getIdColumnName() + "=?", new String[]{String.valueOf(id)});
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
@@ -53,7 +54,7 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
         DaoContracts.requireId(model);
 
         return getDatabase().update(getTableName(), getModelContentExtractor().extract(model),
-            whereIdEquals(model.getId()));
+            getIdColumnName() + "=?", new String[]{String.valueOf(model.getId())});
     }
 
     protected DatabaseDao(final @NonNull Database database, final @NonNull String idColumnName,
@@ -67,11 +68,6 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
         _database = database;
         _idColumnName = idColumnName;
         _tableName = tableName;
-    }
-
-    @NonNull
-    protected final String appendWhereIdEquals(@Nullable final String where, final long id) {
-        return QueryUtils.appendWhereEquals(where, getIdColumnName(), String.valueOf(id));
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
@@ -302,25 +298,25 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int update(@NonNull final TModel model, @Nullable final String whereClause,
-        @Nullable final String[] whereArgs) {
+    protected final int update(@NonNull final TModel model, @Nullable String whereClause,
+        @Nullable String[] whereArgs) {
         DaoContracts.requireId(model);
 
+        whereClause += " AND " + getIdColumnName() + "=?";
+        whereArgs = ArrayUtils.add(whereArgs, String.valueOf(model.getId()));
+
         return getDatabase().update(getTableName(), getModelContentExtractor().extract(model),
-            appendWhereIdEquals(whereClause, model.getId()), whereArgs);
+            whereClause, whereArgs);
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int update(@NonNull final TModel model, @Nullable final String whereClause) {
+    protected final int update(@NonNull final TModel model, @Nullable String whereClause) {
         DaoContracts.requireId(model);
 
-        return getDatabase().update(getTableName(), getModelContentExtractor().extract(model),
-            appendWhereIdEquals(whereClause, model.getId()));
-    }
+        whereClause += " AND " + getIdColumnName() + "=?";
 
-    @NonNull
-    protected final String whereIdEquals(final long id) {
-        return QueryUtils.whereEquals(getIdColumnName(), String.valueOf(id));
+        return getDatabase().update(getTableName(), getModelContentExtractor().extract(model),
+            whereClause, new String[]{String.valueOf(model.getId())});
     }
 
     @NonNull

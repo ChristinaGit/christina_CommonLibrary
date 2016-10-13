@@ -244,7 +244,7 @@ public abstract class ContentProviderDao<TModel extends Model> extends ContentDa
         TModel result = null;
 
         try (final Cursor cursor = query(uri, getFullProjection())) {
-            if (cursor != null) {
+            if (cursor != null && cursor.moveToFirst()) {
                 result = getModelFactory().create(cursor);
             }
         }

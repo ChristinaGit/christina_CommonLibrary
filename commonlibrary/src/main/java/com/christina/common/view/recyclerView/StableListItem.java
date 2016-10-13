@@ -1,5 +1,5 @@
 package com.christina.common.view.recyclerView;
 
-public interface ListItem {
+public interface StableListItem {
     long getId();
 }

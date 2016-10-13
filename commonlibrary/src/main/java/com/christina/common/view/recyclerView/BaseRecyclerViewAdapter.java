@@ -7,18 +7,15 @@ import android.support.v7.widget.RecyclerView;
 import com.christina.common.contract.Contracts;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IterableUtils;
-import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.Transformer;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
-    AbstractRecyclerViewHolder>
+public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder extends
+    BaseRecyclerViewHolder>
     extends RecyclerView.Adapter<TViewHolder> {
-
     public final void addItem(final int location, @NonNull final TItem item) {
         Contracts.requireNonNull(item, "item == null");
 
@@ -28,7 +25,7 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
     public final void addItem(final int location, @NonNull final TItem item, final boolean notify) {
         Contracts.requireNonNull(item, "item == null");
 
-        final ListItem listItem = onWrapItem(item);
+        final TListItem listItem = onWrapItem(item);
         getListItems().add(location, listItem);
 
         if (notify) {
@@ -70,30 +67,13 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
         final boolean notify) {
         Contracts.requireNonNull(items, "items == null");
 
-        final Collection<ListItem> listItems = wrapItems(items);
+        final Collection<TListItem> listItems = wrapItems(items);
 
         getListItems().addAll(location, listItems);
 
         if (notify) {
             notifyItemRangeInserted(location, listItems.size());
         }
-    }
-
-    public final int getItemPosition(final long id) {
-        return IterableUtils.indexOf(getListItems(), new Predicate<ListItem>() {
-            @Override
-            public boolean evaluate(final ListItem object) {
-                return object.getId() == id;
-            }
-        });
-    }
-
-    public final void removeItem(final long id) {
-        removeItem(id, true);
-    }
-
-    public final void removeItem(final long id, final boolean notify) {
-        removeItem(getItemPosition(id), notify);
     }
 
     public final void removeItem(final int position) {
@@ -108,12 +88,8 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
         }
     }
 
-    public final void removeItems() {
-        removeItems(true);
-    }
-
     public final void removeItems(final boolean notify) {
-        final List<ListItem> listItems = getListItems();
+        final List<TListItem> listItems = getListItems();
 
         final int listItemsCount = listItems.size();
 
@@ -124,13 +100,17 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
         }
     }
 
+    public final void removeItems() {
+        removeItems(true);
+    }
+
     public final void setItems(@NonNull final Collection<TItem> items) {
         setItems(items, true);
     }
 
     public final void setItems(@NonNull final Collection<TItem> items, final boolean notify) {
-        final List<ListItem> listItems = getListItems();
-        final Collection<ListItem> newListItems = wrapItems(items);
+        final List<TListItem> listItems = getListItems();
+        final Collection<TListItem> newListItems = wrapItems(items);
 
         final int listItemsCount = listItems.size();
         final int newListItemsCount = newListItems.size();
@@ -155,25 +135,6 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
         }
     }
 
-    public final void updateItem(@NonNull final TItem item) {
-        Contracts.requireNonNull(item, "item == null");
-
-        updateItem(item, true);
-    }
-
-    public final void updateItem(@NonNull final TItem item, final boolean notify) {
-        Contracts.requireNonNull(item, "item == null");
-
-        final ListItem listItem = onWrapItem(item);
-
-        final int position = getItemPosition(listItem.getId());
-        getListItems().set(position, listItem);
-
-        if (notify) {
-            notifyItemChanged(position);
-        }
-    }
-
     @CallSuper
     @Override
     public void onBindViewHolder(final TViewHolder holder, final int position) {
@@ -181,52 +142,43 @@ public abstract class AbstractRecyclerViewAdapter<TItem, TViewHolder extends
     }
 
     @Override
-    public long getItemId(final int position) {
-        return getListItem(position).getId();
-    }
-
-    @Override
     public int getItemCount() {
         return getListItems().size();
     }
 
-    protected AbstractRecyclerViewAdapter() {
-        setHasStableIds(true);
-    }
-
     @NonNull
-    protected final ListItem getListItem(final int position) {
-        return getListItems().get(position);
-    }
-
-    @NonNull
-    protected final List<ListItem> getListItems() {
+    protected final List<TListItem> getListItems() {
         return _listItems;
     }
 
     @NonNull
-    protected final Collection<ListItem> wrapItems(@NonNull final Collection<TItem> items) {
+    protected final Collection<TListItem> wrapItems(@NonNull final Collection<TItem> items) {
         Contracts.requireNonNull(items, "items == null");
 
         return CollectionUtils.collect(items, _listItemTransformer);
     }
 
+    @NonNull
+    protected TListItem getListItem(final int position) {
+        return getListItems().get(position);
+    }
+
     protected void onBindViewHolder(@NonNull final TViewHolder holder,
-        @NonNull final ListItem listItem, final int position) {
+        @NonNull final TListItem listItem, final int position) {
     }
 
     @NonNull
-    protected abstract ListItem onWrapItem(@NonNull TItem item);
+    protected abstract TListItem onWrapItem(@NonNull TItem item);
 
     @NonNull
-    private final Transformer<TItem, ListItem> _listItemTransformer =
-        new Transformer<TItem, ListItem>() {
+    private final Transformer<TItem, TListItem> _listItemTransformer =
+        new Transformer<TItem, TListItem>() {
             @Override
-            public ListItem transform(final TItem input) {
+            public TListItem transform(final TItem input) {
                 return onWrapItem(input);
             }
         };
 
     @NonNull
-    private final List<ListItem> _listItems = new ArrayList<>();
+    private final List<TListItem> _listItems = new ArrayList<>();
 }
