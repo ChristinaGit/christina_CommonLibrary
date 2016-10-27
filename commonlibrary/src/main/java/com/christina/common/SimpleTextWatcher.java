@@ -3,7 +3,7 @@ package com.christina.common;
 import android.text.Editable;
 import android.text.TextWatcher;
 
-public abstract class BaseTextWatcher implements TextWatcher {
+public abstract class SimpleTextWatcher implements TextWatcher {
     @Override
     public void beforeTextChanged(final CharSequence s, final int start, final int count,
         final int after) {
