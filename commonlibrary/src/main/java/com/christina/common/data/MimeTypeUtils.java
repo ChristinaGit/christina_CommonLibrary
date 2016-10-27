@@ -24,5 +24,6 @@ public final class MimeTypeUtils {
     }
 
     private MimeTypeUtils() {
+        Contracts.unreachable();
     }
 }

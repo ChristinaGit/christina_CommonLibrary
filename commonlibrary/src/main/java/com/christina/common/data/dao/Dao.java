@@ -11,11 +11,11 @@ public interface Dao<TModel extends Model> {
 
     int delete(long id);
 
-    @NonNull
-    DaoCollectionResult<TModel> get();
-
     @Nullable
     TModel get(long id);
+
+    @NonNull
+    DaoCollectionResult<TModel> getAll();
 
     int update(@NonNull TModel model);
 }

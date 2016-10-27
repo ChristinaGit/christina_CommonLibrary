@@ -182,5 +182,6 @@ public final class ContextUtils {
     }
 
     private ContextUtils() {
+        Contracts.unreachable();
     }
 }

@@ -40,7 +40,7 @@ public abstract class ContentProviderDao<TModel extends Model> extends ContentDa
 
     @NonNull
     @Override
-    public DaoCollectionResult<TModel> get() {
+    public DaoCollectionResult<TModel> getAll() {
         return select(getModelUri());
     }
 

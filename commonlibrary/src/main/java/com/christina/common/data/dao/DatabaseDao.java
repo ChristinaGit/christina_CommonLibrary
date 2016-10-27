@@ -37,7 +37,7 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
 
     @NonNull
     @Override
-    public DaoCollectionResult<TModel> get() {
+    public DaoCollectionResult<TModel> getAll() {
         return select();
     }
 

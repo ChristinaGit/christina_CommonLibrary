@@ -155,5 +155,6 @@ public final class Contracts {
     }
 
     private Contracts() {
+        Contracts.unreachable();
     }
 }

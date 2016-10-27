@@ -1,5 +1,7 @@
 package com.christina.common.data;
 
+import com.christina.common.contract.Contracts;
+
 public final class UriSchemes {
     public static final String CONTENT = "content";
 
@@ -28,5 +30,6 @@ public final class UriSchemes {
     public static final String URN = "urn";
 
     private UriSchemes() {
+        Contracts.unreachable();
     }
 }

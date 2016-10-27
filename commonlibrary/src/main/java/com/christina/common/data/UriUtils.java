@@ -49,5 +49,6 @@ public final class UriUtils {
     }
 
     private UriUtils() {
+        Contracts.unreachable();
     }
 }

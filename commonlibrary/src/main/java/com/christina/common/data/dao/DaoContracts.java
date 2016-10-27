@@ -2,6 +2,7 @@ package com.christina.common.data.dao;
 
 import android.support.annotation.NonNull;
 
+import com.christina.common.contract.Contracts;
 import com.christina.common.data.model.Model;
 
 public final class DaoContracts {
@@ -12,5 +13,6 @@ public final class DaoContracts {
     }
 
     private DaoContracts() {
+        Contracts.unreachable();
     }
 }
