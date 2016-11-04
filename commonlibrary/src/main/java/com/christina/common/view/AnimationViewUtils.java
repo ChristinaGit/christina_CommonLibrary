@@ -23,11 +23,12 @@ public final class AnimationViewUtils {
             final boolean visible = visibility == View.VISIBLE;
             final Animation animation =
                 AnimationUtils.loadAnimation(view.getContext(), visible ? in : out);
-            view.startAnimation(animation);
             view.setVisibility(visibility);
+            view.startAnimation(animation);
         }
     }
 
     private AnimationViewUtils() {
+        Contracts.unreachable();
     }
 }

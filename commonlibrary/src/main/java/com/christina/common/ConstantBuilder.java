@@ -13,6 +13,13 @@ public final class ConstantBuilder {
         return clazz.getName() + ":" + key;
     }
 
+    @NonNull
+    public static String logTag(@NonNull final Class<?> clazz) {
+        Contracts.requireNonNull(clazz, "clazz == null");
+
+        return clazz.getSimpleName();
+    }
+
     private ConstantBuilder() {
         Contracts.unreachable();
     }

@@ -38,7 +38,7 @@ public final class DaoCursorCollectionResult<TModel extends Model>
                 }
             }
 
-            _obtained = true;
+            _consumed = true;
 
             return result;
         }
@@ -60,7 +60,7 @@ public final class DaoCursorCollectionResult<TModel extends Model>
                 }
             }
 
-            _obtained = true;
+            _consumed = true;
 
             return result;
         }
@@ -82,7 +82,7 @@ public final class DaoCursorCollectionResult<TModel extends Model>
                 }
             }
 
-            _obtained = true;
+            _consumed = true;
 
             return result;
         }
@@ -104,14 +104,33 @@ public final class DaoCursorCollectionResult<TModel extends Model>
                 }
             }
 
-            _obtained = true;
+            _consumed = true;
 
             return result;
         }
     }
 
-    public final boolean isObtained() {
-        return _obtained;
+    @Override
+    public final int getCount() {
+        synchronized (_lock) {
+            _checkState();
+
+            final int count;
+
+            if (_cursor != null) {
+                count = _cursor.getCount();
+            } else {
+                count = 0;
+            }
+
+            return count;
+        }
+    }
+
+    public final boolean isConsumed() {
+        synchronized (_lock) {
+            return _consumed;
+        }
     }
 
     @NonNull
@@ -122,11 +141,11 @@ public final class DaoCursorCollectionResult<TModel extends Model>
 
     private final Object _lock = new Object();
 
-    private boolean _obtained = false;
+    private boolean _consumed = false;
 
     private void _checkState() {
-        if (_obtained) {
-            throw new IllegalStateException("Result is already obtained.");
+        if (_consumed) {
+            throw new IllegalStateException("Result is already consumed.");
         }
     }
 }

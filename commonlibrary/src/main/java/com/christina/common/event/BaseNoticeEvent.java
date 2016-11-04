@@ -8,11 +8,11 @@ import com.christina.common.contract.Contracts;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public final class BaseEvent<TEventArgs> implements Event<TEventArgs> {
+public final class BaseNoticeEvent implements NoticeEvent {
     private static final int _INITIAL_HANDLERS_COLLECTION_CAPACITY = 2;
 
     @Override
-    public final void addHandler(@NonNull final EventHandler<TEventArgs> handler) {
+    public final void addHandler(@NonNull final NoticeEventHandler handler) {
         Contracts.requireNonNull(handler, "handler == null");
 
         synchronized (_lock) {
@@ -25,7 +25,7 @@ public final class BaseEvent<TEventArgs> implements Event<TEventArgs> {
     }
 
     @Override
-    public final void removeHandler(@NonNull final EventHandler<TEventArgs> handler) {
+    public final void removeHandler(@NonNull final NoticeEventHandler handler) {
         Contracts.requireNonNull(handler, "handler == null");
 
         synchronized (_lock) {
@@ -51,13 +51,11 @@ public final class BaseEvent<TEventArgs> implements Event<TEventArgs> {
         }
     }
 
-    public final void rise(@NonNull final TEventArgs eventArgs) {
-        Contracts.requireNonNull(eventArgs, "eventArgs == null");
-
+    public final void rise() {
         synchronized (_lock) {
             if (_handlers != null) {
-                for (final EventHandler<TEventArgs> handler : _handlers) {
-                    handler.onEvent(eventArgs);
+                for (final NoticeEventHandler handler : _handlers) {
+                    handler.onEvent();
                 }
             }
         }
@@ -66,5 +64,5 @@ public final class BaseEvent<TEventArgs> implements Event<TEventArgs> {
     private final Object _lock = new Object();
 
     @Nullable
-    private Collection<EventHandler<TEventArgs>> _handlers;
+    private Collection<NoticeEventHandler> _handlers;
 }

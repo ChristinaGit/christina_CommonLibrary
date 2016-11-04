@@ -9,7 +9,7 @@ import com.christina.common.contract.Contracts;
 public final class ThreadUtils {
     @NonNull
     public static Handler getMainThreadHandler() {
-        return MainThreadHandlerInstanceHolder.INSTANCE;
+        return _MainThreadHandlerInstanceHolder.INSTANCE;
     }
 
     public static void runOnMainThread(@NonNull final Runnable runnable) {
@@ -22,7 +22,7 @@ public final class ThreadUtils {
         Contracts.unreachable();
     }
 
-    private static final class MainThreadHandlerInstanceHolder {
+    private static final class _MainThreadHandlerInstanceHolder {
         @NonNull
         public static final Handler INSTANCE = new Handler(Looper.getMainLooper());
     }

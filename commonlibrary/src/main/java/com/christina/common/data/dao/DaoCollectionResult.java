@@ -21,5 +21,7 @@ public interface DaoCollectionResult<TModel extends Model> {
     @Nullable
     LongSparseArray<TModel> asPrimitiveMap();
 
-    boolean isObtained();
+    int getCount();
+
+    boolean isConsumed();
 }
