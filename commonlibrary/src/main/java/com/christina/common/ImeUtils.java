@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.christina.common.contract.Contracts;
+import com.christina.common.thread.HandlerUtils;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -50,7 +51,7 @@ public final class ImeUtils {
         Contracts.requireNonNull(view, "view == null");
 
         final Reference<View> viewRef = new WeakReference<>(view);
-        ThreadUtils.getMainThreadHandler().postDelayed(new Runnable() {
+        HandlerUtils.getMainThreadHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 final View viewHost = viewRef.get();
@@ -71,7 +72,7 @@ public final class ImeUtils {
         Contracts.requireNonNull(view, "view == null");
 
         final Reference<View> viewRef = new WeakReference<>(view);
-        ThreadUtils.getMainThreadHandler().postDelayed(new Runnable() {
+        HandlerUtils.getMainThreadHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 final View viewHost = viewRef.get();

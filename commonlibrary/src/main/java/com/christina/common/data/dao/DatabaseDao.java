@@ -6,45 +6,52 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.christina.common.contract.Contracts;
+import com.christina.common.data.dao.factory.ModelCollectionFactory;
+import com.christina.common.data.dao.factory.ModelContentExtractor;
+import com.christina.common.data.dao.result.CollectionResult;
 import com.christina.common.data.database.Database;
 import com.christina.common.data.model.Model;
+import com.christina.common.data.projection.Projection;
+import com.christina.common.pattern.factory.TransitionFactory;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
+@Accessors(prefix = "_")
 public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TModel> {
-    @Override
-    @Nullable
-    public TModel create() {
-        TModel model = getModelFactory().create();
-
-        final long id =
-            getDatabase().insert(getTableName(), getModelContentExtractor().extract(model));
-
-        if (id >= 0) {
-            model.setId(id);
-        } else {
-            model = null;
-        }
-
-        return model;
-    }
-
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     @Override
     public int delete(final long id) {
         return delete(getIdColumnName() + "=?", new String[]{String.valueOf(id)});
     }
 
-    @NonNull
-    @Override
-    public DaoCollectionResult<TModel> getAll() {
-        return select();
-    }
-
     @Override
     @Nullable
     public TModel get(final long id) {
         return selectSingle(getIdColumnName() + "=?", new String[]{String.valueOf(id)});
+    }
+
+    @NonNull
+    @Override
+    public CollectionResult<TModel> getAll() {
+        return select();
+    }
+
+    @Override
+    public long insert(@NonNull final TModel model) {
+        Contracts.requireNonNull(model, "model == null");
+
+        long id = getDatabase().insert(getTableName(), getModelContentExtractor().extract(model));
+        if (id < 0) {
+            id = Model.NO_ID;
+        }
+
+        model.setId(id);
+
+        return model.getId();
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
@@ -57,10 +64,13 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
             getIdColumnName() + "=?", new String[]{String.valueOf(model.getId())});
     }
 
-    protected DatabaseDao(final @NonNull Database database, final @NonNull String idColumnName,
-        final @NonNull String[] fullProjection, final @NonNull String tableName) {
-        super(fullProjection);
-
+    protected DatabaseDao(@NonNull final Projection fullProjection,
+        @NonNull final Database database, @NonNull final String idColumnName,
+        @NonNull final String tableName,
+        @NonNull final TransitionFactory<TModel, Cursor> modelFactory,
+        @NonNull final ModelCollectionFactory<TModel> modelCollectionFactory,
+        @NonNull final ModelContentExtractor<TModel> modelContentExtractor) {
+        super(fullProjection, modelFactory, modelCollectionFactory, modelContentExtractor);
         Contracts.requireNonNull(database, "database == null");
         Contracts.requireNonNull(idColumnName, "idColumnName == null");
         Contracts.requireNonNull(tableName, "tableName == null");
@@ -84,21 +94,6 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     protected final int delete() {
         return getDatabase().delete(getTableName());
-    }
-
-    @NonNull
-    protected final Database getDatabase() {
-        return _database;
-    }
-
-    @NonNull
-    protected final String getIdColumnName() {
-        return _idColumnName;
-    }
-
-    @NonNull
-    protected final String getTableName() {
-        return _tableName;
     }
 
     @Nullable
@@ -211,63 +206,65 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select() {
-        return createDaoCollectionResult(query());
+    protected final CollectionResult<TModel> select() {
+        return createCollectionResult(query());
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select(final boolean distinct,
+    protected final CollectionResult<TModel> select(final boolean distinct,
         @Nullable final String selection, @Nullable final String[] selectionArgs,
         @Nullable final String orderBy, @Nullable final String limit) {
-        return createDaoCollectionResult(
-            query(distinct, getFullProjection(), selection, selectionArgs, orderBy, limit));
+        return createCollectionResult(
+            query(distinct, getFullProjection().getColumns(), selection, selectionArgs, orderBy,
+                limit));
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select(final boolean distinct,
+    protected final CollectionResult<TModel> select(final boolean distinct,
         @Nullable final String selection, @Nullable final String[] selectionArgs,
         @Nullable final String orderBy) {
-        return createDaoCollectionResult(
-            query(distinct, getFullProjection(), selection, selectionArgs, orderBy));
+        return createCollectionResult(
+            query(distinct, getFullProjection().getColumns(), selection, selectionArgs, orderBy));
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select(final boolean distinct,
+    protected final CollectionResult<TModel> select(final boolean distinct,
         @Nullable final String selection, @Nullable final String[] selectionArgs) {
-        return createDaoCollectionResult(
-            query(distinct, getFullProjection(), selection, selectionArgs));
+        return createCollectionResult(
+            query(distinct, getFullProjection().getColumns(), selection, selectionArgs));
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select(final boolean distinct,
+    protected final CollectionResult<TModel> select(final boolean distinct,
         @Nullable final String selection) {
-        return createDaoCollectionResult(query(distinct, getFullProjection(), selection));
+        return createCollectionResult(query(distinct, getFullProjection().getColumns(), selection));
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select(@Nullable final String selection,
+    protected final CollectionResult<TModel> select(@Nullable final String selection,
         @Nullable final String[] selectionArgs, @Nullable final String orderBy,
         @Nullable final String limit) {
-        return createDaoCollectionResult(
-            query(getFullProjection(), selection, selectionArgs, orderBy, limit));
+        return createCollectionResult(
+            query(getFullProjection().getColumns(), selection, selectionArgs, orderBy, limit));
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select(@Nullable final String selection,
+    protected final CollectionResult<TModel> select(@Nullable final String selection,
         @Nullable final String[] selectionArgs, @Nullable final String orderBy) {
-        return createDaoCollectionResult(
-            query(getFullProjection(), selection, selectionArgs, orderBy));
+        return createCollectionResult(
+            query(getFullProjection().getColumns(), selection, selectionArgs, orderBy));
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select(@Nullable final String selection,
+    protected final CollectionResult<TModel> select(@Nullable final String selection,
         @Nullable final String[] selectionArgs) {
-        return createDaoCollectionResult(query(getFullProjection(), selection, selectionArgs));
+        return createCollectionResult(
+            query(getFullProjection().getColumns(), selection, selectionArgs));
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select(@Nullable final String selection) {
-        return createDaoCollectionResult(query(getFullProjection(), selection));
+    protected final CollectionResult<TModel> select(@Nullable final String selection) {
+        return createCollectionResult(query(getFullProjection().getColumns(), selection));
     }
 
     @Nullable
@@ -275,7 +272,8 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
         @Nullable final String[] selectionArgs) {
         TModel result = null;
 
-        try (final Cursor cursor = query(getFullProjection(), selection, selectionArgs)) {
+        try (final Cursor cursor = query(getFullProjection().getColumns(), selection,
+            selectionArgs)) {
             if (cursor != null) {
                 result = getModelFactory().create(cursor);
             }
@@ -288,7 +286,7 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     protected final TModel selectSingle(@Nullable final String selection) {
         TModel result = null;
 
-        try (final Cursor cursor = query(getFullProjection(), selection)) {
+        try (final Cursor cursor = query(getFullProjection().getColumns(), selection)) {
             if (cursor != null) {
                 result = getModelFactory().create(cursor);
             }
@@ -319,12 +317,15 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
             whereClause, new String[]{String.valueOf(model.getId())});
     }
 
+    @Getter(AccessLevel.PROTECTED)
     @NonNull
     private final Database _database;
 
+    @Getter(AccessLevel.PROTECTED)
     @NonNull
     private final String _idColumnName;
 
+    @Getter(AccessLevel.PROTECTED)
     @NonNull
     private final String _tableName;
 }

@@ -9,45 +9,56 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.christina.common.contract.Contracts;
+import com.christina.common.data.dao.factory.ModelCollectionFactory;
+import com.christina.common.data.dao.factory.ModelContentExtractor;
+import com.christina.common.data.dao.result.CollectionResult;
+import com.christina.common.data.dao.selection.SqlDataSelection;
 import com.christina.common.data.model.Model;
+import com.christina.common.data.projection.Projection;
+import com.christina.common.pattern.factory.TransitionFactory;
 
-public abstract class ContentProviderDao<TModel extends Model> extends ContentDao<TModel> {
-    @Nullable
-    @Override
-    public TModel create() {
-        TModel model = getModelFactory().create();
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
-        final Uri modelUri = insert(getModelUri(), getModelContentExtractor().extract(model));
-        final long id;
-
-        if (modelUri != null) {
-            id = extractId(modelUri);
-            if (id >= 0) {
-                model.setId(id);
-            } else {
-                model = null;
-            }
-        }
-
-        return model;
-    }
-
+@Accessors(prefix = "_")
+public abstract class ContentProviderDao<TModel extends Model> extends ContentDao<TModel>
+    implements SqlDao<TModel> {
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     @Override
     public int delete(final long id) {
         return delete(getModelUri(id));
     }
 
-    @NonNull
-    @Override
-    public DaoCollectionResult<TModel> getAll() {
-        return select(getModelUri());
-    }
-
     @Nullable
     @Override
     public TModel get(final long id) {
         return selectSingle(getModelUri(id));
+    }
+
+    @NonNull
+    @Override
+    public CollectionResult<TModel> getAll() {
+        return select(getModelUri());
+    }
+
+    @Override
+    public long insert(@NonNull final TModel model) {
+        Contracts.requireNonNull(model, "model == null");
+
+        final Uri modelUri = insert(getModelUri(), getModelContentExtractor().extract(model));
+
+        long id = Model.NO_ID;
+        if (modelUri != null) {
+            final long extractedId = extractId(modelUri);
+            if (extractedId >= 0) {
+                id = extractedId;
+            }
+        }
+
+        model.setId(id);
+
+        return model.getId();
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
@@ -59,10 +70,38 @@ public abstract class ContentProviderDao<TModel extends Model> extends ContentDa
         return update(getModelUri(model.getId()), getModelContentExtractor().extract(model));
     }
 
-    protected ContentProviderDao(final @NonNull ContentResolver contentResolver,
-        final @NonNull String[] fullProjection) {
-        super(fullProjection);
+    @Override
+    public int delete(@NonNull final SqlDataSelection sqlDataSelection) {
+        Contracts.requireNonNull(sqlDataSelection, "sqlDataSelection == null");
 
+        return delete(getModelUri(), sqlDataSelection.getWhereClause(),
+            sqlDataSelection.getWhereArguments());
+    }
+
+    @Nullable
+    @Override
+    public TModel get(@NonNull final SqlDataSelection sqlDataSelection) {
+        Contracts.requireNonNull(sqlDataSelection, "sqlDataSelection == null");
+
+        return selectSingle(getModelUri(), sqlDataSelection.getWhereClause(),
+            sqlDataSelection.getWhereArguments());
+    }
+
+    @NonNull
+    @Override
+    public CollectionResult<TModel> getAll(@NonNull final SqlDataSelection sqlDataSelection) {
+        Contracts.requireNonNull(sqlDataSelection, "sqlDataSelection == null");
+
+        return select(getModelUri(), sqlDataSelection.getWhereClause(),
+            sqlDataSelection.getWhereArguments());
+    }
+
+    protected ContentProviderDao(@NonNull final ContentResolver contentResolver,
+        @NonNull final Projection fullProjection,
+        @NonNull final TransitionFactory<TModel, Cursor> modelFactory,
+        @NonNull final ModelCollectionFactory<TModel> modelCollectionFactory,
+        @NonNull final ModelContentExtractor<TModel> modelContentExtractor) {
+        super(fullProjection, modelFactory, modelCollectionFactory, modelContentExtractor);
         Contracts.requireNonNull(contentResolver, "contentResolver == null");
 
         _contentResolver = contentResolver;
@@ -96,11 +135,6 @@ public abstract class ContentProviderDao<TModel extends Model> extends ContentDa
         Contracts.requireNonNull(url, "url == null");
 
         return getContentResolver().delete(url, null, null);
-    }
-
-    @NonNull
-    protected final ContentResolver getContentResolver() {
-        return _contentResolver;
     }
 
     @Nullable
@@ -157,36 +191,37 @@ public abstract class ContentProviderDao<TModel extends Model> extends ContentDa
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select(@NonNull final Uri uri,
+    protected final CollectionResult<TModel> select(@NonNull final Uri uri,
         @Nullable final String selection, @Nullable final String[] selectionArgs,
         @Nullable final String sortOrder) {
         Contracts.requireNonNull(uri, "uri == null");
 
-        return createDaoCollectionResult(
-            query(uri, getFullProjection(), selection, selectionArgs, sortOrder));
+        return createCollectionResult(
+            query(uri, getFullProjection().getColumns(), selection, selectionArgs, sortOrder));
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select(@NonNull final Uri uri,
+    protected final CollectionResult<TModel> select(@NonNull final Uri uri,
         @Nullable final String selection, @Nullable final String[] selectionArgs) {
         Contracts.requireNonNull(uri, "uri == null");
 
-        return createDaoCollectionResult(query(uri, getFullProjection(), selection, selectionArgs));
+        return createCollectionResult(
+            query(uri, getFullProjection().getColumns(), selection, selectionArgs));
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select(@NonNull final Uri uri,
+    protected final CollectionResult<TModel> select(@NonNull final Uri uri,
         @Nullable final String selection) {
         Contracts.requireNonNull(uri, "uri == null");
 
-        return createDaoCollectionResult(query(uri, getFullProjection(), selection));
+        return createCollectionResult(query(uri, getFullProjection().getColumns(), selection));
     }
 
     @NonNull
-    protected final DaoCollectionResult<TModel> select(@NonNull final Uri uri) {
+    protected final CollectionResult<TModel> select(@NonNull final Uri uri) {
         Contracts.requireNonNull(uri, "uri == null");
 
-        return createDaoCollectionResult(query(uri, getFullProjection()));
+        return createCollectionResult(query(uri, getFullProjection().getColumns()));
     }
 
     @Nullable
@@ -196,8 +231,8 @@ public abstract class ContentProviderDao<TModel extends Model> extends ContentDa
 
         TModel result = null;
 
-        try (final Cursor cursor = query(uri, getFullProjection(), selection, selectionArgs,
-            sortOrder)) {
+        try (final Cursor cursor = query(uri, getFullProjection().getColumns(), selection,
+            selectionArgs, sortOrder)) {
             if (cursor != null && cursor.moveToFirst()) {
                 result = getModelFactory().create(cursor);
             }
@@ -213,7 +248,8 @@ public abstract class ContentProviderDao<TModel extends Model> extends ContentDa
 
         TModel result = null;
 
-        try (final Cursor cursor = query(uri, getFullProjection(), selection, selectionArgs)) {
+        try (final Cursor cursor = query(uri, getFullProjection().getColumns(), selection,
+            selectionArgs)) {
             if (cursor != null && cursor.moveToFirst()) {
                 result = getModelFactory().create(cursor);
             }
@@ -228,7 +264,7 @@ public abstract class ContentProviderDao<TModel extends Model> extends ContentDa
 
         TModel result = null;
 
-        try (final Cursor cursor = query(uri, getFullProjection(), selection)) {
+        try (final Cursor cursor = query(uri, getFullProjection().getColumns(), selection)) {
             if (cursor != null && cursor.moveToFirst()) {
                 result = getModelFactory().create(cursor);
             }
@@ -243,7 +279,7 @@ public abstract class ContentProviderDao<TModel extends Model> extends ContentDa
 
         TModel result = null;
 
-        try (final Cursor cursor = query(uri, getFullProjection())) {
+        try (final Cursor cursor = query(uri, getFullProjection().getColumns())) {
             if (cursor != null && cursor.moveToFirst()) {
                 result = getModelFactory().create(cursor);
             }
@@ -290,6 +326,7 @@ public abstract class ContentProviderDao<TModel extends Model> extends ContentDa
     @NonNull
     protected abstract Uri getModelUri(long id);
 
+    @Getter(AccessLevel.PROTECTED)
     @NonNull
     private final ContentResolver _contentResolver;
 }

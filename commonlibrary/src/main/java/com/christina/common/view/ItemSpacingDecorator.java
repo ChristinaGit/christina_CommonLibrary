@@ -9,21 +9,14 @@ import android.view.View;
 
 import com.christina.common.contract.Contracts;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
+@Accessors(prefix = "_")
 public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
-    public final int getHorizontalSpacing() {
-        return _horizontalSpacing;
-    }
-
-    public final int getVerticalSpacing() {
-        return _verticalSpacing;
-    }
-
-    public final boolean isBordersCollapseEnabled() {
-        return _bordersCollapseEnabled;
-    }
-
-    public final boolean isEdgesEnabled() {
-        return _edgesEnabled;
+    @NonNull
+    public static Builder builder() {
+        return new Builder();
     }
 
     @Override
@@ -125,15 +118,20 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
         return spanCount;
     }
 
+    @Getter
     private final boolean _bordersCollapseEnabled;
 
+    @Getter
     private final boolean _edgesEnabled;
 
+    @Getter
     private final int _horizontalSpacing;
 
+    @Getter
     private final int _verticalSpacing;
 
-    public static class Builder {
+    public static class Builder
+        implements com.christina.common.pattern.builder.Builder<ItemSpacingDecorator> {
         @NonNull
         public final Builder collapseBorders() {
             _collapseBorders = true;
@@ -171,6 +169,7 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
         }
 
         @NonNull
+        @Override
         public ItemSpacingDecorator build() {
             return new ItemSpacingDecorator(_horizontalSpacing, _verticalSpacing, _collapseBorders,
                 _enableEdges);

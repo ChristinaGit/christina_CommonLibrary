@@ -7,6 +7,10 @@ import android.util.Log;
 
 import com.christina.common.contract.Contracts;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
+@Accessors(prefix = "_")
 @SuppressLint("LogTagMismatch")
 public final class Logger {
     public Logger(final @NonNull String loggerTag) {
@@ -46,11 +50,6 @@ public final class Logger {
     @NonNull
     public final LogLevel getLogLevel() {
         return _logLevel != null ? _logLevel : LogLevel.ERROR;
-    }
-
-    @NonNull
-    public final String getLoggerTag() {
-        return _loggerTag;
     }
 
     public final void i(@Nullable final String scopeName, @Nullable final String message) {
@@ -109,6 +108,7 @@ public final class Logger {
         _logLevel = logLevel;
     }
 
+    @Getter
     @NonNull
     private final String _loggerTag;
 

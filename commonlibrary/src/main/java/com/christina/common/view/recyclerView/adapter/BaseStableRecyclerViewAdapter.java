@@ -1,14 +1,16 @@
-package com.christina.common.view.recyclerView;
+package com.christina.common.view.recyclerView.adapter;
 
 import android.support.annotation.NonNull;
 
 import com.christina.common.contract.Contracts;
+import com.christina.common.view.recyclerView.listItem.StableListItem;
+import com.christina.common.view.recyclerView.viewHolder.AbstractRecyclerViewHolder;
 
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
 
 public abstract class BaseStableRecyclerViewAdapter<TItem, TListItem extends StableListItem,
-    TViewHolder extends BaseRecyclerViewHolder>
+    TViewHolder extends AbstractRecyclerViewHolder>
     extends BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder> {
 
     public final int getItemPosition(final long id) {

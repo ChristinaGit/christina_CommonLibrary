@@ -1,4 +1,4 @@
-package com.christina.common.data.model.factory;
+package com.christina.common.data.dao.factory;
 
 import android.content.ContentValues;
 import android.support.annotation.NonNull;

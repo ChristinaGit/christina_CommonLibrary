@@ -1,15 +1,16 @@
 package com.christina.common.event;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
+@Accessors(prefix = "_")
 public class CancelableEventArgs extends EventArgs {
     public static final CancelableEventArgs EMPTY = new CancelableEventArgs();
 
     public final void cancelEvent() {
-        _canceled = true;
+        _eventCanceled = true;
     }
 
-    public final boolean isEventCanceled() {
-        return _canceled;
-    }
-
-    private boolean _canceled = false;
+    @Getter
+    private boolean _eventCanceled = false;
 }

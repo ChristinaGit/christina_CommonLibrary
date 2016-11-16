@@ -1,10 +1,11 @@
-package com.christina.common.view.recyclerView;
+package com.christina.common.view.recyclerView.adapter;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
 import com.christina.common.contract.Contracts;
+import com.christina.common.view.recyclerView.viewHolder.AbstractRecyclerViewHolder;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
@@ -13,8 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder extends
-    BaseRecyclerViewHolder>
+public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder extends AbstractRecyclerViewHolder>
     extends RecyclerView.Adapter<TViewHolder> {
     public final void addItem(final int location, @NonNull final TItem item) {
         Contracts.requireNonNull(item, "item == null");
