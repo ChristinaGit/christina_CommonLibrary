@@ -13,9 +13,9 @@ import com.christina.common.pattern.factory.map.TransitionMapFactory;
 
 public interface ModelCollectionFactory<TModel extends Model>
     extends TransitionMapFactory<Long, TModel, Cursor>,
-    MapFactory<Long, TModel>,
-    TransitionCollectionFactory<TModel, Cursor>,
-    CollectionFactory<TModel> {
+            MapFactory<Long, TModel>,
+            TransitionCollectionFactory<TModel, Cursor>,
+            CollectionFactory<TModel> {
     @NonNull
     LongSparseArray<TModel> createSparseArray();
 

@@ -2,13 +2,14 @@ package com.christina.common;
 
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import com.christina.common.contract.Contracts;
 import com.christina.common.thread.HandlerUtils;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+
+import lombok.val;
 
 public final class ImeUtils {
     public static void showIme(@NonNull final View view) {
@@ -20,7 +21,7 @@ public final class ImeUtils {
     public static void showIme(@NonNull final View view, final int flags) {
         Contracts.requireNonNull(view, "view == null");
 
-        final InputMethodManager imm = ContextUtils.getInputMethodManager(view.getContext());
+        final val imm = ContextUtils.getInputMethodManager(view.getContext());
         if (imm != null) {
             imm.showSoftInput(view, flags);
         }
@@ -35,7 +36,7 @@ public final class ImeUtils {
     public static void hideIme(@NonNull final View view, final int flags) {
         Contracts.requireNonNull(view, "view == null");
 
-        final InputMethodManager imm = ContextUtils.getInputMethodManager(view.getContext());
+        final val imm = ContextUtils.getInputMethodManager(view.getContext());
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), flags);
         }

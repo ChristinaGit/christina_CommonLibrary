@@ -5,13 +5,13 @@ import android.text.TextWatcher;
 
 public abstract class SimpleTextWatcher implements TextWatcher {
     @Override
-    public void beforeTextChanged(final CharSequence s, final int start, final int count,
-        final int after) {
+    public void beforeTextChanged(
+        final CharSequence s, final int start, final int count, final int after) {
     }
 
     @Override
-    public void onTextChanged(final CharSequence s, final int start, final int before,
-        final int count) {
+    public void onTextChanged(
+        final CharSequence s, final int start, final int before, final int count) {
     }
 
     @Override

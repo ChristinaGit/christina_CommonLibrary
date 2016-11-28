@@ -30,6 +30,6 @@ public abstract class IntentBuilder implements ContextualBuilder<IntentBuilderRe
     protected abstract Intent buildIntent(@NonNull final Context context);
 
     @NonNull
-    protected abstract PendingIntent buildPendingIntent(@NonNull final Context context,
-        @NonNull final Intent intent, int requestCode, int flags);
+    protected abstract PendingIntent buildPendingIntent(
+        @NonNull final Context context, @NonNull final Intent intent, int requestCode, int flags);
 }

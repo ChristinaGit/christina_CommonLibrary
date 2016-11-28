@@ -4,6 +4,8 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import com.christina.common.contract.Contracts;
+import com.christina.common.pattern.factory.collection.CollectionFactory;
+import com.christina.common.pattern.factory.map.MapFactory;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -20,14 +22,17 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 
 @Accessors(prefix = "_")
-public abstract class AbstractMapCollectionFactory<TIdentifier, TComponent> {
+public abstract class AbstractMapCollectionFactory<TIdentifier, TComponent>
+    implements MapFactory<TIdentifier, TComponent>, CollectionFactory<TComponent> {
     @SuppressWarnings("unchecked")
     @NonNull
+    @Override
     public TComponent[] createArray(@IntRange(from = 0, to = Integer.MAX_VALUE) final int size) {
         return (TComponent[]) Array.newInstance(getComponentClass(), size);
     }
 
     @NonNull
+    @Override
     public Collection<TComponent> createCollection(
         @IntRange(from = 0, to = Integer.MAX_VALUE) final int capacity) {
         Contracts.requireInRange(capacity, 0, Integer.MAX_VALUE);
@@ -36,11 +41,13 @@ public abstract class AbstractMapCollectionFactory<TIdentifier, TComponent> {
     }
 
     @NonNull
+    @Override
     public Collection<TComponent> createCollection() {
         return createCollection(getDefaultCapacity());
     }
 
     @NonNull
+    @Override
     public List<TComponent> createList(
         @IntRange(from = 0, to = Integer.MAX_VALUE) final int capacity) {
         Contracts.requireInRange(capacity, 0, Integer.MAX_VALUE);
@@ -49,16 +56,19 @@ public abstract class AbstractMapCollectionFactory<TIdentifier, TComponent> {
     }
 
     @NonNull
+    @Override
     public List<TComponent> createList() {
         return createList(getDefaultCapacity());
     }
 
     @NonNull
+    @Override
     public Map<TIdentifier, TComponent> createMap() {
         return createMap(getDefaultCapacity());
     }
 
     @NonNull
+    @Override
     public Map<TIdentifier, TComponent> createMap(
         @IntRange(from = 0, to = Integer.MAX_VALUE) final int capacity) {
         Contracts.requireInRange(capacity, 0, Integer.MAX_VALUE);
@@ -67,11 +77,13 @@ public abstract class AbstractMapCollectionFactory<TIdentifier, TComponent> {
     }
 
     @NonNull
+    @Override
     public NavigableMap<TIdentifier, TComponent> createNavigableMap() {
         return createNavigableMap(getDefaultCapacity());
     }
 
     @NonNull
+    @Override
     public NavigableMap<TIdentifier, TComponent> createNavigableMap(
         @IntRange(from = 0, to = Integer.MAX_VALUE) final int capacity) {
         Contracts.requireInRange(capacity, 0, Integer.MAX_VALUE);
@@ -80,11 +92,13 @@ public abstract class AbstractMapCollectionFactory<TIdentifier, TComponent> {
     }
 
     @NonNull
+    @Override
     public SortedMap<TIdentifier, TComponent> createSortedMap() {
         return createSortedMap(getDefaultCapacity());
     }
 
     @NonNull
+    @Override
     public SortedMap<TIdentifier, TComponent> createSortedMap(
         @IntRange(from = 0, to = Integer.MAX_VALUE) final int capacity) {
         Contracts.requireInRange(capacity, 0, Integer.MAX_VALUE);

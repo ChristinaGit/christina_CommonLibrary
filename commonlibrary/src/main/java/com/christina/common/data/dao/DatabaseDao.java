@@ -8,17 +8,18 @@ import android.support.annotation.Nullable;
 import com.christina.common.contract.Contracts;
 import com.christina.common.data.dao.factory.ModelCollectionFactory;
 import com.christina.common.data.dao.factory.ModelContentExtractor;
+import com.christina.common.data.dao.factory.ModelFactory;
 import com.christina.common.data.dao.result.CollectionResult;
 import com.christina.common.data.database.Database;
 import com.christina.common.data.model.Model;
 import com.christina.common.data.projection.Projection;
-import com.christina.common.pattern.factory.TransitionFactory;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import lombok.val;
 
 @Accessors(prefix = "_")
 public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TModel> {
@@ -60,14 +61,18 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
         Contracts.requireNonNull(model, "model == null");
         DaoContracts.requireId(model);
 
-        return getDatabase().update(getTableName(), getModelContentExtractor().extract(model),
-            getIdColumnName() + "=?", new String[]{String.valueOf(model.getId())});
+        return getDatabase().update(getTableName(),
+                                    getModelContentExtractor().extract(model),
+                                    getIdColumnName() + "=?",
+                                    new String[]{String.valueOf(model.getId())});
     }
 
-    protected DatabaseDao(@NonNull final Projection fullProjection,
-        @NonNull final Database database, @NonNull final String idColumnName,
+    protected DatabaseDao(
+        @NonNull final Projection fullProjection,
+        @NonNull final Database database,
+        @NonNull final String idColumnName,
         @NonNull final String tableName,
-        @NonNull final TransitionFactory<TModel, Cursor> modelFactory,
+        @NonNull final ModelFactory<TModel> modelFactory,
         @NonNull final ModelCollectionFactory<TModel> modelCollectionFactory,
         @NonNull final ModelContentExtractor<TModel> modelContentExtractor) {
         super(fullProjection, modelFactory, modelCollectionFactory, modelContentExtractor);
@@ -81,8 +86,8 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int delete(@Nullable final String whereClause,
-        @Nullable final String[] whereArgs) {
+    protected final int delete(
+        @Nullable final String whereClause, @Nullable final String[] whereArgs) {
         return getDatabase().delete(getTableName(), whereClause, whereArgs);
     }
 
@@ -102,91 +107,165 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @Nullable
-    protected final Cursor query(final boolean distinct, @Nullable final String[] columns,
-        @Nullable final String selection, @Nullable final String[] selectionArgs,
-        @Nullable final String groupBy, @Nullable final String having,
-        @Nullable final String orderBy, @Nullable final String limit) {
-        return getDatabase().query(distinct, getTableName(), columns, selection, selectionArgs,
-            groupBy, having, orderBy, limit);
+    protected final Cursor query(
+        final boolean distinct,
+        @Nullable final String[] columns,
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy,
+        @Nullable final String having,
+        @Nullable final String orderBy,
+        @Nullable final String limit) {
+        return getDatabase().query(distinct,
+                                   getTableName(),
+                                   columns,
+                                   selection,
+                                   selectionArgs,
+                                   groupBy,
+                                   having,
+                                   orderBy,
+                                   limit);
     }
 
     @Nullable
-    protected final Cursor query(final boolean distinct, @Nullable final String[] columns,
-        @Nullable final String selection, @Nullable final String[] selectionArgs,
-        @Nullable final String groupBy, @Nullable final String having,
+    protected final Cursor query(
+        final boolean distinct,
+        @Nullable final String[] columns,
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy,
+        @Nullable final String having,
         @Nullable final String orderBy) {
-        return getDatabase().query(distinct, getTableName(), columns, selection, selectionArgs,
-            groupBy, having, orderBy);
+        return getDatabase().query(distinct,
+                                   getTableName(),
+                                   columns,
+                                   selection,
+                                   selectionArgs,
+                                   groupBy,
+                                   having,
+                                   orderBy);
     }
 
     @Nullable
-    protected final Cursor query(final boolean distinct, @Nullable final String[] columns,
-        @Nullable final String selection, @Nullable final String[] selectionArgs,
-        @Nullable final String groupBy, @Nullable final String having) {
-        return getDatabase().query(distinct, getTableName(), columns, selection, selectionArgs,
-            groupBy, having);
+    protected final Cursor query(
+        final boolean distinct,
+        @Nullable final String[] columns,
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy,
+        @Nullable final String having) {
+        return getDatabase().query(distinct,
+                                   getTableName(),
+                                   columns,
+                                   selection,
+                                   selectionArgs,
+                                   groupBy,
+                                   having);
     }
 
     @Nullable
-    protected final Cursor query(final boolean distinct, @Nullable final String[] columns,
-        @Nullable final String selection, @Nullable final String[] selectionArgs,
+    protected final Cursor query(
+        final boolean distinct,
+        @Nullable final String[] columns,
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs,
         @Nullable final String groupBy) {
-        return getDatabase().query(distinct, getTableName(), columns, selection, selectionArgs,
-            groupBy);
+        return getDatabase().query(distinct,
+                                   getTableName(),
+                                   columns,
+                                   selection,
+                                   selectionArgs,
+                                   groupBy);
     }
 
     @Nullable
-    protected final Cursor query(final boolean distinct, @Nullable final String[] columns,
-        @Nullable final String selection, @Nullable final String[] selectionArgs) {
+    protected final Cursor query(
+        final boolean distinct,
+        @Nullable final String[] columns,
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs) {
         return getDatabase().query(distinct, getTableName(), columns, selection, selectionArgs);
     }
 
     @Nullable
-    protected final Cursor query(final boolean distinct, @Nullable final String[] columns,
+    protected final Cursor query(
+        final boolean distinct,
+        @Nullable final String[] columns,
         @Nullable final String selection) {
         return getDatabase().query(distinct, getTableName(), columns, selection);
     }
 
     @Nullable
-    protected final Cursor query(@Nullable final String[] columns, @Nullable final String selection,
-        @Nullable final String[] selectionArgs, @Nullable final String groupBy,
-        @Nullable final String having, @Nullable final String orderBy,
+    protected final Cursor query(
+        @Nullable final String[] columns,
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy,
+        @Nullable final String having,
+        @Nullable final String orderBy,
         @Nullable final String limit) {
-        return getDatabase().query(getTableName(), columns, selection, selectionArgs, groupBy,
-            having, orderBy, limit);
+        return getDatabase().query(getTableName(),
+                                   columns,
+                                   selection,
+                                   selectionArgs,
+                                   groupBy,
+                                   having,
+                                   orderBy,
+                                   limit);
     }
 
     @Nullable
-    protected final Cursor query(@Nullable final String[] columns, @Nullable final String selection,
-        @Nullable final String[] selectionArgs, @Nullable final String groupBy,
-        @Nullable final String having, @Nullable final String orderBy) {
-        return getDatabase().query(getTableName(), columns, selection, selectionArgs, groupBy,
-            having, orderBy);
+    protected final Cursor query(
+        @Nullable final String[] columns,
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy,
+        @Nullable final String having,
+        @Nullable final String orderBy) {
+        return getDatabase().query(getTableName(),
+                                   columns,
+                                   selection,
+                                   selectionArgs,
+                                   groupBy,
+                                   having,
+                                   orderBy);
     }
 
     @Nullable
-    protected final Cursor query(@Nullable final String[] columns, @Nullable final String selection,
-        @Nullable final String[] selectionArgs, @Nullable final String groupBy,
+    protected final Cursor query(
+        @Nullable final String[] columns,
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy,
         @Nullable final String having) {
-        return getDatabase().query(getTableName(), columns, selection, selectionArgs, groupBy,
-            having);
+        return getDatabase().query(getTableName(),
+                                   columns,
+                                   selection,
+                                   selectionArgs,
+                                   groupBy,
+                                   having);
     }
 
     @Nullable
-    protected final Cursor query(@Nullable final String[] columns, @Nullable final String selection,
-        @Nullable final String[] selectionArgs, @Nullable final String groupBy) {
+    protected final Cursor query(
+        @Nullable final String[] columns,
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs,
+        @Nullable final String groupBy) {
         return getDatabase().query(getTableName(), columns, selection, selectionArgs, groupBy);
     }
 
     @Nullable
-    protected final Cursor query(@Nullable final String[] columns, @Nullable final String selection,
+    protected final Cursor query(
+        @Nullable final String[] columns,
+        @Nullable final String selection,
         @Nullable final String[] selectionArgs) {
         return getDatabase().query(getTableName(), columns, selection, selectionArgs);
     }
 
     @Nullable
-    protected final Cursor query(@Nullable final String[] columns,
-        @Nullable final String selection) {
+    protected final Cursor query(
+        @Nullable final String[] columns, @Nullable final String selection) {
         return getDatabase().query(getTableName(), columns, selection);
     }
 
@@ -211,55 +290,80 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @NonNull
-    protected final CollectionResult<TModel> select(final boolean distinct,
-        @Nullable final String selection, @Nullable final String[] selectionArgs,
-        @Nullable final String orderBy, @Nullable final String limit) {
-        return createCollectionResult(
-            query(distinct, getFullProjection().getColumns(), selection, selectionArgs, orderBy,
-                limit));
+    protected final CollectionResult<TModel> select(
+        final boolean distinct,
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs,
+        @Nullable final String orderBy,
+        @Nullable final String limit) {
+        return createCollectionResult(query(distinct,
+                                            getFullProjection().getColumns(),
+                                            selection,
+                                            selectionArgs,
+                                            orderBy,
+                                            limit));
     }
 
     @NonNull
-    protected final CollectionResult<TModel> select(final boolean distinct,
-        @Nullable final String selection, @Nullable final String[] selectionArgs,
+    protected final CollectionResult<TModel> select(
+        final boolean distinct,
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs,
         @Nullable final String orderBy) {
-        return createCollectionResult(
-            query(distinct, getFullProjection().getColumns(), selection, selectionArgs, orderBy));
+        return createCollectionResult(query(distinct,
+                                            getFullProjection().getColumns(),
+                                            selection,
+                                            selectionArgs,
+                                            orderBy));
     }
 
     @NonNull
-    protected final CollectionResult<TModel> select(final boolean distinct,
-        @Nullable final String selection, @Nullable final String[] selectionArgs) {
-        return createCollectionResult(
-            query(distinct, getFullProjection().getColumns(), selection, selectionArgs));
+    protected final CollectionResult<TModel> select(
+        final boolean distinct,
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs) {
+        return createCollectionResult(query(distinct,
+                                            getFullProjection().getColumns(),
+                                            selection,
+                                            selectionArgs));
     }
 
     @NonNull
-    protected final CollectionResult<TModel> select(final boolean distinct,
-        @Nullable final String selection) {
+    protected final CollectionResult<TModel> select(
+        final boolean distinct, @Nullable final String selection) {
         return createCollectionResult(query(distinct, getFullProjection().getColumns(), selection));
     }
 
     @NonNull
-    protected final CollectionResult<TModel> select(@Nullable final String selection,
-        @Nullable final String[] selectionArgs, @Nullable final String orderBy,
+    protected final CollectionResult<TModel> select(
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs,
+        @Nullable final String orderBy,
         @Nullable final String limit) {
-        return createCollectionResult(
-            query(getFullProjection().getColumns(), selection, selectionArgs, orderBy, limit));
+        return createCollectionResult(query(getFullProjection().getColumns(),
+                                            selection,
+                                            selectionArgs,
+                                            orderBy,
+                                            limit));
     }
 
     @NonNull
-    protected final CollectionResult<TModel> select(@Nullable final String selection,
-        @Nullable final String[] selectionArgs, @Nullable final String orderBy) {
-        return createCollectionResult(
-            query(getFullProjection().getColumns(), selection, selectionArgs, orderBy));
+    protected final CollectionResult<TModel> select(
+        @Nullable final String selection,
+        @Nullable final String[] selectionArgs,
+        @Nullable final String orderBy) {
+        return createCollectionResult(query(getFullProjection().getColumns(),
+                                            selection,
+                                            selectionArgs,
+                                            orderBy));
     }
 
     @NonNull
-    protected final CollectionResult<TModel> select(@Nullable final String selection,
-        @Nullable final String[] selectionArgs) {
-        return createCollectionResult(
-            query(getFullProjection().getColumns(), selection, selectionArgs));
+    protected final CollectionResult<TModel> select(
+        @Nullable final String selection, @Nullable final String[] selectionArgs) {
+        return createCollectionResult(query(getFullProjection().getColumns(),
+                                            selection,
+                                            selectionArgs));
     }
 
     @NonNull
@@ -268,12 +372,11 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @Nullable
-    protected final TModel selectSingle(@Nullable final String selection,
-        @Nullable final String[] selectionArgs) {
+    protected final TModel selectSingle(
+        @Nullable final String selection, @Nullable final String[] selectionArgs) {
         TModel result = null;
 
-        try (final Cursor cursor = query(getFullProjection().getColumns(), selection,
-            selectionArgs)) {
+        try (final val cursor = query(getFullProjection().getColumns(), selection, selectionArgs)) {
             if (cursor != null) {
                 result = getModelFactory().create(cursor);
             }
@@ -286,7 +389,7 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     protected final TModel selectSingle(@Nullable final String selection) {
         TModel result = null;
 
-        try (final Cursor cursor = query(getFullProjection().getColumns(), selection)) {
+        try (final val cursor = query(getFullProjection().getColumns(), selection)) {
             if (cursor != null) {
                 result = getModelFactory().create(cursor);
             }
@@ -296,15 +399,17 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
-    protected final int update(@NonNull final TModel model, @Nullable String whereClause,
-        @Nullable String[] whereArgs) {
+    protected final int update(
+        @NonNull final TModel model, @Nullable String whereClause, @Nullable String[] whereArgs) {
         DaoContracts.requireId(model);
 
         whereClause += " AND " + getIdColumnName() + "=?";
         whereArgs = ArrayUtils.add(whereArgs, String.valueOf(model.getId()));
 
-        return getDatabase().update(getTableName(), getModelContentExtractor().extract(model),
-            whereClause, whereArgs);
+        return getDatabase().update(getTableName(),
+                                    getModelContentExtractor().extract(model),
+                                    whereClause,
+                                    whereArgs);
     }
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
@@ -313,8 +418,10 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
 
         whereClause += " AND " + getIdColumnName() + "=?";
 
-        return getDatabase().update(getTableName(), getModelContentExtractor().extract(model),
-            whereClause, new String[]{String.valueOf(model.getId())});
+        return getDatabase().update(getTableName(),
+                                    getModelContentExtractor().extract(model),
+                                    whereClause,
+                                    new String[]{String.valueOf(model.getId())});
     }
 
     @Getter(AccessLevel.PROTECTED)

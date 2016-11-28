@@ -24,13 +24,13 @@ public interface CollectionResult<TModel extends Model> {
     Cursor asCursor();
 
     @Nullable
+    DataCursor<TModel> asDataCursor();
+
+    @Nullable
     List<TModel> asList();
 
     @Nullable
     Map<Long, TModel> asMap();
-
-    @Nullable
-    DataCursor<TModel> asDataCursor();
 
     @Nullable
     NavigableMap<Long, TModel> asNavigableMap();

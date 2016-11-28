@@ -9,8 +9,8 @@ import com.christina.common.contract.Contracts;
 import com.christina.common.data.cursor.dataCursor.DataCursor;
 import com.christina.common.data.cursor.dataCursor.DataCursorWrapper;
 import com.christina.common.data.dao.factory.ModelCollectionFactory;
+import com.christina.common.data.dao.factory.ModelFactory;
 import com.christina.common.data.model.Model;
-import com.christina.common.pattern.factory.TransitionFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,10 +18,13 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.SortedMap;
 
+import lombok.val;
+
 public final class CursorCollectionResult<TModel extends Model>
     implements CollectionResult<TModel> {
-    public CursorCollectionResult(@Nullable final Cursor cursor,
-        @NonNull final TransitionFactory<TModel, Cursor> modelFactory,
+    public CursorCollectionResult(
+        @Nullable final Cursor cursor,
+        @NonNull final ModelFactory<TModel> modelFactory,
         @NonNull final ModelCollectionFactory<TModel> collectionModelFactory) {
         Contracts.requireNonNull(modelFactory, "modelFactory == null");
         Contracts.requireNonNull(collectionModelFactory, "collectionModelFactory == null");
@@ -39,7 +42,7 @@ public final class CursorCollectionResult<TModel extends Model>
 
             final TModel[] result;
 
-            try (final Cursor cursor = _cursor) {
+            try (final val cursor = _cursor) {
                 if (cursor != null) {
                     result = _collectionModelFactory.createArray(cursor);
                 } else {
@@ -61,7 +64,7 @@ public final class CursorCollectionResult<TModel extends Model>
 
             final Collection<TModel> result;
 
-            try (final Cursor cursor = _cursor) {
+            try (final val cursor = _cursor) {
                 if (cursor != null) {
                     result = _collectionModelFactory.createCollection(cursor);
                 } else {
@@ -89,13 +92,33 @@ public final class CursorCollectionResult<TModel extends Model>
 
     @Nullable
     @Override
+    public DataCursor<TModel> asDataCursor() {
+        synchronized (_lock) {
+            _checkState();
+
+            final DataCursor<TModel> result;
+
+            if (_cursor != null) {
+                result = new DataCursorWrapper<>(_cursor, _modelFactory);
+            } else {
+                result = null;
+            }
+
+            _consumed = true;
+
+            return result;
+        }
+    }
+
+    @Nullable
+    @Override
     public final List<TModel> asList() {
         synchronized (_lock) {
             _checkState();
 
             final List<TModel> result;
 
-            try (final Cursor cursor = _cursor) {
+            try (final val cursor = _cursor) {
                 if (cursor != null) {
                     result = _collectionModelFactory.createList(cursor);
                 } else {
@@ -117,32 +140,12 @@ public final class CursorCollectionResult<TModel extends Model>
 
             final Map<Long, TModel> result;
 
-            try (final Cursor cursor = _cursor) {
+            try (final val cursor = _cursor) {
                 if (cursor != null) {
                     result = _collectionModelFactory.createMap(cursor);
                 } else {
                     result = null;
                 }
-            }
-
-            _consumed = true;
-
-            return result;
-        }
-    }
-
-    @Nullable
-    @Override
-    public DataCursor<TModel> asDataCursor() {
-        synchronized (_lock) {
-            _checkState();
-
-            final DataCursor<TModel> result;
-
-            if (_cursor != null) {
-                result = new DataCursorWrapper<>(_cursor, _modelFactory);
-            } else {
-                result = null;
             }
 
             _consumed = true;
@@ -159,7 +162,7 @@ public final class CursorCollectionResult<TModel extends Model>
 
             final NavigableMap<Long, TModel> result;
 
-            try (final Cursor cursor = _cursor) {
+            try (final val cursor = _cursor) {
                 if (cursor != null) {
                     result = _collectionModelFactory.createNavigableMap(cursor);
                 } else {
@@ -181,7 +184,7 @@ public final class CursorCollectionResult<TModel extends Model>
 
             final SortedMap<Long, TModel> result;
 
-            try (final Cursor cursor = _cursor) {
+            try (final val cursor = _cursor) {
                 if (cursor != null) {
                     result = _collectionModelFactory.createSortedMap(cursor);
                 } else {
@@ -203,7 +206,7 @@ public final class CursorCollectionResult<TModel extends Model>
 
             final LongSparseArray<TModel> result;
 
-            try (final Cursor cursor = _cursor) {
+            try (final val cursor = _cursor) {
                 if (cursor != null) {
                     result = _collectionModelFactory.createSparseArray(cursor);
                 } else {
@@ -262,7 +265,7 @@ public final class CursorCollectionResult<TModel extends Model>
     private final Object _lock = new Object();
 
     @NonNull
-    private final TransitionFactory<TModel, Cursor> _modelFactory;
+    private final ModelFactory<TModel> _modelFactory;
 
     private boolean _consumed = false;
 

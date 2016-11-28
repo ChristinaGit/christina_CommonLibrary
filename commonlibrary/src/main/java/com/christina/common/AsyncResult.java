@@ -55,8 +55,8 @@ public final class AsyncResult<TResult, TError> {
     @Getter
     private final boolean _success;
 
-    private AsyncResult(final boolean isSuccess, @Nullable final TResult result,
-        @Nullable final TError error) {
+    private AsyncResult(
+        final boolean isSuccess, @Nullable final TResult result, @Nullable final TError error) {
         _success = isSuccess;
         _result = result;
         _error = error;

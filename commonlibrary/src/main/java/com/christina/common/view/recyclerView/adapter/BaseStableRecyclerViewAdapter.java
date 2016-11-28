@@ -9,6 +9,8 @@ import com.christina.common.view.recyclerView.viewHolder.AbstractRecyclerViewHol
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
 
+import lombok.val;
+
 public abstract class BaseStableRecyclerViewAdapter<TItem, TListItem extends StableListItem,
     TViewHolder extends AbstractRecyclerViewHolder>
     extends BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder> {
@@ -39,7 +41,7 @@ public abstract class BaseStableRecyclerViewAdapter<TItem, TListItem extends Sta
     public final void updateItem(@NonNull final TItem item, final boolean notify) {
         Contracts.requireNonNull(item, "item == null");
 
-        final TListItem listItem = onWrapItem(item);
+        final val listItem = onWrapItem(item);
 
         final int position = getItemPosition(listItem.getId());
         getListItems().set(position, listItem);

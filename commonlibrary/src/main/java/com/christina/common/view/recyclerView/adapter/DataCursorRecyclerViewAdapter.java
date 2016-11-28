@@ -12,16 +12,18 @@ import com.christina.common.view.recyclerView.viewHolder.AbstractRecyclerViewHol
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import lombok.val;
 
 @Accessors(prefix = "_")
-public abstract class DataCursorRecyclerViewAdapter<TItem, TViewHolder extends AbstractRecyclerViewHolder>
+public abstract class DataCursorRecyclerViewAdapter<TItem, TViewHolder extends
+    AbstractRecyclerViewHolder>
     extends RecyclerView.Adapter<TViewHolder> {
 
     @Nullable
     public TItem getItem(final int position) {
         TItem item = null;
 
-        final DataCursor<TItem> dataCursor = getDataCursor();
+        final val dataCursor = getDataCursor();
         if (isDataValid() && dataCursor != null && dataCursor.moveToPosition(position)) {
             item = dataCursor.getData();
         }
@@ -38,7 +40,7 @@ public abstract class DataCursorRecyclerViewAdapter<TItem, TViewHolder extends A
     public int getItemCount() {
         final int itemCount;
 
-        final DataCursor<TItem> dataCursor = getDataCursor();
+        final val dataCursor = getDataCursor();
         if (isDataValid() && dataCursor != null) {
             itemCount = dataCursor.getCount();
         } else {
@@ -53,7 +55,7 @@ public abstract class DataCursorRecyclerViewAdapter<TItem, TViewHolder extends A
     }
 
     public void setDataCursor(@Nullable final DataCursor<TItem> dataCursor, final boolean notify) {
-        final DataCursor<TItem> oldDataCursor = swapDataCursor(dataCursor, notify);
+        final val oldDataCursor = swapDataCursor(dataCursor, notify);
 
         ResourceUtils.quietClose(oldDataCursor);
     }
@@ -64,8 +66,8 @@ public abstract class DataCursorRecyclerViewAdapter<TItem, TViewHolder extends A
     }
 
     @Nullable
-    public DataCursor<TItem> swapDataCursor(@Nullable final DataCursor<TItem> dataCursor,
-        final boolean notify) {
+    public DataCursor<TItem> swapDataCursor(
+        @Nullable final DataCursor<TItem> dataCursor, final boolean notify) {
         final DataCursor<TItem> oldDataCursor;
 
         if (_dataCursor != dataCursor) {
@@ -120,8 +122,8 @@ public abstract class DataCursorRecyclerViewAdapter<TItem, TViewHolder extends A
         notifyDataSetChanged();
     }
 
-    protected abstract void onBindViewHolder(@NonNull final TViewHolder holder,
-        @Nullable final TItem item, final int position);
+    protected abstract void onBindViewHolder(
+        @NonNull final TViewHolder holder, @Nullable final TItem item, final int position);
 
     @NonNull
     private final _InternalDataSetObserver _internalDataSetObserver =

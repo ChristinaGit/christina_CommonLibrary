@@ -14,7 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder extends AbstractRecyclerViewHolder>
+import lombok.val;
+
+public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder extends
+    AbstractRecyclerViewHolder>
     extends RecyclerView.Adapter<TViewHolder> {
     public final void addItem(final int location, @NonNull final TItem item) {
         Contracts.requireNonNull(item, "item == null");
@@ -25,7 +28,7 @@ public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder exte
     public final void addItem(final int location, @NonNull final TItem item, final boolean notify) {
         Contracts.requireNonNull(item, "item == null");
 
-        final TListItem listItem = onWrapItem(item);
+        final val listItem = onWrapItem(item);
         getListItems().add(location, listItem);
 
         if (notify) {
@@ -63,11 +66,11 @@ public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder exte
         addItems(location, items, true);
     }
 
-    public final void addItems(final int location, @NonNull final Collection<TItem> items,
-        final boolean notify) {
+    public final void addItems(
+        final int location, @NonNull final Collection<TItem> items, final boolean notify) {
         Contracts.requireNonNull(items, "items == null");
 
-        final Collection<TListItem> listItems = wrapItems(items);
+        final val listItems = wrapItems(items);
 
         getListItems().addAll(location, listItems);
 
@@ -89,7 +92,7 @@ public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder exte
     }
 
     public final void removeItems(final boolean notify) {
-        final List<TListItem> listItems = getListItems();
+        final val listItems = getListItems();
 
         final int listItemsCount = listItems.size();
 
@@ -109,8 +112,8 @@ public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder exte
     }
 
     public final void setItems(@NonNull final Collection<TItem> items, final boolean notify) {
-        final List<TListItem> listItems = getListItems();
-        final Collection<TListItem> newListItems = wrapItems(items);
+        final val listItems = getListItems();
+        final val newListItems = wrapItems(items);
 
         final int listItemsCount = listItems.size();
         final int newListItemsCount = newListItems.size();
@@ -163,8 +166,8 @@ public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder exte
         return getListItems().get(position);
     }
 
-    protected void onBindViewHolder(@NonNull final TViewHolder holder,
-        @NonNull final TListItem listItem, final int position) {
+    protected void onBindViewHolder(
+        @NonNull final TViewHolder holder, @NonNull final TListItem listItem, final int position) {
     }
 
     @NonNull

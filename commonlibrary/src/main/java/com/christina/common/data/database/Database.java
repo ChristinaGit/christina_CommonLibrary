@@ -23,52 +23,105 @@ public interface Database {
     long insert(@NonNull String tableName, @NonNull ContentValues values);
 
     @Nullable
-    Cursor query(boolean distinct, @NonNull String table, @Nullable String[] columns,
-        @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String groupBy,
-        @Nullable String having, @Nullable String orderBy, @Nullable String limit);
+    Cursor query(
+        boolean distinct,
+        @NonNull String table,
+        @Nullable String[] columns,
+        @Nullable String selection,
+        @Nullable String[] selectionArgs,
+        @Nullable String groupBy,
+        @Nullable String having,
+        @Nullable String orderBy,
+        @Nullable String limit);
 
     @Nullable
-    Cursor query(boolean distinct, @NonNull String table, @Nullable String[] columns,
-        @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String groupBy,
-        @Nullable String having, @Nullable String orderBy);
-
-    @Nullable
-    Cursor query(boolean distinct, @NonNull String table, @Nullable String[] columns,
-        @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String groupBy,
-        @Nullable String having);
-
-    @Nullable
-    Cursor query(boolean distinct, @NonNull String table, @Nullable String[] columns,
-        @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String groupBy);
-
-    @Nullable
-    Cursor query(boolean distinct, @NonNull String table, @Nullable String[] columns,
-        @Nullable String selection, @Nullable String[] selectionArgs);
-
-    @Nullable
-    Cursor query(boolean distinct, @NonNull String table, @Nullable String[] columns,
-        @Nullable String selection);
-
-    @Nullable
-    Cursor query(@NonNull String table, @Nullable String[] columns, @Nullable String selection,
-        @Nullable String[] selectionArgs, @Nullable String groupBy, @Nullable String having,
-        @Nullable String orderBy, @Nullable String limit);
-
-    @Nullable
-    Cursor query(@NonNull String table, @Nullable String[] columns, @Nullable String selection,
-        @Nullable String[] selectionArgs, @Nullable String groupBy, @Nullable String having,
+    Cursor query(
+        boolean distinct,
+        @NonNull String table,
+        @Nullable String[] columns,
+        @Nullable String selection,
+        @Nullable String[] selectionArgs,
+        @Nullable String groupBy,
+        @Nullable String having,
         @Nullable String orderBy);
 
     @Nullable
-    Cursor query(@NonNull String table, @Nullable String[] columns, @Nullable String selection,
-        @Nullable String[] selectionArgs, @Nullable String groupBy, @Nullable String having);
+    Cursor query(
+        boolean distinct,
+        @NonNull String table,
+        @Nullable String[] columns,
+        @Nullable String selection,
+        @Nullable String[] selectionArgs,
+        @Nullable String groupBy,
+        @Nullable String having);
 
     @Nullable
-    Cursor query(@NonNull String table, @Nullable String[] columns, @Nullable String selection,
-        @Nullable String[] selectionArgs, @Nullable String groupBy);
+    Cursor query(
+        boolean distinct,
+        @NonNull String table,
+        @Nullable String[] columns,
+        @Nullable String selection,
+        @Nullable String[] selectionArgs,
+        @Nullable String groupBy);
 
     @Nullable
-    Cursor query(@NonNull String table, @Nullable String[] columns, @Nullable String selection,
+    Cursor query(
+        boolean distinct,
+        @NonNull String table,
+        @Nullable String[] columns,
+        @Nullable String selection,
+        @Nullable String[] selectionArgs);
+
+    @Nullable
+    Cursor query(
+        boolean distinct,
+        @NonNull String table,
+        @Nullable String[] columns,
+        @Nullable String selection);
+
+    @Nullable
+    Cursor query(
+        @NonNull String table,
+        @Nullable String[] columns,
+        @Nullable String selection,
+        @Nullable String[] selectionArgs,
+        @Nullable String groupBy,
+        @Nullable String having,
+        @Nullable String orderBy,
+        @Nullable String limit);
+
+    @Nullable
+    Cursor query(
+        @NonNull String table,
+        @Nullable String[] columns,
+        @Nullable String selection,
+        @Nullable String[] selectionArgs,
+        @Nullable String groupBy,
+        @Nullable String having,
+        @Nullable String orderBy);
+
+    @Nullable
+    Cursor query(
+        @NonNull String table,
+        @Nullable String[] columns,
+        @Nullable String selection,
+        @Nullable String[] selectionArgs,
+        @Nullable String groupBy,
+        @Nullable String having);
+
+    @Nullable
+    Cursor query(
+        @NonNull String table,
+        @Nullable String[] columns,
+        @Nullable String selection,
+        @Nullable String[] selectionArgs,
+        @Nullable String groupBy);
+
+    @Nullable
+    Cursor query(
+        @NonNull String table,
+        @Nullable String[] columns,
+        @Nullable String selection,
         @Nullable String[] selectionArgs);
 
     @Nullable
@@ -87,7 +140,10 @@ public interface Database {
     Cursor query(@NonNull String table);
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)
-    int update(@NonNull String table, @Nullable ContentValues values, @Nullable String whereClause,
+    int update(
+        @NonNull String table,
+        @Nullable ContentValues values,
+        @Nullable String whereClause,
         @Nullable String[] whereArgs);
 
     @IntRange(from = 0, to = Integer.MAX_VALUE)

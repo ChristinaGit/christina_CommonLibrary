@@ -8,6 +8,8 @@ import com.christina.common.contract.Contracts;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import lombok.val;
+
 public final class BaseEvent<TEventArgs> implements Event<TEventArgs> {
     private static final int _INITIAL_HANDLERS_COLLECTION_CAPACITY = 2;
 
@@ -56,7 +58,7 @@ public final class BaseEvent<TEventArgs> implements Event<TEventArgs> {
 
         synchronized (_lock) {
             if (_handlers != null) {
-                for (final EventHandler<TEventArgs> handler : _handlers) {
+                for (final val handler : _handlers) {
                     handler.onEvent(eventArgs);
                 }
             }

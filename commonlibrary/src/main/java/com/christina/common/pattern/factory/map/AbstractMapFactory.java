@@ -4,7 +4,6 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import com.christina.common.contract.Contracts;
-import com.christina.common.pattern.factory.map.MapFactory;
 
 import java.util.HashMap;
 import java.util.Map;

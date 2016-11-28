@@ -7,11 +7,11 @@ import android.support.annotation.Nullable;
 import com.christina.common.contract.Contracts;
 import com.christina.common.data.dao.factory.ModelCollectionFactory;
 import com.christina.common.data.dao.factory.ModelContentExtractor;
+import com.christina.common.data.dao.factory.ModelFactory;
 import com.christina.common.data.dao.result.CollectionResult;
 import com.christina.common.data.dao.result.CursorCollectionResult;
 import com.christina.common.data.model.Model;
 import com.christina.common.data.projection.Projection;
-import com.christina.common.pattern.factory.TransitionFactory;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,8 +19,9 @@ import lombok.experimental.Accessors;
 
 @Accessors(prefix = "_")
 public abstract class ContentDao<TModel extends Model> implements Dao<TModel> {
-    protected ContentDao(@NonNull final Projection fullProjection,
-        @NonNull final TransitionFactory<TModel, Cursor> modelFactory,
+    protected ContentDao(
+        @NonNull final Projection fullProjection,
+        @NonNull final ModelFactory<TModel> modelFactory,
         @NonNull final ModelCollectionFactory<TModel> modelCollectionFactory,
         @NonNull final ModelContentExtractor<TModel> modelContentExtractor) {
         Contracts.requireNonNull(fullProjection, "fullProjection == null");
@@ -53,5 +54,5 @@ public abstract class ContentDao<TModel extends Model> implements Dao<TModel> {
 
     @Getter(AccessLevel.PROTECTED)
     @NonNull
-    private final TransitionFactory<TModel, Cursor> _modelFactory;
+    private final ModelFactory<TModel> _modelFactory;
 }

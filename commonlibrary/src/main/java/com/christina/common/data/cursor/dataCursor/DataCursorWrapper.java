@@ -13,12 +13,14 @@ import lombok.experimental.Accessors;
 
 @Accessors(prefix = "_")
 public class DataCursorWrapper<TData> extends CursorWrapper implements DataCursor<TData> {
-    public DataCursorWrapper(@NonNull final Cursor cursor,
+    public DataCursorWrapper(
+        @NonNull final Cursor cursor,
         @NonNull final TransitionFactory<TData, Cursor> modelFactory) {
         super(cursor);
-        _modelFactory = modelFactory;
-
         Contracts.requireNonNull(cursor, "cursor == null");
+        Contracts.requireNonNull(modelFactory, "modelFactory == null");
+
+        _modelFactory = modelFactory;
     }
 
     @NonNull

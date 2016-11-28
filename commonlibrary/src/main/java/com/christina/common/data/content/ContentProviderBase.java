@@ -11,13 +11,15 @@ import android.support.annotation.Nullable;
 import com.christina.common.contract.Contracts;
 import com.christina.common.data.database.Database;
 
+import lombok.val;
+
 public abstract class ContentProviderBase extends ContentProvider {
     @CallSuper
     @Override
     public boolean onCreate() {
         boolean created = false;
 
-        final Context context = getContext();
+        final val context = getContext();
         if (context != null) {
             _database = onCreateDatabase(context);
 
@@ -39,8 +41,8 @@ public abstract class ContentProviderBase extends ContentProvider {
         notifyChange(uri, null);
     }
 
-    protected final void notifyChange(@NonNull final Uri uri,
-        @Nullable final ContentObserver contentObserver) {
+    protected final void notifyChange(
+        @NonNull final Uri uri, @Nullable final ContentObserver contentObserver) {
         Contracts.requireNonNull(uri, "uri == null");
 
         final Context context = getContext();

@@ -140,8 +140,8 @@ public final class ContextUtils {
     public static SubscriptionManager getSubscriptionManager(@NonNull final Context context) {
         Contracts.requireNonNull(context, "context == null");
 
-        return (SubscriptionManager) context.getSystemService(
-            Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+        return (SubscriptionManager) context.getSystemService(Context
+                                                                  .TELEPHONY_SUBSCRIPTION_SERVICE);
     }
 
     @Nullable

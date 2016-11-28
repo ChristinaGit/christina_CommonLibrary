@@ -20,7 +20,10 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(final Rect outRect, final View view, final RecyclerView parent,
+    public void getItemOffsets(
+        final Rect outRect,
+        final View view,
+        final RecyclerView parent,
         final RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
 
@@ -93,8 +96,11 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
         outRect.right += right;
     }
 
-    protected ItemSpacingDecorator(final int horizontalSpacing, final int verticalSpacing,
-        final boolean bordersCollapseEnabled, final boolean edgesEnabled) {
+    protected ItemSpacingDecorator(
+        final int horizontalSpacing,
+        final int verticalSpacing,
+        final boolean bordersCollapseEnabled,
+        final boolean edgesEnabled) {
         _bordersCollapseEnabled = bordersCollapseEnabled;
         _edgesEnabled = edgesEnabled;
         _horizontalSpacing = horizontalSpacing;
@@ -171,8 +177,10 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
         @NonNull
         @Override
         public ItemSpacingDecorator build() {
-            return new ItemSpacingDecorator(_horizontalSpacing, _verticalSpacing, _collapseBorders,
-                _enableEdges);
+            return new ItemSpacingDecorator(_horizontalSpacing,
+                                            _verticalSpacing,
+                                            _collapseBorders,
+                                            _enableEdges);
         }
 
         private boolean _collapseBorders = false;

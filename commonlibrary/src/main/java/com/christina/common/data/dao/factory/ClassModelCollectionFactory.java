@@ -23,7 +23,8 @@ import lombok.experimental.Accessors;
 @Accessors(prefix = "_")
 public class ClassModelCollectionFactory<TModel extends Model>
     extends AbstractMapCollectionFactory<Long, TModel> implements ModelCollectionFactory<TModel> {
-    public ClassModelCollectionFactory(@NonNull final Class<TModel> modelClass,
+    public ClassModelCollectionFactory(
+        @NonNull final Class<TModel> modelClass,
         @NonNull final TransitionFactory<TModel, Cursor> modelFactory) {
         super(modelClass);
         Contracts.requireNonNull(modelClass, "modelClass == null");
@@ -176,8 +177,8 @@ public class ClassModelCollectionFactory<TModel extends Model>
     @NonNull
     private final TransitionFactory<TModel, Cursor> _modelFactory;
 
-    private void _fillCollection(@NonNull final Collection<TModel> collection,
-        @NonNull final Cursor argument) {
+    private void _fillCollection(
+        @NonNull final Collection<TModel> collection, @NonNull final Cursor argument) {
         Contracts.requireNonNull(collection, "collection == null");
         Contracts.requireNonNull(argument, "argument == null");
 
