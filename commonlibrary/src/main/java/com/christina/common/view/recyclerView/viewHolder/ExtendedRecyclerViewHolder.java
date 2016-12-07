@@ -1,6 +1,8 @@
 package com.christina.common.view.recyclerView.viewHolder;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.christina.common.contract.Contracts;
@@ -12,8 +14,13 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 
 @Accessors(prefix = "_")
-public class BindableRecyclerViewHolder extends AbstractRecyclerViewHolder
+public abstract class ExtendedRecyclerViewHolder extends RecyclerView.ViewHolder
     implements BindableViews {
+
+    @NonNull
+    public final Context getContext() {
+        return itemView.getContext();
+    }
 
     @Override
     public void bindViews() {
@@ -38,8 +45,9 @@ public class BindableRecyclerViewHolder extends AbstractRecyclerViewHolder
         }
     }
 
-    protected BindableRecyclerViewHolder(@NonNull final View itemView) {
+    protected ExtendedRecyclerViewHolder(@NonNull final View itemView) {
         super(itemView);
+        Contracts.requireNonNull(itemView, "itemView == null");
     }
 
     @Getter

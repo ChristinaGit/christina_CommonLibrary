@@ -4,13 +4,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.christina.common.contract.Contracts;
+import com.christina.common.event.eventArgs.EventArgs;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import lombok.val;
 
-public final class BaseEvent<TEventArgs> implements Event<TEventArgs> {
+public final class BaseEvent<TEventArgs extends EventArgs> implements Event<TEventArgs> {
     private static final int _INITIAL_HANDLERS_COLLECTION_CAPACITY = 2;
 
     @Override

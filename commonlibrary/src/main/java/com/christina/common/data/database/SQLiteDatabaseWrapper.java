@@ -395,6 +395,8 @@ public abstract class SQLiteDatabaseWrapper extends SQLiteOpenHelper implements 
         @Nullable final CursorFactory factory,
         final int version) {
         super(context, name, factory, version);
+        Contracts.requireNonNull(context, "context == null");
+        Contracts.requireNonNull(name, "name == null");
     }
 
     protected SQLiteDatabaseWrapper(
@@ -404,5 +406,7 @@ public abstract class SQLiteDatabaseWrapper extends SQLiteOpenHelper implements 
         final int version,
         @Nullable final DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);
+        Contracts.requireNonNull(context, "context == null");
+        Contracts.requireNonNull(name, "name == null");
     }
 }

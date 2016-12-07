@@ -75,7 +75,7 @@ public abstract class ExtendedFragment extends Fragment
     public void bindViews() {
         unbindViews();
 
-        final View view = getView();
+        final val view = getView();
         if (view != null) {
             _unbinder = ButterKnife.bind(this, view);
         }
@@ -111,7 +111,7 @@ public abstract class ExtendedFragment extends Fragment
         final LayoutInflater inflater,
         @Nullable final ViewGroup container,
         @Nullable final Bundle savedInstanceState) {
-        final View view = super.onCreateView(inflater, container, savedInstanceState);
+        final val view = super.onCreateView(inflater, container, savedInstanceState);
 
         onInject();
 

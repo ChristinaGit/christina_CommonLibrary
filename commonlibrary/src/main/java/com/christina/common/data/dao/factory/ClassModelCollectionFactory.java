@@ -19,13 +19,13 @@ import java.util.SortedMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import lombok.val;
 
 @Accessors(prefix = "_")
 public class ClassModelCollectionFactory<TModel extends Model>
     extends AbstractMapCollectionFactory<Long, TModel> implements ModelCollectionFactory<TModel> {
     public ClassModelCollectionFactory(
-        @NonNull final Class<TModel> modelClass,
-        @NonNull final TransitionFactory<TModel, Cursor> modelFactory) {
+        @NonNull final Class<TModel> modelClass, @NonNull final ModelFactory<TModel> modelFactory) {
         super(modelClass);
         Contracts.requireNonNull(modelClass, "modelClass == null");
         Contracts.requireNonNull(modelFactory, "modelFactory == null");
@@ -40,13 +40,13 @@ public class ClassModelCollectionFactory<TModel extends Model>
 
         final TModel[] result;
 
-        final TransitionFactory<TModel, Cursor> modelFactory = getModelFactory();
+        final val modelFactory = getModelFactory();
 
         argument.moveToFirst();
         final int count = argument.getCount();
         result = createArray(count);
         for (int i = 0; i < count; i++) {
-            final TModel model = modelFactory.create(argument);
+            final val model = modelFactory.create(argument);
 
             result[i] = model;
 
@@ -157,13 +157,13 @@ public class ClassModelCollectionFactory<TModel extends Model>
 
         final LongSparseArray<TModel> result;
 
-        final TransitionFactory<TModel, Cursor> modelFactory = getModelFactory();
+        final val modelFactory = getModelFactory();
 
         argument.moveToFirst();
         final int count = argument.getCount();
         result = createSparseArray(count);
         for (int i = 0; i < count; i++) {
-            final TModel model = modelFactory.create(argument);
+            final val model = modelFactory.create(argument);
 
             result.put(model.getId(), model);
 
@@ -182,12 +182,12 @@ public class ClassModelCollectionFactory<TModel extends Model>
         Contracts.requireNonNull(collection, "collection == null");
         Contracts.requireNonNull(argument, "argument == null");
 
-        final TransitionFactory<TModel, Cursor> modelFactory = getModelFactory();
+        final val modelFactory = getModelFactory();
 
         argument.moveToFirst();
         final int count = argument.getCount();
         for (int i = 0; i < count; i++) {
-            final TModel model = modelFactory.create(argument);
+            final val model = modelFactory.create(argument);
 
             collection.add(model);
 
@@ -199,12 +199,12 @@ public class ClassModelCollectionFactory<TModel extends Model>
         Contracts.requireNonNull(map, "map == null");
         Contracts.requireNonNull(argument, "argument == null");
 
-        final TransitionFactory<TModel, Cursor> modelFactory = getModelFactory();
+        final val modelFactory = getModelFactory();
 
         argument.moveToFirst();
         final int count = argument.getCount();
         for (int i = 0; i < count; i++) {
-            final TModel model = modelFactory.create(argument);
+            final val model = modelFactory.create(argument);
 
             map.put(model.getId(), model);
 

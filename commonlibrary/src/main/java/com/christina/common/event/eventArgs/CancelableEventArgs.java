@@ -1,4 +1,4 @@
-package com.christina.common.event;
+package com.christina.common.event.eventArgs;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;

@@ -21,6 +21,6 @@ public abstract class AbstractCursorValueExtractor<TValue> implements CursorValu
         Contracts.requireNonNull(cursor, "cursor == null");
         Contracts.requireNonNull(columnName, "columnName == null");
 
-        return extract(cursor, cursor.getColumnIndex(columnName));
+        return extract(cursor, cursor.getColumnIndexOrThrow(columnName));
     }
 }

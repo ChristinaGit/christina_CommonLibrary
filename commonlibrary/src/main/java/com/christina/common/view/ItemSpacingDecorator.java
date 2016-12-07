@@ -11,6 +11,7 @@ import com.christina.common.contract.Contracts;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import lombok.val;
 
 @Accessors(prefix = "_")
 public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
@@ -112,7 +113,7 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
 
         final int spanCount;
 
-        final RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+        final val layoutManager = parent.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
             spanCount = ((GridLayoutManager) layoutManager).getSpanCount();
         } else if (layoutManager instanceof LinearLayoutManager) {

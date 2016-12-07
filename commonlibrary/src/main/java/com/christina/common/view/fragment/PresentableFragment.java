@@ -12,6 +12,8 @@ import com.christina.common.event.BaseNoticeEvent;
 import com.christina.common.event.NoticeEvent;
 import com.christina.common.view.presentation.PresentableView;
 
+import lombok.val;
+
 public abstract class PresentableFragment extends ExtendedFragment implements PresentableView {
     @NonNull
     @Override
@@ -65,9 +67,11 @@ public abstract class PresentableFragment extends ExtendedFragment implements Pr
         final LayoutInflater inflater,
         @Nullable final ViewGroup container,
         @Nullable final Bundle savedInstanceState) {
+        final val view = super.onCreateView(inflater, container, savedInstanceState);
+
         onBindPresenter();
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     @Override

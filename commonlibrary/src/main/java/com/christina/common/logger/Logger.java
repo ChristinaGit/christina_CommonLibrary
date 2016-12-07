@@ -29,7 +29,7 @@ public final class Logger {
         @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.DEBUG)) {
-            Log.d(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
+            Log.d(getLoggerTag(), _combineLogMessage(scopeName, message), throwable);
         }
     }
 
@@ -47,7 +47,7 @@ public final class Logger {
         @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.ERROR)) {
-            Log.e(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
+            Log.e(getLoggerTag(), _combineLogMessage(scopeName, message), throwable);
         }
     }
 
@@ -66,7 +66,7 @@ public final class Logger {
         @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.INFO)) {
-            Log.i(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
+            Log.i(getLoggerTag(), _combineLogMessage(scopeName, message), throwable);
         }
     }
 
@@ -86,7 +86,7 @@ public final class Logger {
         @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.VERBOSE)) {
-            Log.v(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
+            Log.v(getLoggerTag(), _combineLogMessage(scopeName, message), throwable);
         }
     }
 
@@ -104,7 +104,7 @@ public final class Logger {
         @Nullable final Throwable throwable) {
 
         if (isLoggable(LogLevel.WARNING)) {
-            Log.w(getLoggerTag(), combineLogMessage(scopeName, message), throwable);
+            Log.w(getLoggerTag(), _combineLogMessage(scopeName, message), throwable);
         }
     }
 
@@ -126,7 +126,7 @@ public final class Logger {
     private LogLevel _logLevel;
 
     @Nullable
-    private String combineLogMessage(
+    private String _combineLogMessage(
         @Nullable final String scopeName, @Nullable final String message) {
         if (scopeName == null && message == null) {
             return null;

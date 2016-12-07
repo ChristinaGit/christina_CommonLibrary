@@ -87,9 +87,9 @@ public final class Contracts {
     }
 
     public static void requireMainThread(@Nullable final Throwable throwable) {
-        require(
-            Thread.currentThread().getId() == Looper.getMainLooper().getThread().getId(),
-            throwable);
+        final long currentThreadId = Thread.currentThread().getId();
+        final long mainThreadId = Looper.getMainLooper().getThread().getId();
+        require(currentThreadId == mainThreadId, throwable);
     }
 
     public static void requireMainThread(@Nullable final String message) {
@@ -134,9 +134,9 @@ public final class Contracts {
     }
 
     public static void requireWorkerThread(@Nullable final Throwable throwable) {
-        require(
-            Thread.currentThread().getId() != Looper.getMainLooper().getThread().getId(),
-            throwable);
+        final long currentThreadId = Thread.currentThread().getId();
+        final long mainThreadId = Looper.getMainLooper().getThread().getId();
+        require(currentThreadId != mainThreadId, throwable);
     }
 
     public static void requireWorkerThread(@Nullable final String message) {

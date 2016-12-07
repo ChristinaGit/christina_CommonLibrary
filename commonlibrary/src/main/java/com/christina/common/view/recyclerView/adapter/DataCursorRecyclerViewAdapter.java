@@ -8,15 +8,16 @@ import android.support.v7.widget.RecyclerView;
 
 import com.christina.common.ResourceUtils;
 import com.christina.common.data.cursor.dataCursor.DataCursor;
-import com.christina.common.view.recyclerView.viewHolder.AbstractRecyclerViewHolder;
+import com.christina.common.view.recyclerView.viewHolder.ExtendedRecyclerViewHolder;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.val;
 
 @Accessors(prefix = "_")
 public abstract class DataCursorRecyclerViewAdapter<TItem, TViewHolder extends
-    AbstractRecyclerViewHolder>
+    ExtendedRecyclerViewHolder>
     extends RecyclerView.Adapter<TViewHolder> {
 
     @Nullable
@@ -76,11 +77,11 @@ public abstract class DataCursorRecyclerViewAdapter<TItem, TViewHolder extends
             _dataCursor = dataCursor;
 
             if (oldDataCursor != null) {
-                oldDataCursor.unregisterDataSetObserver(_internalDataSetObserver);
+                oldDataCursor.unregisterDataSetObserver(getInternalDataSetObserver());
             }
 
             if (_dataCursor != null) {
-                _dataCursor.registerDataSetObserver(_internalDataSetObserver);
+                _dataCursor.registerDataSetObserver(getInternalDataSetObserver());
             }
 
             _dataValid = _dataCursor != null;
@@ -125,6 +126,7 @@ public abstract class DataCursorRecyclerViewAdapter<TItem, TViewHolder extends
     protected abstract void onBindViewHolder(
         @NonNull final TViewHolder holder, @Nullable final TItem item, final int position);
 
+    @Getter(value = AccessLevel.PRIVATE, lazy = true)
     @NonNull
     private final _InternalDataSetObserver _internalDataSetObserver =
         new _InternalDataSetObserver();

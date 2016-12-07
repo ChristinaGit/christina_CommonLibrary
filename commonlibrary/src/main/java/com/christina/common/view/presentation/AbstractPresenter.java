@@ -1,5 +1,6 @@
 package com.christina.common.view.presentation;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -8,6 +9,7 @@ import com.christina.common.event.NoticeEventHandler;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import lombok.val;
 
 @Accessors(prefix = "_")
 public abstract class AbstractPresenter<TPresentableView extends PresentableView>
@@ -33,6 +35,7 @@ public abstract class AbstractPresenter<TPresentableView extends PresentableView
         }
     }
 
+    @CallSuper
     protected void onBindPresentableView(@NonNull final TPresentableView presentableView) {
         presentableView.getOnViewCreateEvent().addHandler(getViewCreateHandler());
         presentableView.getOnViewAppearEvent().addHandler(getViewAppearHandler());
@@ -40,6 +43,7 @@ public abstract class AbstractPresenter<TPresentableView extends PresentableView
         presentableView.getOnViewDestroyEvent().addHandler(getViewDestroyHandler());
     }
 
+    @CallSuper
     protected void onUnbindPresentableView(@NonNull final TPresentableView presentableView) {
         presentableView.getOnViewCreateEvent().removeHandler(getViewCreateHandler());
         presentableView.getOnViewAppearEvent().removeHandler(getViewAppearHandler());
@@ -47,33 +51,33 @@ public abstract class AbstractPresenter<TPresentableView extends PresentableView
         presentableView.getOnViewDestroyEvent().removeHandler(getViewDestroyHandler());
     }
 
-    protected void onViewAppear() {
+    protected void onViewAppear(@NonNull final TPresentableView presentableView) {
     }
 
-    protected void onViewCreate() {
+    protected void onViewCreate(@NonNull final TPresentableView presentableView) {
     }
 
-    protected void onViewDestroy() {
+    protected void onViewDestroy(@NonNull final TPresentableView presentableView) {
     }
 
-    protected void onViewDisappear() {
+    protected void onViewDisappear(@NonNull final TPresentableView presentableView) {
     }
 
-    @Getter(value = AccessLevel.PRIVATE, lazy = true)
-    @NonNull
-    private final NoticeEventHandler _viewAppearHandler = new NoticeEventHandler() {
-        @Override
-        public void onEvent() {
-            onViewAppear();
-        }
-    };
+    @Nullable
+    private TPresentableView _presentableView;
 
     @Getter(value = AccessLevel.PRIVATE, lazy = true)
     @NonNull
     private final NoticeEventHandler _viewCreateHandler = new NoticeEventHandler() {
         @Override
         public void onEvent() {
-            onViewCreate();
+            final val presentableView = getPresentableView();
+
+            if (presentableView != null) {
+                onViewCreate(presentableView);
+            } else {
+                throw new IllegalStateException("Presentable view can not be in internal event.");
+            }
         }
     };
 
@@ -82,7 +86,13 @@ public abstract class AbstractPresenter<TPresentableView extends PresentableView
     private final NoticeEventHandler _viewDestroyHandler = new NoticeEventHandler() {
         @Override
         public void onEvent() {
-            onViewDestroy();
+            final val presentableView = getPresentableView();
+
+            if (presentableView != null) {
+                onViewDestroy(presentableView);
+            } else {
+                throw new IllegalStateException("Presentable view can not be in internal event.");
+            }
         }
     };
 
@@ -91,10 +101,28 @@ public abstract class AbstractPresenter<TPresentableView extends PresentableView
     private final NoticeEventHandler _viewDisappearHandler = new NoticeEventHandler() {
         @Override
         public void onEvent() {
-            onViewDisappear();
+            final val presentableView = getPresentableView();
+
+            if (presentableView != null) {
+                onViewDisappear(presentableView);
+            } else {
+                throw new IllegalStateException("Presentable view can not be in internal event.");
+            }
         }
     };
 
-    @Nullable
-    private TPresentableView _presentableView;
+    @Getter(value = AccessLevel.PRIVATE, lazy = true)
+    @NonNull
+    private final NoticeEventHandler _viewAppearHandler = new NoticeEventHandler() {
+        @Override
+        public void onEvent() {
+            final val presentableView = getPresentableView();
+
+            if (presentableView != null) {
+                onViewAppear(presentableView);
+            } else {
+                throw new IllegalStateException("Presentable view can not be in internal event.");
+            }
+        }
+    };
 }

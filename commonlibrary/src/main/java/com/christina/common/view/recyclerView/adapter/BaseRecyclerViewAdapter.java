@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
 import com.christina.common.contract.Contracts;
-import com.christina.common.view.recyclerView.viewHolder.AbstractRecyclerViewHolder;
+import com.christina.common.view.recyclerView.viewHolder.ExtendedRecyclerViewHolder;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
@@ -17,7 +17,7 @@ import java.util.List;
 import lombok.val;
 
 public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder extends
-    AbstractRecyclerViewHolder>
+    ExtendedRecyclerViewHolder>
     extends RecyclerView.Adapter<TViewHolder> {
     public final void addItem(final int location, @NonNull final TItem item) {
         Contracts.requireNonNull(item, "item == null");
@@ -108,10 +108,14 @@ public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder exte
     }
 
     public final void setItems(@NonNull final Collection<TItem> items) {
+        Contracts.requireNonNull(items, "items == null");
+
         setItems(items, true);
     }
 
     public final void setItems(@NonNull final Collection<TItem> items, final boolean notify) {
+        Contracts.requireNonNull(items, "items == null");
+
         final val listItems = getListItems();
         final val newListItems = wrapItems(items);
 

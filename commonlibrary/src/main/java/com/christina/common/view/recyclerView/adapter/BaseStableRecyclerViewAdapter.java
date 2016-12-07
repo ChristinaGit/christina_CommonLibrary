@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.christina.common.contract.Contracts;
 import com.christina.common.view.recyclerView.listItem.StableListItem;
-import com.christina.common.view.recyclerView.viewHolder.AbstractRecyclerViewHolder;
+import com.christina.common.view.recyclerView.viewHolder.ExtendedRecyclerViewHolder;
 
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
@@ -12,9 +12,8 @@ import org.apache.commons.collections4.Predicate;
 import lombok.val;
 
 public abstract class BaseStableRecyclerViewAdapter<TItem, TListItem extends StableListItem,
-    TViewHolder extends AbstractRecyclerViewHolder>
+    TViewHolder extends ExtendedRecyclerViewHolder>
     extends BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder> {
-
     public final int getItemPosition(final long id) {
         return IterableUtils.indexOf(getListItems(), new Predicate<TListItem>() {
             @Override

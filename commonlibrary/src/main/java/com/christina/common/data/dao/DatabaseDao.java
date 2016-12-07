@@ -10,6 +10,7 @@ import com.christina.common.data.dao.factory.ModelCollectionFactory;
 import com.christina.common.data.dao.factory.ModelContentExtractor;
 import com.christina.common.data.dao.factory.ModelFactory;
 import com.christina.common.data.dao.result.CollectionResult;
+import com.christina.common.data.dao.selection.SqlDataSelection;
 import com.christina.common.data.database.Database;
 import com.christina.common.data.model.Model;
 import com.christina.common.data.projection.Projection;
@@ -22,7 +23,8 @@ import lombok.experimental.Accessors;
 import lombok.val;
 
 @Accessors(prefix = "_")
-public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TModel> {
+public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TModel>
+    implements SqlDao<TModel> {
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     @Override
     public int delete(final long id) {
@@ -67,6 +69,33 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
                                     new String[]{String.valueOf(model.getId())});
     }
 
+    @Override
+    public int delete(
+        @NonNull final SqlDataSelection sqlDataSelection) {
+        Contracts.requireNonNull(sqlDataSelection, "sqlDataSelection == null");
+
+        return delete(sqlDataSelection.getWhereClause(), sqlDataSelection.getWhereArguments());
+    }
+
+    @Nullable
+    @Override
+    public TModel get(
+        @NonNull final SqlDataSelection sqlDataSelection) {
+        Contracts.requireNonNull(sqlDataSelection, "sqlDataSelection == null");
+
+        return selectSingle(sqlDataSelection.getWhereClause(),
+                            sqlDataSelection.getWhereArguments());
+    }
+
+    @NonNull
+    @Override
+    public CollectionResult<TModel> getAll(
+        @NonNull final SqlDataSelection sqlDataSelection) {
+        Contracts.requireNonNull(sqlDataSelection, "sqlDataSelection == null");
+
+        return select(sqlDataSelection.getWhereClause(), sqlDataSelection.getWhereArguments());
+    }
+
     protected DatabaseDao(
         @NonNull final Projection fullProjection,
         @NonNull final Database database,
@@ -76,9 +105,13 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
         @NonNull final ModelCollectionFactory<TModel> modelCollectionFactory,
         @NonNull final ModelContentExtractor<TModel> modelContentExtractor) {
         super(fullProjection, modelFactory, modelCollectionFactory, modelContentExtractor);
+        Contracts.requireNonNull(fullProjection, "fullProjection == null");
         Contracts.requireNonNull(database, "database == null");
         Contracts.requireNonNull(idColumnName, "idColumnName == null");
         Contracts.requireNonNull(tableName, "tableName == null");
+        Contracts.requireNonNull(modelFactory, "modelFactory == null");
+        Contracts.requireNonNull(modelCollectionFactory, "modelCollectionFactory == null");
+        Contracts.requireNonNull(modelContentExtractor, "modelContentExtractor == null");
 
         _database = database;
         _idColumnName = idColumnName;
