@@ -97,7 +97,8 @@ public abstract class ContentProviderDao<TModel extends Model> extends ContentDa
 
         return select(getModelUri(),
                       sqlDataSelection.getWhereClause(),
-                      sqlDataSelection.getWhereArguments());
+                      sqlDataSelection.getWhereArguments(),
+                      sqlDataSelection.getSortOrder());
     }
 
     protected ContentProviderDao(

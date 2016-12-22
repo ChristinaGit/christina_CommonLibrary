@@ -93,7 +93,10 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
         @NonNull final SqlDataSelection sqlDataSelection) {
         Contracts.requireNonNull(sqlDataSelection, "sqlDataSelection == null");
 
-        return select(sqlDataSelection.getWhereClause(), sqlDataSelection.getWhereArguments());
+        return select(
+            sqlDataSelection.getWhereClause(),
+            sqlDataSelection.getWhereArguments(),
+            sqlDataSelection.getSortOrder());
     }
 
     protected DatabaseDao(
