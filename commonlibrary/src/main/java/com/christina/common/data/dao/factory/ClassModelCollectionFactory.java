@@ -26,8 +26,7 @@ public class ClassModelCollectionFactory<TModel extends Model>
     extends AbstractMapCollectionFactory<Long, TModel> implements ModelCollectionFactory<TModel> {
     public ClassModelCollectionFactory(
         @NonNull final Class<TModel> modelClass, @NonNull final ModelFactory<TModel> modelFactory) {
-        super(modelClass);
-        Contracts.requireNonNull(modelClass, "modelClass == null");
+        super(Contracts.requireNonNull(modelClass, "modelClass == null"));
         Contracts.requireNonNull(modelFactory, "modelFactory == null");
 
         _modelFactory = modelFactory;

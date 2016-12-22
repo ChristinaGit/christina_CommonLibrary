@@ -104,14 +104,13 @@ public abstract class DatabaseDao<TModel extends Model> extends ContentDao<TMode
         @NonNull final ModelFactory<TModel> modelFactory,
         @NonNull final ModelCollectionFactory<TModel> modelCollectionFactory,
         @NonNull final ModelContentExtractor<TModel> modelContentExtractor) {
-        super(fullProjection, modelFactory, modelCollectionFactory, modelContentExtractor);
-        Contracts.requireNonNull(fullProjection, "fullProjection == null");
+        super(Contracts.requireNonNull(fullProjection, "fullProjection == null"),
+              Contracts.requireNonNull(modelFactory, "modelFactory == null"),
+              Contracts.requireNonNull(modelCollectionFactory, "modelCollectionFactory == null"),
+              Contracts.requireNonNull(modelContentExtractor, "modelContentExtractor == null"));
         Contracts.requireNonNull(database, "database == null");
         Contracts.requireNonNull(idColumnName, "idColumnName == null");
         Contracts.requireNonNull(tableName, "tableName == null");
-        Contracts.requireNonNull(modelFactory, "modelFactory == null");
-        Contracts.requireNonNull(modelCollectionFactory, "modelCollectionFactory == null");
-        Contracts.requireNonNull(modelContentExtractor, "modelContentExtractor == null");
 
         _database = database;
         _idColumnName = idColumnName;

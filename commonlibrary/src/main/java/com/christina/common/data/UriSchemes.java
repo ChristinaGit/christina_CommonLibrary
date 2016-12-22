@@ -274,7 +274,7 @@ public enum UriSchemes {
     private final String _template;
 
     UriSchemes(@NonNull final String schemeName) {
-        this(schemeName, null);
+        this(Contracts.requireNonNull(schemeName, "schemeName == null"), null);
     }
 
     UriSchemes(@NonNull final String schemeName, @Nullable final String template) {

@@ -46,8 +46,7 @@ public abstract class ExtendedRecyclerViewHolder extends RecyclerView.ViewHolder
     }
 
     protected ExtendedRecyclerViewHolder(@NonNull final View itemView) {
-        super(itemView);
-        Contracts.requireNonNull(itemView, "itemView == null");
+        super(Contracts.requireNonNull(itemView, "itemView == null"));
     }
 
     @Getter

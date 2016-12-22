@@ -106,12 +106,11 @@ public abstract class ContentProviderDao<TModel extends Model> extends ContentDa
         @NonNull final ModelFactory<TModel> modelFactory,
         @NonNull final ModelCollectionFactory<TModel> modelCollectionFactory,
         @NonNull final ModelContentExtractor<TModel> modelContentExtractor) {
-        super(fullProjection, modelFactory, modelCollectionFactory, modelContentExtractor);
+        super(Contracts.requireNonNull(fullProjection, "fullProjection == null"),
+              Contracts.requireNonNull(modelFactory, "modelFactory == null"),
+              Contracts.requireNonNull(modelCollectionFactory, "modelCollectionFactory == null"),
+              Contracts.requireNonNull(modelContentExtractor, "modelContentExtractor == null"));
         Contracts.requireNonNull(contentResolver, "contentResolver == null");
-        Contracts.requireNonNull(fullProjection, "fullProjection == null");
-        Contracts.requireNonNull(modelFactory, "modelFactory == null");
-        Contracts.requireNonNull(modelCollectionFactory, "modelCollectionFactory == null");
-        Contracts.requireNonNull(modelContentExtractor, "modelContentExtractor == null");
 
         _contentResolver = contentResolver;
     }
