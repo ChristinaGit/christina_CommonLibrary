@@ -1,0 +1,19 @@
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="card_large_grid_spacing">8dp</dimen>
+    <dimen name="card_large_primary_text_size">24sp</dimen>
+    <dimen name="card_large_primary_text_padding_top">24dp</dimen>
+    <dimen name="card_large_primary_text_padding_bottom">16dp</dimen>
+    <dimen name="card_large_primary_text_padding_start">16dp</dimen>
+    <dimen name="card_large_primary_text_padding_end">16dp</dimen>
+    <dimen name="card_large_secondary_text_size">14sp</dimen>
+    <dimen name="card_large_secondary_text_padding_top">0dp</dimen>
+    <dimen name="card_large_secondary_text_padding_bottom">16dp</dimen>
+    <dimen name="card_large_secondary_text_padding_start">16dp</dimen>
+    <dimen name="card_large_secondary_text_padding_end">16dp</dimen>
+    <dimen name="card_large_corner_radius">4dp</dimen>
+
+    <dimen name="fab_margin">16dp</dimen>
+</resources>

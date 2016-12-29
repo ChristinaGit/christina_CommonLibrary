@@ -1,6 +1,7 @@
 package com.christina.common.view.activity;
 
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -36,9 +37,27 @@ public abstract class PresentableActivity extends ExtendedActivity implements Pr
         return _onViewDisappearEvent;
     }
 
+    @CallSuper
     protected void onBindPresenter() {
     }
 
+    @CallSuper
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        _onViewDisappearEvent.rise();
+    }
+
+    @CallSuper
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        _onViewAppearEvent.rise();
+    }
+
+    @CallSuper
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +67,7 @@ public abstract class PresentableActivity extends ExtendedActivity implements Pr
         _onViewCreateEvent.rise();
     }
 
+    @CallSuper
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -57,20 +77,7 @@ public abstract class PresentableActivity extends ExtendedActivity implements Pr
         onUnbindPresenter();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        _onViewDisappearEvent.rise();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        _onViewAppearEvent.rise();
-    }
-
+    @CallSuper
     protected void onUnbindPresenter() {
     }
 

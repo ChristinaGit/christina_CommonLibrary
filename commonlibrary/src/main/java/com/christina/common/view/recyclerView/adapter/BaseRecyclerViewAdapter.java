@@ -162,7 +162,12 @@ public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder exte
     protected final Collection<TListItem> wrapItems(@NonNull final Collection<TItem> items) {
         Contracts.requireNonNull(items, "items == null");
 
-        return CollectionUtils.collect(items, _listItemTransformer);
+        return CollectionUtils.collect(items, new Transformer<TItem, TListItem>() {
+            @Override
+            public TListItem transform(final TItem input) {
+                return onWrapItem(input);
+            }
+        });
     }
 
     @NonNull
@@ -176,15 +181,6 @@ public abstract class BaseRecyclerViewAdapter<TItem, TListItem, TViewHolder exte
 
     @NonNull
     protected abstract TListItem onWrapItem(@NonNull TItem item);
-
-    @NonNull
-    private final Transformer<TItem, TListItem> _listItemTransformer =
-        new Transformer<TItem, TListItem>() {
-            @Override
-            public TListItem transform(final TItem input) {
-                return onWrapItem(input);
-            }
-        };
 
     @NonNull
     private final List<TListItem> _listItems = new ArrayList<>();

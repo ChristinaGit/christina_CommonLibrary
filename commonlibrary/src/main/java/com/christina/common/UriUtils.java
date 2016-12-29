@@ -1,10 +1,9 @@
-package com.christina.common.data;
+package com.christina.common;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.christina.common.contract.Contracts;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -45,7 +44,7 @@ public final class UriUtils {
     public static String combine(@NonNull final String... pathSegments) {
         Contracts.requireNonNull(pathSegments, "pathSegments == null");
 
-        return StringUtils.join(pathSegments, PATH_SEPARATOR);
+        return TextUtils.join(PATH_SEPARATOR, pathSegments);
     }
 
     private UriUtils() {

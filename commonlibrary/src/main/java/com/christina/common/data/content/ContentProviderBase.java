@@ -30,7 +30,9 @@ public abstract class ContentProviderBase extends ContentProvider {
 
     @NonNull
     protected final Database getDatabase() {
-        Contracts.requireNonNull(_database, "Content provider is not created");
+        if (_database == null) {
+            throw new IllegalStateException("Content provider is not created");
+        }
 
         return _database;
     }
@@ -45,7 +47,7 @@ public abstract class ContentProviderBase extends ContentProvider {
         @NonNull final Uri uri, @Nullable final ContentObserver contentObserver) {
         Contracts.requireNonNull(uri, "uri == null");
 
-        final Context context = getContext();
+        final val context = getContext();
         if (context != null) {
             context.getContentResolver().notifyChange(uri, contentObserver);
         }

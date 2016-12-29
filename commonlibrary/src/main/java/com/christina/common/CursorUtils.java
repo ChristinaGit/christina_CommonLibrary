@@ -1,4 +1,4 @@
-package com.christina.common.data.cursor;
+package com.christina.common;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;

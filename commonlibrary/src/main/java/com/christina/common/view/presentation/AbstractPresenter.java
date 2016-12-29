@@ -20,6 +20,7 @@ public abstract class AbstractPresenter<TPresentableView extends PresentableView
         return _presentableView;
     }
 
+    @CallSuper
     @Override
     public void setPresentableView(@Nullable final TPresentableView presentableView) {
         if (presentableView != _presentableView) {
@@ -51,15 +52,19 @@ public abstract class AbstractPresenter<TPresentableView extends PresentableView
         presentableView.getOnViewDestroyEvent().removeHandler(getViewDestroyHandler());
     }
 
+    @CallSuper
     protected void onViewAppear(@NonNull final TPresentableView presentableView) {
     }
 
+    @CallSuper
     protected void onViewCreate(@NonNull final TPresentableView presentableView) {
     }
 
+    @CallSuper
     protected void onViewDestroy(@NonNull final TPresentableView presentableView) {
     }
 
+    @CallSuper
     protected void onViewDisappear(@NonNull final TPresentableView presentableView) {
     }
 

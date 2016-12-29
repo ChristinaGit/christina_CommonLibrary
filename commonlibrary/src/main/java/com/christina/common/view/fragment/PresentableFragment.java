@@ -39,25 +39,12 @@ public abstract class PresentableFragment extends ExtendedFragment implements Pr
         return _onViewDisappearEvent;
     }
 
+    @CallSuper
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         _onViewCreateEvent.rise();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        _onViewAppearEvent.rise();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        _onViewDisappearEvent.rise();
     }
 
     @CallSuper
@@ -74,6 +61,15 @@ public abstract class PresentableFragment extends ExtendedFragment implements Pr
         return view;
     }
 
+    @CallSuper
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        _onViewDisappearEvent.rise();
+    }
+
+    @CallSuper
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -83,9 +79,19 @@ public abstract class PresentableFragment extends ExtendedFragment implements Pr
         onUnbindPresenter();
     }
 
+    @CallSuper
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        _onViewAppearEvent.rise();
+    }
+
+    @CallSuper
     protected void onBindPresenter() {
     }
 
+    @CallSuper
     protected void onUnbindPresenter() {
     }
 

@@ -25,7 +25,7 @@ public class DataCursorWrapper<TData> extends CursorWrapper implements DataCurso
 
     @NonNull
     @Override
-    public TData getData() {
+    public final TData getData() {
         return getModelFactory().create(this);
     }
 

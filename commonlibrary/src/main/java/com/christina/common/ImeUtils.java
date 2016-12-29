@@ -55,7 +55,7 @@ public final class ImeUtils {
         HandlerUtils.getMainThreadHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                final View viewHost = viewRef.get();
+                final val viewHost = viewRef.get();
                 if (viewHost != null) {
                     hideIme(viewHost, flags);
                 }
@@ -76,7 +76,7 @@ public final class ImeUtils {
         HandlerUtils.getMainThreadHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                final View viewHost = viewRef.get();
+                final val viewHost = viewRef.get();
                 if (viewHost != null) {
                     showIme(viewHost, flags);
                 }

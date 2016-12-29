@@ -1,0 +1,27 @@
+<resources>
+
+    <style name="CardLargePrimaryTextStyle">
+        <item name="android:textAppearance">?android:textAppearanceListItem</item>
+        <item name="android:textSize">@dimen/card_large_primary_text_size</item>
+        <item name="android:paddingTop">@dimen/card_large_primary_text_padding_top</item>
+        <item name="android:paddingBottom">@dimen/card_large_primary_text_padding_bottom</item>
+        <item name="android:paddingStart">@dimen/card_large_primary_text_padding_start</item>
+        <item name="android:paddingEnd">@dimen/card_large_primary_text_padding_end</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="CardLargeSecondaryTextStyle">
+        <item name="android:textAppearance">?android:textAppearanceListItemSecondary</item>
+        <item name="android:textSize">@dimen/card_large_secondary_text_size</item>
+        <item name="android:textColor">@android:color/secondary_text_dark</item>
+        <item name="android:paddingTop">@dimen/card_large_secondary_text_padding_top</item>
+        <item name="android:paddingBottom">@dimen/card_large_secondary_text_padding_bottom</item>
+        <item name="android:paddingStart">@dimen/card_large_secondary_text_padding_start</item>
+        <item name="android:paddingEnd">@dimen/card_large_secondary_text_padding_end</item>
+        <item name="android:lines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+</resources>

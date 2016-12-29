@@ -1,4 +1,4 @@
-package com.christina.common.data;
+package com.christina.common;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

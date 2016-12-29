@@ -1,7 +1,10 @@
 package com.christina.common.view.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,7 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.christina.common.contract.Contracts;
-import com.christina.common.view.BindableViews;
+import com.christina.common.view.ViewBinder;
+import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle.LifecycleTransformer;
+import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.FragmentEvent;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,10 +29,36 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.val;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 @Accessors(prefix = "_")
 public abstract class ExtendedFragment extends Fragment
-    implements BindableViews, ObservableFragment {
+    implements ViewBinder, ObservableFragment, LifecycleProvider<FragmentEvent> {
+
+    @Override
+    @NonNull
+    @CheckResult
+    public final Observable<FragmentEvent> lifecycle() {
+        return getLifecycleSubject().asObservable();
+    }
+
+    @Override
+    @NonNull
+    @CheckResult
+    public final <T> LifecycleTransformer<T> bindUntilEvent(@NonNull final FragmentEvent event) {
+        Contracts.requireNonNull(event, "event == null");
+
+        return RxLifecycle.bindUntilEvent(getLifecycleSubject(), event);
+    }
+
+    @Override
+    @NonNull
+    @CheckResult
+    public final <T> LifecycleTransformer<T> bindToLifecycle() {
+        return RxLifecycleAndroid.bindFragment(getLifecycleSubject());
+    }
+
     @Override
     public final void registerFragmentListener(@NonNull final FragmentListener listener) {
         Contracts.requireNonNull(listener, "listener == null");
@@ -71,6 +105,7 @@ public abstract class ExtendedFragment extends Fragment
         }
     }
 
+    @CallSuper
     @Override
     public void bindViews() {
         unbindViews();
@@ -81,6 +116,8 @@ public abstract class ExtendedFragment extends Fragment
         }
     }
 
+    @CallSuper
+
     @Override
     public void bindViews(@NonNull final View source) {
         Contracts.requireNonNull(source, "source == null");
@@ -90,6 +127,7 @@ public abstract class ExtendedFragment extends Fragment
         _unbinder = ButterKnife.bind(this, source);
     }
 
+    @CallSuper
     @Override
     public void unbindViews() {
         final val unbinder = getUnbinder();
@@ -98,6 +136,7 @@ public abstract class ExtendedFragment extends Fragment
         }
     }
 
+    @CallSuper
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -105,6 +144,23 @@ public abstract class ExtendedFragment extends Fragment
         _notifyOnActivityResult(requestCode, resultCode, data);
     }
 
+    @CallSuper
+    @Override
+    public void onAttach(final Context context) {
+        super.onAttach(context);
+
+        getLifecycleSubject().onNext(FragmentEvent.ATTACH);
+    }
+
+    @CallSuper
+    @Override
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        getLifecycleSubject().onNext(FragmentEvent.CREATE);
+    }
+
+    @CallSuper
     @Nullable
     @Override
     public View onCreateView(
@@ -120,6 +176,15 @@ public abstract class ExtendedFragment extends Fragment
         return view;
     }
 
+    @CallSuper
+    @Override
+    public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        getLifecycleSubject().onNext(FragmentEvent.CREATE_VIEW);
+    }
+
+    @CallSuper
     @Override
     public void onViewStateRestored(@Nullable final Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
@@ -127,13 +192,17 @@ public abstract class ExtendedFragment extends Fragment
         _notifyOnViewStateRestored(savedInstanceState);
     }
 
+    @CallSuper
     @Override
     public void onStart() {
         super.onStart();
 
+        getLifecycleSubject().onNext(FragmentEvent.START);
+
         _notifyOnStart();
     }
 
+    @CallSuper
     @Override
     public void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -141,15 +210,37 @@ public abstract class ExtendedFragment extends Fragment
         _notifyOnSaveInstanceState(outState);
     }
 
+    @CallSuper
+    @Override
+    public void onPause() {
+        getLifecycleSubject().onNext(FragmentEvent.PAUSE);
+
+        super.onPause();
+    }
+
+    @CallSuper
     @Override
     public void onStop() {
+        getLifecycleSubject().onNext(FragmentEvent.STOP);
+
         super.onStop();
 
         _notifyOnStop();
     }
 
+    @CallSuper
+    @Override
+    public void onDestroyView() {
+        getLifecycleSubject().onNext(FragmentEvent.DESTROY_VIEW);
+
+        super.onDestroyView();
+    }
+
+    @CallSuper
     @Override
     public void onDestroy() {
+        getLifecycleSubject().onNext(FragmentEvent.DESTROY);
+
         super.onDestroy();
 
         onReleaseInject();
@@ -157,9 +248,11 @@ public abstract class ExtendedFragment extends Fragment
         _notifyOnDestroy();
     }
 
+    @CallSuper
     protected void onInject() {
     }
 
+    @CallSuper
     protected void onReleaseInject() {
     }
 
@@ -182,6 +275,9 @@ public abstract class ExtendedFragment extends Fragment
 
     @NonNull
     private final Object _fragmentResultListenersLock = new Object();
+
+    @Getter(AccessLevel.PRIVATE)
+    private final BehaviorSubject<FragmentEvent> _lifecycleSubject = BehaviorSubject.create();
 
     @Getter(AccessLevel.PROTECTED)
     @Nullable

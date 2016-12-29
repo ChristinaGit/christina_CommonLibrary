@@ -22,19 +22,28 @@ public abstract class DataCursorRecyclerViewAdapter<TItem, TViewHolder extends
 
     @Nullable
     public TItem getItem(final int position) {
-        TItem item = null;
+        final TItem item;
 
         final val dataCursor = getDataCursor();
         if (isDataValid() && dataCursor != null && dataCursor.moveToPosition(position)) {
             item = dataCursor.getData();
+        } else {
+            item = null;
         }
 
         return item;
     }
 
+    @CallSuper
     @Override
     public void onBindViewHolder(final TViewHolder holder, final int position) {
-        onBindViewHolder(holder, getItem(position), position);
+        final val item = getItem(position);
+        if (item != null) {
+            onBindViewHolder(holder, item, position);
+        } else {
+            throw new IllegalArgumentException(
+                "You are trying bind view holder onto not existing item.");
+        }
     }
 
     @Override
@@ -51,21 +60,25 @@ public abstract class DataCursorRecyclerViewAdapter<TItem, TViewHolder extends
         return itemCount;
     }
 
+    @CallSuper
     public void setDataCursor(@Nullable final DataCursor<TItem> dataCursor) {
         setDataCursor(dataCursor, true);
     }
 
+    @CallSuper
     public void setDataCursor(@Nullable final DataCursor<TItem> dataCursor, final boolean notify) {
         final val oldDataCursor = swapDataCursor(dataCursor, notify);
 
         ResourceUtils.quietClose(oldDataCursor);
     }
 
+    @CallSuper
     @Nullable
     public DataCursor<TItem> swapDataCursor(@Nullable final DataCursor<TItem> dataCursor) {
         return swapDataCursor(dataCursor, true);
     }
 
+    @CallSuper
     @Nullable
     public DataCursor<TItem> swapDataCursor(
         @Nullable final DataCursor<TItem> dataCursor, final boolean notify) {
@@ -124,7 +137,7 @@ public abstract class DataCursorRecyclerViewAdapter<TItem, TViewHolder extends
     }
 
     protected abstract void onBindViewHolder(
-        @NonNull final TViewHolder holder, @Nullable final TItem item, final int position);
+        @NonNull final TViewHolder holder, @NonNull final TItem item, final int position);
 
     @Getter(value = AccessLevel.PRIVATE, lazy = true)
     @NonNull

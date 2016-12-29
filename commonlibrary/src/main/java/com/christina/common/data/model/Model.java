@@ -6,8 +6,10 @@ import com.christina.common.contract.Contracts;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
+@ToString(doNotUseGetters = true)
 @Accessors(prefix = "_")
 public abstract class Model {
     public static final long NO_ID = -1;
