@@ -1,4 +1,4 @@
-package com.christina.common.view;
+package com.christina.common.utility;
 
 import android.support.annotation.AnimRes;
 import android.support.annotation.NonNull;

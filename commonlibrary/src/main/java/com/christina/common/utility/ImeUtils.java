@@ -1,10 +1,9 @@
-package com.christina.common;
+package com.christina.common.utility;
 
 import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.christina.common.contract.Contracts;
-import com.christina.common.thread.HandlerUtils;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

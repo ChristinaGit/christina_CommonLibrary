@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 
 @Accessors(prefix = "_")
-public enum UriSchemes {
+public enum UriScheme {
     AAA("aaa"),
     AAAS("aaas"),
     ABOUT("about"),
@@ -273,11 +273,11 @@ public enum UriSchemes {
     @Nullable
     private final String _template;
 
-    UriSchemes(@NonNull final String schemeName) {
+    UriScheme(@NonNull final String schemeName) {
         this(Contracts.requireNonNull(schemeName, "schemeName == null"), null);
     }
 
-    UriSchemes(@NonNull final String schemeName, @Nullable final String template) {
+    UriScheme(@NonNull final String schemeName, @Nullable final String template) {
         Contracts.requireNonNull(schemeName, "schemeName == null");
 
         _schemeName = schemeName;

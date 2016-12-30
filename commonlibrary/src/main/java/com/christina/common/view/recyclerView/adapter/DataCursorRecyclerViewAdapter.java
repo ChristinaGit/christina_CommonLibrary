@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
-import com.christina.common.ResourceUtils;
+import com.christina.common.utility.ResourceUtils;
 import com.christina.common.data.cursor.dataCursor.DataCursor;
 import com.christina.common.view.recyclerView.viewHolder.ExtendedRecyclerViewHolder;
 

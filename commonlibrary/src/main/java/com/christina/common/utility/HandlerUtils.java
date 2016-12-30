@@ -1,4 +1,4 @@
-package com.christina.common.thread;
+package com.christina.common.utility;
 
 import android.os.Handler;
 import android.os.Looper;

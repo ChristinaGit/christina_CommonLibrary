@@ -1,8 +1,9 @@
-package com.christina.common;
+package com.christina.common.utility;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.christina.common.CharsetType;
 import com.christina.common.contract.Contracts;
 
 import java.io.UnsupportedEncodingException;
@@ -24,7 +25,7 @@ public final class UriUtils {
         try {
             return URLEncoder.encode(str, charsetType.getCharsetName());
         } catch (final UnsupportedEncodingException e) {
-            return str;
+            throw ExceptionUtils.asRuntimeException(e);
         }
     }
 
@@ -36,7 +37,7 @@ public final class UriUtils {
         try {
             return URLDecoder.decode(str, charsetType.getCharsetName());
         } catch (final UnsupportedEncodingException e) {
-            return str;
+            throw ExceptionUtils.asRuntimeException(e);
         }
     }
 
