@@ -2,7 +2,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="card_large_grid_spacing">8dp</dimen>
+    <dimen name="grid_large_spacing">8dp</dimen>
+
     <dimen name="card_large_primary_text_size">24sp</dimen>
     <dimen name="card_large_primary_text_padding_top">24dp</dimen>
     <dimen name="card_large_primary_text_padding_bottom">16dp</dimen>
