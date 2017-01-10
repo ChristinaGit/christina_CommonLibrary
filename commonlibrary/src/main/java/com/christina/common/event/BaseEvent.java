@@ -18,7 +18,7 @@ public final class BaseEvent<TEventArgs extends EventArgs> implements Event<TEve
     public final void addHandler(@NonNull final EventHandler<TEventArgs> handler) {
         Contracts.requireNonNull(handler, "handler == null");
 
-        synchronized (_lock) {
+        synchronized (_lock$handlers) {
             if (_handlers == null) {
                 _handlers = new ArrayList<>(_INITIAL_HANDLERS_COLLECTION_CAPACITY);
             }
@@ -31,7 +31,7 @@ public final class BaseEvent<TEventArgs extends EventArgs> implements Event<TEve
     public final void removeHandler(@NonNull final EventHandler<TEventArgs> handler) {
         Contracts.requireNonNull(handler, "handler == null");
 
-        synchronized (_lock) {
+        synchronized (_lock$handlers) {
             if (_handlers != null) {
                 _handlers.remove(handler);
 
@@ -43,13 +43,13 @@ public final class BaseEvent<TEventArgs extends EventArgs> implements Event<TEve
     }
 
     public final boolean hasHandlers() {
-        synchronized (_lock) {
+        synchronized (_lock$handlers) {
             return _handlers != null && !_handlers.isEmpty();
         }
     }
 
     public final void removeAllHandlers() {
-        synchronized (_lock) {
+        synchronized (_lock$handlers) {
             _handlers = null;
         }
     }
@@ -57,7 +57,7 @@ public final class BaseEvent<TEventArgs extends EventArgs> implements Event<TEve
     public final void rise(@NonNull final TEventArgs eventArgs) {
         Contracts.requireNonNull(eventArgs, "eventArgs == null");
 
-        synchronized (_lock) {
+        synchronized (_lock$handlers) {
             if (_handlers != null) {
                 for (final val handler : _handlers) {
                     handler.onEvent(eventArgs);
@@ -66,7 +66,7 @@ public final class BaseEvent<TEventArgs extends EventArgs> implements Event<TEve
         }
     }
 
-    private final Object _lock = new Object();
+    private final Object _lock$handlers = new Object();
 
     @Nullable
     private Collection<EventHandler<TEventArgs>> _handlers;
