@@ -4,8 +4,8 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.christina.common.utility.CursorUtils;
 import com.christina.common.contract.Contracts;
+import com.christina.common.utility.CursorUtils;
 
 public final class CursorValueExtractors {
     @NonNull

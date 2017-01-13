@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.christina.common.contract.Contracts;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.val;
@@ -137,8 +138,8 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
     @Getter
     private final int _verticalSpacing;
 
-    public static class Builder
-        implements com.christina.common.pattern.builder.Builder<ItemSpacingDecorator> {
+    @Accessors(prefix = "_")
+    public static class Builder {
         @NonNull
         public final Builder collapseBorders() {
             _collapseBorders = true;
@@ -176,20 +177,23 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
         }
 
         @NonNull
-        @Override
         public ItemSpacingDecorator build() {
-            return new ItemSpacingDecorator(_horizontalSpacing,
-                                            _verticalSpacing,
-                                            _collapseBorders,
-                                            _enableEdges);
+            return new ItemSpacingDecorator(getHorizontalSpacing(),
+                                            getVerticalSpacing(),
+                                            isCollapseBorders(),
+                                            isEnableEdges());
         }
 
+        @Getter(AccessLevel.PROTECTED)
         private boolean _collapseBorders = false;
 
+        @Getter(AccessLevel.PROTECTED)
         private boolean _enableEdges = false;
 
+        @Getter(AccessLevel.PROTECTED)
         private int _horizontalSpacing = 0;
 
+        @Getter(AccessLevel.PROTECTED)
         private int _verticalSpacing = 0;
     }
 }

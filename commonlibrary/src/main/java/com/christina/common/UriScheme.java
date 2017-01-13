@@ -8,6 +8,7 @@ import com.christina.common.contract.Contracts;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+@SuppressWarnings("SpellCheckingInspection")
 @Accessors(prefix = "_")
 public enum UriScheme {
     AAA("aaa"),

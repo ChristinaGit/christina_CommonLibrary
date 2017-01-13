@@ -10,15 +10,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.christina.common.contract.Contracts;
+import com.christina.common.event.Events;
+import com.christina.common.event.generic.Event;
+import com.christina.common.event.generic.ManagedEvent;
+import com.christina.common.event.notice.ManagedNoticeEvent;
+import com.christina.common.event.notice.NoticeEvent;
 import com.christina.common.view.ViewBinder;
+import com.christina.common.view.observerable.ObservableActivity;
+import com.christina.common.view.observerable.eventArgs.ActivityResultEventArgs;
+import com.christina.common.view.observerable.eventArgs.BundleEventArgs;
 import com.trello.rxlifecycle.LifecycleProvider;
 import com.trello.rxlifecycle.LifecycleTransformer;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.ActivityEvent;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -32,6 +37,60 @@ import rx.subjects.BehaviorSubject;
 @Accessors(prefix = "_")
 public abstract class ExtendedActivity extends AppCompatActivity
     implements ViewBinder, ObservableActivity, LifecycleProvider<ActivityEvent> {
+    @NonNull
+    @Override
+    public final Event<BundleEventArgs> getActivityCreateEvent() {
+        return _activityCreateEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getActivityDestroyEvent() {
+        return _activityDestroyEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getActivityPauseEvent() {
+        return _activityPauseEvent;
+    }
+
+    @NonNull
+    @Override
+    public final Event<BundleEventArgs> getActivityRestoreInstanceStateEvent() {
+        return _activityRestoreInstanceStateEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getActivityResumeEvent() {
+        return _activityResumeEvent;
+    }
+
+    @NonNull
+    @Override
+    public final Event<BundleEventArgs> getActivitySaveInstanceStateEvent() {
+        return _activitySaveInstanceStateEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getActivityStartEvent() {
+        return _activityStartEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getActivityStopEvent() {
+        return _activityStopEvent;
+    }
+
+    @NonNull
+    @Override
+    public final Event<ActivityResultEventArgs> onActivityResultIntoActivityEvent() {
+        return _activityResultIntoActivityEvent;
+    }
+
     @Override
     @NonNull
     @CheckResult
@@ -53,52 +112,6 @@ public abstract class ExtendedActivity extends AppCompatActivity
     @CheckResult
     public final <T> LifecycleTransformer<T> bindToLifecycle() {
         return RxLifecycleAndroid.bindActivity(getLifecycleSubject());
-    }
-
-    @Override
-    public final void registerActivityListener(@NonNull final ActivityListener listener) {
-        Contracts.requireNonNull(listener, "listener == null");
-
-        if (listener instanceof ActivityLifecycleListener) {
-            synchronized (_activityLifecycleListenersLock) {
-                getActivityLifecycleListeners().add((ActivityLifecycleListener) listener);
-            }
-        }
-
-        if (listener instanceof ActivityInstanceStateListener) {
-            synchronized (_activityInstanceStateListenersLock) {
-                getActivityInstanceStateListeners().add((ActivityInstanceStateListener) listener);
-            }
-        }
-
-        if (listener instanceof ActivityResultListener) {
-            synchronized (_activityResultListenersLock) {
-                getActivityResultListeners().add((ActivityResultListener) listener);
-            }
-        }
-    }
-
-    @Override
-    public final void unregisterActivityListener(@NonNull final ActivityListener listener) {
-        Contracts.requireNonNull(listener, "listener == null");
-
-        if (listener instanceof ActivityLifecycleListener) {
-            synchronized (_activityLifecycleListenersLock) {
-                getActivityLifecycleListeners().remove(listener);
-            }
-        }
-
-        if (listener instanceof ActivityInstanceStateListener) {
-            synchronized (_activityInstanceStateListenersLock) {
-                getActivityInstanceStateListeners().remove(listener);
-            }
-        }
-
-        if (listener instanceof ActivityResultListener) {
-            synchronized (_activityResultListenersLock) {
-                getActivityResultListeners().remove(listener);
-            }
-        }
     }
 
     @CallSuper
@@ -134,21 +147,26 @@ public abstract class ExtendedActivity extends AppCompatActivity
         final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        _notifyOnActivityResult(requestCode, resultCode, data);
+        final val eventArgs = new ActivityResultEventArgs(requestCode, resultCode, data);
+        _activityResultIntoActivityEvent.rise(eventArgs);
     }
 
     @CallSuper
     @Override
     protected void onPause() {
-        getLifecycleSubject().onNext(ActivityEvent.PAUSE);
-
         super.onPause();
+
+        _activityPauseEvent.rise();
+
+        getLifecycleSubject().onNext(ActivityEvent.PAUSE);
     }
 
     @CallSuper
     @Override
     protected void onResume() {
         super.onResume();
+
+        _activityResumeEvent.rise();
 
         getLifecycleSubject().onNext(ActivityEvent.RESUME);
     }
@@ -158,11 +176,11 @@ public abstract class ExtendedActivity extends AppCompatActivity
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        onInjectMembers();
+
+        _activityCreateEvent.rise(new BundleEventArgs(savedInstanceState));
+
         getLifecycleSubject().onNext(ActivityEvent.CREATE);
-
-        onInject();
-
-        _notifyOnCreate(savedInstanceState);
     }
 
     @CallSuper
@@ -170,31 +188,31 @@ public abstract class ExtendedActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        getLifecycleSubject().onNext(ActivityEvent.START);
+        _activityStartEvent.rise();
 
-        _notifyOnStart();
+        getLifecycleSubject().onNext(ActivityEvent.START);
     }
 
     @CallSuper
     @Override
     protected void onStop() {
-        getLifecycleSubject().onNext(ActivityEvent.STOP);
-
         super.onStop();
 
-        _notifyOnStop();
+        getLifecycleSubject().onNext(ActivityEvent.STOP);
+
+        _activityStopEvent.rise();
     }
 
     @CallSuper
     @Override
     protected void onDestroy() {
-        getLifecycleSubject().onNext(ActivityEvent.DESTROY);
-
         super.onDestroy();
 
-        onReleaseInject();
+        _activityDestroyEvent.rise();
 
-        _notifyOnDestroy();
+        getLifecycleSubject().onNext(ActivityEvent.DESTROY);
+
+        onReleaseInjectedMembers();
     }
 
     @CallSuper
@@ -202,15 +220,15 @@ public abstract class ExtendedActivity extends AppCompatActivity
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        _notifyOnSaveInstanceState(outState);
+        _activitySaveInstanceStateEvent.rise(new BundleEventArgs(outState));
     }
 
     @CallSuper
-    protected void onInject() {
+    protected void onInjectMembers() {
     }
 
     @CallSuper
-    protected void onReleaseInject() {
+    protected void onReleaseInjectedMembers() {
     }
 
     @CallSuper
@@ -218,28 +236,38 @@ public abstract class ExtendedActivity extends AppCompatActivity
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        _notifyOnRestoreInstanceState(savedInstanceState);
+        _activityRestoreInstanceStateEvent.rise(new BundleEventArgs(savedInstanceState));
     }
 
-    @Getter(value = AccessLevel.PRIVATE)
-    private final Collection<ActivityInstanceStateListener> _activityInstanceStateListeners =
-        new ArrayList<>();
+    @NonNull
+    private final ManagedEvent<BundleEventArgs> _activityCreateEvent = Events.createEvent();
 
     @NonNull
-    private final Object _activityInstanceStateListenersLock = new Object();
-
-    @Getter(value = AccessLevel.PRIVATE)
-    private final Collection<ActivityLifecycleListener> _activityLifecycleListeners =
-        new ArrayList<>();
+    private final ManagedNoticeEvent _activityDestroyEvent = Events.createNoticeEvent();
 
     @NonNull
-    private final Object _activityLifecycleListenersLock = new Object();
-
-    @Getter(value = AccessLevel.PRIVATE)
-    private final Collection<ActivityResultListener> _activityResultListeners = new ArrayList<>();
+    private final ManagedNoticeEvent _activityPauseEvent = Events.createNoticeEvent();
 
     @NonNull
-    private final Object _activityResultListenersLock = new Object();
+    private final ManagedEvent<BundleEventArgs> _activityRestoreInstanceStateEvent =
+        Events.createEvent();
+
+    @NonNull
+    private final ManagedEvent<ActivityResultEventArgs> _activityResultIntoActivityEvent =
+        Events.createEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _activityResumeEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedEvent<BundleEventArgs> _activitySaveInstanceStateEvent =
+        Events.createEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _activityStartEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _activityStopEvent = Events.createNoticeEvent();
 
     @Getter(AccessLevel.PRIVATE)
     @NonNull
@@ -248,66 +276,4 @@ public abstract class ExtendedActivity extends AppCompatActivity
     @Getter(AccessLevel.PROTECTED)
     @Nullable
     private Unbinder _unbinder;
-
-    private void _notifyOnActivityResult(
-        final int requestCode, final int resultCode, final Intent data) {
-        synchronized (_activityResultListenersLock) {
-            for (final val listener : getActivityResultListeners()) {
-                listener.onActivityResultIntoActivity(requestCode, resultCode, data);
-            }
-        }
-    }
-
-    private void _notifyOnCreate(final @Nullable Bundle savedInstanceState) {
-        synchronized (_activityLifecycleListenersLock) {
-            for (final val listener : getActivityLifecycleListeners()) {
-                listener.onActivityCreate();
-            }
-        }
-        synchronized (_activityInstanceStateListenersLock) {
-            for (final val listener : getActivityInstanceStateListeners()) {
-                listener.onActivityCreate(savedInstanceState);
-            }
-        }
-    }
-
-    private void _notifyOnDestroy() {
-        synchronized (_activityLifecycleListenersLock) {
-            for (final val listener : getActivityLifecycleListeners()) {
-                listener.onActivityDestroy();
-            }
-        }
-    }
-
-    private void _notifyOnRestoreInstanceState(final @Nullable Bundle savedInstanceState) {
-        synchronized (_activityInstanceStateListenersLock) {
-            for (final val listener : getActivityInstanceStateListeners()) {
-                listener.onActivityRestoreInstanceState(savedInstanceState);
-            }
-        }
-    }
-
-    private void _notifyOnSaveInstanceState(final @Nullable Bundle outState) {
-        synchronized (_activityInstanceStateListenersLock) {
-            for (final val listener : getActivityInstanceStateListeners()) {
-                listener.onActivitySaveInstanceState(outState);
-            }
-        }
-    }
-
-    private void _notifyOnStart() {
-        synchronized (_activityLifecycleListenersLock) {
-            for (final val listener : getActivityLifecycleListeners()) {
-                listener.onActivityStart();
-            }
-        }
-    }
-
-    private void _notifyOnStop() {
-        synchronized (_activityLifecycleListenersLock) {
-            for (final val listener : getActivityLifecycleListeners()) {
-                listener.onActivityStop();
-            }
-        }
-    }
 }

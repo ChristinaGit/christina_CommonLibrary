@@ -7,14 +7,23 @@ import android.support.annotation.Nullable;
 import org.jetbrains.annotations.Contract;
 
 public final class Contracts {
+    @NonNull
+    public static RuntimeException asRuntimeException(@Nullable final Throwable throwable) {
+        final RuntimeException runtimeException;
+
+        if (throwable instanceof RuntimeException) {
+            runtimeException = (RuntimeException) throwable;
+        } else {
+            runtimeException = new ContractException(throwable);
+        }
+
+        return runtimeException;
+    }
+
     @Contract("false, _ -> fail; true, _ -> true")
     public static boolean require(final boolean condition, @Nullable final Throwable throwable) {
         if (!condition) {
-            if (throwable instanceof RuntimeException) {
-                throw (RuntimeException) throwable;
-            } else {
-                throw new ContractException(throwable);
-            }
+            throw asRuntimeException(throwable);
         }
         return true;
     }

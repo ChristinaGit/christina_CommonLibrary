@@ -6,11 +6,11 @@ import android.support.annotation.Nullable;
 
 public interface CursorValueExtractor<TValue> {
     @Nullable
-    TValue extract(@NonNull final Cursor cursor);
+    TValue extract(@NonNull Cursor cursor);
 
     @Nullable
-    TValue extract(@NonNull final Cursor cursor, final int columnIndex);
+    TValue extract(@NonNull Cursor cursor, int columnIndex);
 
     @Nullable
-    TValue extract(@NonNull final Cursor cursor, @NonNull final String columnName);
+    TValue extract(@NonNull Cursor cursor, @NonNull String columnName);
 }

@@ -5,8 +5,6 @@ import lombok.experimental.Accessors;
 
 @Accessors(prefix = "_")
 public class CancelableEventArgs extends EventArgs {
-    public static final CancelableEventArgs EMPTY = new CancelableEventArgs();
-
     public final void cancelEvent() {
         _eventCanceled = true;
     }

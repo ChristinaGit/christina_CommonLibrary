@@ -13,15 +13,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.christina.common.contract.Contracts;
+import com.christina.common.event.Events;
+import com.christina.common.event.generic.Event;
+import com.christina.common.event.generic.ManagedEvent;
+import com.christina.common.event.notice.ManagedNoticeEvent;
+import com.christina.common.event.notice.NoticeEvent;
 import com.christina.common.view.ViewBinder;
+import com.christina.common.view.observerable.ObservableFragment;
+import com.christina.common.view.observerable.eventArgs.ActivityResultEventArgs;
+import com.christina.common.view.observerable.eventArgs.BundleEventArgs;
 import com.trello.rxlifecycle.LifecycleProvider;
 import com.trello.rxlifecycle.LifecycleTransformer;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.FragmentEvent;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -35,6 +40,89 @@ import rx.subjects.BehaviorSubject;
 @Accessors(prefix = "_")
 public abstract class ExtendedFragment extends Fragment
     implements ViewBinder, ObservableFragment, LifecycleProvider<FragmentEvent> {
+    @NonNull
+    @Override
+    public final Event<ActivityResultEventArgs> getActivityResultIntoFragmentEvent() {
+        return _activityResultIntoFragmentEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getFragmentAttachEvent() {
+        return _fragmentAttachEvent;
+    }
+
+    @NonNull
+    @Override
+    public final Event<BundleEventArgs> getFragmentCreateEvent() {
+        return _fragmentCreateEvent;
+    }
+
+    @NonNull
+    @Override
+    public final Event<BundleEventArgs> getFragmentCreateViewEvent() {
+        return _fragmentCreateViewEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getFragmentDestroyEvent() {
+        return _fragmentDestroyEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getFragmentDestroyViewEvent() {
+        return _fragmentDestroyViewEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getFragmentDetachEvent() {
+        return _fragmentDetachEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getFragmentPauseEvent() {
+        return _fragmentPauseEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getFragmentResumeEvent() {
+        return _fragmentResumeEvent;
+    }
+
+    @NonNull
+    @Override
+    public final Event<BundleEventArgs> getFragmentSaveInstanceStateEvent() {
+        return _fragmentSaveInstanceStateEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getFragmentStartEvent() {
+        return _fragmentStartEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getFragmentStopEvent() {
+        return _fragmentStopEvent;
+    }
+
+    @NonNull
+    @Override
+    public final Event<BundleEventArgs> getFragmentViewCreatedEvent() {
+        return _fragmentViewCratedEvent;
+    }
+
+    @NonNull
+    @Override
+    public final Event<BundleEventArgs> getFragmentViewStateRestoredEvent() {
+        return _fragmentViewStateRestoredEvent;
+    }
 
     @Override
     @NonNull
@@ -59,52 +147,6 @@ public abstract class ExtendedFragment extends Fragment
         return RxLifecycleAndroid.bindFragment(getLifecycleSubject());
     }
 
-    @Override
-    public final void registerFragmentListener(@NonNull final FragmentListener listener) {
-        Contracts.requireNonNull(listener, "listener == null");
-
-        if (listener instanceof FragmentLifecycleListener) {
-            synchronized (_fragmentLifecycleListenersLock) {
-                getFragmentLifecycleListeners().add((FragmentLifecycleListener) listener);
-            }
-        }
-
-        if (listener instanceof FragmentInstanceStateListener) {
-            synchronized (_fragmentInstanceStateListenersLock) {
-                getFragmentInstanceStateListeners().add((FragmentInstanceStateListener) listener);
-            }
-        }
-
-        if (listener instanceof FragmentResultListener) {
-            synchronized (_fragmentResultListenersLock) {
-                getFragmentResultListeners().add((FragmentResultListener) listener);
-            }
-        }
-    }
-
-    @Override
-    public final void unregisterFragmentListener(@NonNull final FragmentListener listener) {
-        Contracts.requireNonNull(listener, "listener == null");
-
-        if (listener instanceof FragmentLifecycleListener) {
-            synchronized (_fragmentLifecycleListenersLock) {
-                getFragmentLifecycleListeners().remove(listener);
-            }
-        }
-
-        if (listener instanceof FragmentInstanceStateListener) {
-            synchronized (_fragmentInstanceStateListenersLock) {
-                getFragmentInstanceStateListeners().remove(listener);
-            }
-        }
-
-        if (listener instanceof FragmentResultListener) {
-            synchronized (_fragmentResultListenersLock) {
-                getFragmentResultListeners().remove(listener);
-            }
-        }
-    }
-
     @CallSuper
     @Override
     public void bindViews() {
@@ -117,7 +159,6 @@ public abstract class ExtendedFragment extends Fragment
     }
 
     @CallSuper
-
     @Override
     public void bindViews(@NonNull final View source) {
         Contracts.requireNonNull(source, "source == null");
@@ -141,13 +182,16 @@ public abstract class ExtendedFragment extends Fragment
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        _notifyOnActivityResult(requestCode, resultCode, data);
+        final val eventArgs = new ActivityResultEventArgs(requestCode, resultCode, data);
+        _activityResultIntoFragmentEvent.rise(eventArgs);
     }
 
     @CallSuper
     @Override
     public void onAttach(final Context context) {
         super.onAttach(context);
+
+        _fragmentAttachEvent.rise();
 
         getLifecycleSubject().onNext(FragmentEvent.ATTACH);
     }
@@ -156,6 +200,8 @@ public abstract class ExtendedFragment extends Fragment
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        _fragmentCreateEvent.rise(new BundleEventArgs(savedInstanceState));
 
         getLifecycleSubject().onNext(FragmentEvent.CREATE);
     }
@@ -169,9 +215,9 @@ public abstract class ExtendedFragment extends Fragment
         @Nullable final Bundle savedInstanceState) {
         final val view = super.onCreateView(inflater, container, savedInstanceState);
 
-        onInject();
+        onInjectMembers();
 
-        _notifyOnCreateView(savedInstanceState);
+        _fragmentCreateViewEvent.rise(new BundleEventArgs(savedInstanceState));
 
         return view;
     }
@@ -181,6 +227,8 @@ public abstract class ExtendedFragment extends Fragment
     public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        _fragmentViewCratedEvent.rise(new BundleEventArgs(savedInstanceState));
+
         getLifecycleSubject().onNext(FragmentEvent.CREATE_VIEW);
     }
 
@@ -189,7 +237,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onViewStateRestored(@Nullable final Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
-        _notifyOnViewStateRestored(savedInstanceState);
+        _fragmentViewStateRestoredEvent.rise(new BundleEventArgs(savedInstanceState));
     }
 
     @CallSuper
@@ -197,9 +245,18 @@ public abstract class ExtendedFragment extends Fragment
     public void onStart() {
         super.onStart();
 
-        getLifecycleSubject().onNext(FragmentEvent.START);
+        _fragmentStartEvent.rise();
 
-        _notifyOnStart();
+        getLifecycleSubject().onNext(FragmentEvent.START);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        _fragmentResumeEvent.rise();
+
+        getLifecycleSubject().onNext(FragmentEvent.RESUME);
     }
 
     @CallSuper
@@ -207,74 +264,111 @@ public abstract class ExtendedFragment extends Fragment
     public void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        _notifyOnSaveInstanceState(outState);
+        _fragmentSaveInstanceStateEvent.rise(new BundleEventArgs(outState));
     }
 
     @CallSuper
     @Override
     public void onPause() {
-        getLifecycleSubject().onNext(FragmentEvent.PAUSE);
-
         super.onPause();
+
+        _fragmentPauseEvent.rise();
+
+        getLifecycleSubject().onNext(FragmentEvent.PAUSE);
     }
 
     @CallSuper
     @Override
     public void onStop() {
-        getLifecycleSubject().onNext(FragmentEvent.STOP);
-
         super.onStop();
 
-        _notifyOnStop();
+        _fragmentStopEvent.rise();
+
+        getLifecycleSubject().onNext(FragmentEvent.STOP);
     }
 
     @CallSuper
     @Override
     public void onDestroyView() {
-        getLifecycleSubject().onNext(FragmentEvent.DESTROY_VIEW);
-
         super.onDestroyView();
+
+        _fragmentDestroyViewEvent.rise();
+
+        getLifecycleSubject().onNext(FragmentEvent.DESTROY_VIEW);
     }
 
     @CallSuper
     @Override
     public void onDestroy() {
-        getLifecycleSubject().onNext(FragmentEvent.DESTROY);
-
         super.onDestroy();
 
-        onReleaseInject();
+        _fragmentDestroyEvent.rise();
 
-        _notifyOnDestroy();
+        getLifecycleSubject().onNext(FragmentEvent.DESTROY);
+
+        onReleaseInjectedMembers();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        _fragmentDetachEvent.rise();
+
+        getLifecycleSubject().onNext(FragmentEvent.DETACH);
     }
 
     @CallSuper
-    protected void onInject() {
+    protected void onInjectMembers() {
     }
 
     @CallSuper
-    protected void onReleaseInject() {
+    protected void onReleaseInjectedMembers() {
     }
 
-    @Getter(value = AccessLevel.PRIVATE)
-    private final Collection<FragmentInstanceStateListener> _fragmentInstanceStateListeners =
-        new ArrayList<>();
+    @NonNull
+    private final ManagedEvent<ActivityResultEventArgs> _activityResultIntoFragmentEvent =
+        Events.createEvent();
 
     @NonNull
-    private final Object _fragmentInstanceStateListenersLock = new Object();
-
-    @Getter(value = AccessLevel.PRIVATE)
-    private final Collection<FragmentLifecycleListener> _fragmentLifecycleListeners =
-        new ArrayList<>();
+    private final ManagedNoticeEvent _fragmentAttachEvent = Events.createNoticeEvent();
 
     @NonNull
-    private final Object _fragmentLifecycleListenersLock = new Object();
-
-    @Getter(value = AccessLevel.PRIVATE)
-    private final Collection<FragmentResultListener> _fragmentResultListeners = new ArrayList<>();
+    private final ManagedEvent<BundleEventArgs> _fragmentCreateEvent = Events.createEvent();
 
     @NonNull
-    private final Object _fragmentResultListenersLock = new Object();
+    private final ManagedEvent<BundleEventArgs> _fragmentCreateViewEvent = Events.createEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _fragmentDestroyEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _fragmentDestroyViewEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _fragmentDetachEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _fragmentPauseEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _fragmentResumeEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedEvent<BundleEventArgs> _fragmentSaveInstanceStateEvent =
+        Events.createEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _fragmentStartEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _fragmentStopEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedEvent<BundleEventArgs> _fragmentViewCratedEvent = Events.createEvent();
+
+    private final ManagedEvent<BundleEventArgs> _fragmentViewStateRestoredEvent =
+        Events.createEvent();
 
     @Getter(AccessLevel.PRIVATE)
     private final BehaviorSubject<FragmentEvent> _lifecycleSubject = BehaviorSubject.create();
@@ -282,66 +376,4 @@ public abstract class ExtendedFragment extends Fragment
     @Getter(AccessLevel.PROTECTED)
     @Nullable
     private Unbinder _unbinder;
-
-    private void _notifyOnActivityResult(
-        final int requestCode, final int resultCode, final Intent data) {
-        synchronized (_fragmentResultListenersLock) {
-            for (final val listener : getFragmentResultListeners()) {
-                listener.onActivityResultIntoFragment(requestCode, resultCode, data);
-            }
-        }
-    }
-
-    private void _notifyOnCreateView(final @Nullable Bundle savedInstanceState) {
-        synchronized (_fragmentLifecycleListenersLock) {
-            for (final val listener : getFragmentLifecycleListeners()) {
-                listener.onFragmentCreateView();
-            }
-        }
-        synchronized (_fragmentInstanceStateListenersLock) {
-            for (final val listener : getFragmentInstanceStateListeners()) {
-                listener.onFragmentCreateView(savedInstanceState);
-            }
-        }
-    }
-
-    private void _notifyOnDestroy() {
-        synchronized (_fragmentLifecycleListenersLock) {
-            for (final val listener : getFragmentLifecycleListeners()) {
-                listener.onFragmentDestroy();
-            }
-        }
-    }
-
-    private void _notifyOnSaveInstanceState(final @Nullable Bundle outState) {
-        synchronized (_fragmentInstanceStateListenersLock) {
-            for (final val listener : getFragmentInstanceStateListeners()) {
-                listener.onFragmentSaveInstanceState(outState);
-            }
-        }
-    }
-
-    private void _notifyOnStart() {
-        synchronized (_fragmentLifecycleListenersLock) {
-            for (final val listener : getFragmentLifecycleListeners()) {
-                listener.onFragmentStart();
-            }
-        }
-    }
-
-    private void _notifyOnStop() {
-        synchronized (_fragmentLifecycleListenersLock) {
-            for (final val listener : getFragmentLifecycleListeners()) {
-                listener.onFragmentStop();
-            }
-        }
-    }
-
-    private void _notifyOnViewStateRestored(final @Nullable Bundle savedInstanceState) {
-        synchronized (_fragmentInstanceStateListenersLock) {
-            for (final val listener : getFragmentInstanceStateListeners()) {
-                listener.onFragmentViewStateRestored(savedInstanceState);
-            }
-        }
-    }
 }

@@ -42,7 +42,7 @@ public final class UriUtils {
     }
 
     @NonNull
-    public static String combine(@NonNull final String... pathSegments) {
+    public static String combinePath(@NonNull final String... pathSegments) {
         Contracts.requireNonNull(pathSegments, "pathSegments == null");
 
         return TextUtils.join(PATH_SEPARATOR, pathSegments);
