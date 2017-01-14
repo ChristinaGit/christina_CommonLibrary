@@ -3,12 +3,12 @@ package com.christina.common.utility;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import lombok.val;
+
 import com.christina.common.contract.Contracts;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-
-import lombok.val;
 
 public final class ImeUtils {
     public static void showIme(@NonNull final View view) {

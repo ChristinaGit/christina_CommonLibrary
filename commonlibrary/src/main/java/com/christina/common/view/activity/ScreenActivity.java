@@ -5,12 +5,12 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import lombok.experimental.Accessors;
+
 import com.christina.common.event.Events;
 import com.christina.common.event.notice.ManagedNoticeEvent;
 import com.christina.common.event.notice.NoticeEvent;
 import com.christina.common.presentation.Screen;
-
-import lombok.experimental.Accessors;
 
 @Accessors(prefix = "_")
 public abstract class ScreenActivity extends ExtendedActivity implements Screen {

@@ -1,65 +1,49 @@
 package com.christina.common.event.generic;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import lombok.val;
 
 import com.christina.common.contract.Contracts;
 import com.christina.common.event.eventArgs.EventArgs;
 
-import java.util.ArrayList;
 import java.util.Collection;
-
-import lombok.val;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class ThreadSafeEvent<TEventArgs extends EventArgs>
-    extends SynchronizedEvent<TEventArgs> {
-    private static final int _INITIAL_HANDLERS_COLLECTION_CAPACITY = 2;
-
-    @Override
-    protected void performAddHandler(@NonNull final EventHandler<TEventArgs> handler) {
+    implements ManagedEvent<TEventArgs> {
+    public final void addHandler(@NonNull final EventHandler<TEventArgs> handler) {
         Contracts.requireNonNull(handler, "handler == null");
-
-        if (_handlers == null) {
-            _handlers = new ArrayList<>(_INITIAL_HANDLERS_COLLECTION_CAPACITY);
-        }
 
         _handlers.add(handler);
     }
 
     @Override
-    protected boolean performHasHandlers() {
-        return _handlers != null && !_handlers.isEmpty();
-    }
-
-    @Override
-    protected void performRemoveAllHandlers() {
-        _handlers = null;
-    }
-
-    @Override
-    protected void performRemoveHandler(@NonNull final EventHandler<TEventArgs> handler) {
+    public final void removeHandler(@NonNull final EventHandler<TEventArgs> handler) {
         Contracts.requireNonNull(handler, "handler == null");
 
-        if (_handlers != null) {
-            _handlers.remove(handler);
-
-            if (_handlers.isEmpty()) {
-                _handlers = null;
-            }
-        }
+        _handlers.remove(handler);
     }
 
     @Override
-    protected void performRise(@NonNull final TEventArgs eventArgs) {
+    public final boolean hasHandlers() {
+        return !_handlers.isEmpty();
+    }
+
+    @Override
+    public final void removeAllHandlers() {
+        _handlers.clear();
+    }
+
+    @Override
+    public final void rise(@NonNull final TEventArgs eventArgs) {
         Contracts.requireNonNull(eventArgs, "eventArgs == null");
 
-        if (_handlers != null) {
-            for (final val handler : _handlers) {
-                handler.onEvent(eventArgs);
-            }
+        for (final val handler : _handlers) {
+            handler.onEvent(eventArgs);
         }
     }
 
-    @Nullable
-    private Collection<EventHandler<TEventArgs>> _handlers;
+    @NonNull
+    private final Collection<EventHandler<TEventArgs>> _handlers = new CopyOnWriteArrayList<>();
 }

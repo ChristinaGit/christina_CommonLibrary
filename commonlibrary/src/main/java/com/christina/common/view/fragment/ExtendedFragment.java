@@ -12,6 +12,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+import lombok.val;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
+
+import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle.LifecycleTransformer;
+import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.FragmentEvent;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+
 import com.christina.common.contract.Contracts;
 import com.christina.common.event.Events;
 import com.christina.common.event.generic.Event;
@@ -22,24 +39,15 @@ import com.christina.common.view.ViewBinder;
 import com.christina.common.view.observerable.ObservableFragment;
 import com.christina.common.view.observerable.eventArgs.ActivityResultEventArgs;
 import com.christina.common.view.observerable.eventArgs.BundleEventArgs;
-import com.trello.rxlifecycle.LifecycleProvider;
-import com.trello.rxlifecycle.LifecycleTransformer;
-import com.trello.rxlifecycle.RxLifecycle;
-import com.trello.rxlifecycle.android.FragmentEvent;
-import com.trello.rxlifecycle.android.RxLifecycleAndroid;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.Accessors;
-import lombok.val;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
 
 @Accessors(prefix = "_")
 public abstract class ExtendedFragment extends Fragment
     implements ViewBinder, ObservableFragment, LifecycleProvider<FragmentEvent> {
+    @Override
+    public final Fragment asFragment() {
+        return this;
+    }
+
     @NonNull
     @Override
     public final Event<ActivityResultEventArgs> getActivityResultIntoFragmentEvent() {
@@ -217,6 +225,8 @@ public abstract class ExtendedFragment extends Fragment
 
         onInjectMembers();
 
+        onAcquireResources();
+
         _fragmentCreateViewEvent.rise(new BundleEventArgs(savedInstanceState));
 
         return view;
@@ -306,6 +316,8 @@ public abstract class ExtendedFragment extends Fragment
 
         getLifecycleSubject().onNext(FragmentEvent.DESTROY);
 
+        onReleaseResources();
+
         onReleaseInjectedMembers();
     }
 
@@ -319,11 +331,19 @@ public abstract class ExtendedFragment extends Fragment
     }
 
     @CallSuper
+    protected void onAcquireResources() {
+    }
+
+    @CallSuper
     protected void onInjectMembers() {
     }
 
     @CallSuper
     protected void onReleaseInjectedMembers() {
+    }
+
+    @CallSuper
+    protected void onReleaseResources() {
     }
 
     @NonNull

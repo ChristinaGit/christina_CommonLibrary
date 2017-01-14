@@ -3,10 +3,10 @@ package com.christina.common;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.christina.common.contract.Contracts;
-
 import lombok.Getter;
 import lombok.experimental.Accessors;
+
+import com.christina.common.contract.Contracts;
 
 @SuppressWarnings("SpellCheckingInspection")
 @Accessors(prefix = "_")

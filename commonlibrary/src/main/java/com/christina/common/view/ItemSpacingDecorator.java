@@ -7,12 +7,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.christina.common.contract.Contracts;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.val;
+
+import com.christina.common.contract.Contracts;
 
 @Accessors(prefix = "_")
 public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {

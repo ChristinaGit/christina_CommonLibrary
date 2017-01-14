@@ -2,13 +2,13 @@ package com.christina.common.view.recyclerView.adapter;
 
 import android.support.annotation.NonNull;
 
+import lombok.experimental.Accessors;
+import lombok.val;
+
 import com.christina.common.contract.Contracts;
 import com.christina.common.view.recyclerView.viewHolder.ExtendedRecyclerViewHolder;
 
 import java.util.Collection;
-
-import lombok.experimental.Accessors;
-import lombok.val;
 
 @Accessors(prefix = "_")
 public abstract class ModifiableRecyclerViewListAdapter<TItem, TViewHolder extends

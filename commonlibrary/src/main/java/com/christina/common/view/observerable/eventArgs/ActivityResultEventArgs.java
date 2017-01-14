@@ -3,10 +3,10 @@ package com.christina.common.view.observerable.eventArgs;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import com.christina.common.event.eventArgs.EventArgs;
-
 import lombok.Getter;
 import lombok.experimental.Accessors;
+
+import com.christina.common.event.eventArgs.EventArgs;
 
 @Accessors(prefix = "_")
 public class ActivityResultEventArgs extends EventArgs {

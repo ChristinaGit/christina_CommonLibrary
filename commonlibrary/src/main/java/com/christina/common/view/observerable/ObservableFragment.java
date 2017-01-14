@@ -1,6 +1,7 @@
 package com.christina.common.view.observerable;
 
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 
 import com.christina.common.event.generic.Event;
 import com.christina.common.event.notice.NoticeEvent;
@@ -8,6 +9,8 @@ import com.christina.common.view.observerable.eventArgs.ActivityResultEventArgs;
 import com.christina.common.view.observerable.eventArgs.BundleEventArgs;
 
 public interface ObservableFragment {
+    Fragment asFragment();
+
     @NonNull
     Event<ActivityResultEventArgs> getActivityResultIntoFragmentEvent();
 

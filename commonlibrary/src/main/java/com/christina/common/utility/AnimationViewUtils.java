@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
-import com.christina.common.contract.Contracts;
-
 import lombok.val;
+
+import com.christina.common.contract.Contracts;
 
 public final class AnimationViewUtils {
     public static void animateSetVisibility(@NonNull final View view, final int visibility) {
@@ -25,8 +25,16 @@ public final class AnimationViewUtils {
 
         if (visibility != view.getVisibility()) {
             final boolean visible = visibility == View.VISIBLE;
-            final val animation =
-                AnimationUtils.loadAnimation(view.getContext(), visible ? in : out);
+            animateSetVisibility(view, visibility, visible ? in : out);
+        }
+    }
+
+    public static void animateSetVisibility(
+        @NonNull final View view, final int visibility, @AnimRes final int anim) {
+        Contracts.requireNonNull(view, "view == null");
+
+        if (visibility != view.getVisibility()) {
+            final val animation = AnimationUtils.loadAnimation(view.getContext(), anim);
             view.setVisibility(visibility);
             view.startAnimation(animation);
         }

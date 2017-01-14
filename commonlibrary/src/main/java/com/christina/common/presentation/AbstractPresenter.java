@@ -4,13 +4,13 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.christina.common.contract.Contracts;
-import com.christina.common.event.notice.NoticeEventHandler;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.val;
+
+import com.christina.common.contract.Contracts;
+import com.christina.common.event.notice.NoticeEventHandler;
 
 @Accessors(prefix = "_")
 public abstract class AbstractPresenter<TScreen extends Screen> implements Presenter<TScreen> {
@@ -40,10 +40,10 @@ public abstract class AbstractPresenter<TScreen extends Screen> implements Prese
     protected void onBindScreen(@NonNull final TScreen screen) {
         Contracts.requireNonNull(screen, "screen == null");
 
-        screen.getScreenCreateEvent().addHandler(getScreenCreateHandler());
-        screen.getScreenAppearEvent().addHandler(getScreenAppearHandler());
-        screen.getScreenDisappearEvent().addHandler(getScreenDisappearHandler());
-        screen.getScreenDestroyEvent().addHandler(getScreenDestroyHandler());
+        screen.getScreenCreateEvent().addHandler(_screenCreateHandler);
+        screen.getScreenAppearEvent().addHandler(_screenAppearHandler);
+        screen.getScreenDisappearEvent().addHandler(_screenDisappearHandler);
+        screen.getScreenDestroyEvent().addHandler(_screenDestroyHandler);
     }
 
     @CallSuper
@@ -70,13 +70,12 @@ public abstract class AbstractPresenter<TScreen extends Screen> implements Prese
     protected void onUnbindScreen(@NonNull final TScreen screen) {
         Contracts.requireNonNull(screen, "screen == null");
 
-        screen.getScreenCreateEvent().removeHandler(getScreenCreateHandler());
-        screen.getScreenAppearEvent().removeHandler(getScreenAppearHandler());
-        screen.getScreenDisappearEvent().removeHandler(getScreenDisappearHandler());
-        screen.getScreenDestroyEvent().removeHandler(getScreenDestroyHandler());
+        screen.getScreenCreateEvent().removeHandler(_screenCreateHandler);
+        screen.getScreenAppearEvent().removeHandler(_screenAppearHandler);
+        screen.getScreenDisappearEvent().removeHandler(_screenDisappearHandler);
+        screen.getScreenDestroyEvent().removeHandler(_screenDestroyHandler);
     }
 
-    @Getter(value = AccessLevel.PRIVATE)
     @NonNull
     private final NoticeEventHandler _screenAppearHandler = new NoticeEventHandler() {
         @Override
@@ -91,7 +90,6 @@ public abstract class AbstractPresenter<TScreen extends Screen> implements Prese
         }
     };
 
-    @Getter(value = AccessLevel.PRIVATE)
     @NonNull
     private final NoticeEventHandler _screenCreateHandler = new NoticeEventHandler() {
         @Override
@@ -106,7 +104,6 @@ public abstract class AbstractPresenter<TScreen extends Screen> implements Prese
         }
     };
 
-    @Getter(value = AccessLevel.PRIVATE)
     @NonNull
     private final NoticeEventHandler _screenDestroyHandler = new NoticeEventHandler() {
         @Override
@@ -121,7 +118,6 @@ public abstract class AbstractPresenter<TScreen extends Screen> implements Prese
         }
     };
 
-    @Getter(value = AccessLevel.PRIVATE)
     @NonNull
     private final NoticeEventHandler _screenDisappearHandler = new NoticeEventHandler() {
         @Override

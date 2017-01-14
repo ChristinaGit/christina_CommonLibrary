@@ -2,10 +2,10 @@ package com.christina.common;
 
 import android.support.annotation.NonNull;
 
-import com.christina.common.contract.Contracts;
-
 import lombok.Getter;
 import lombok.experimental.Accessors;
+
+import com.christina.common.contract.Contracts;
 
 @Accessors(prefix = "_")
 public enum CharsetType {

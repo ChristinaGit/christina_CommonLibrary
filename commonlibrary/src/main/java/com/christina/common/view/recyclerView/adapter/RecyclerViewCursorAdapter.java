@@ -6,14 +6,14 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.christina.common.contract.Contracts;
-import com.christina.common.utility.ResourceUtils;
-import com.christina.common.view.recyclerView.viewHolder.ExtendedRecyclerViewHolder;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.val;
+
+import com.christina.common.contract.Contracts;
+import com.christina.common.utility.ResourceUtils;
+import com.christina.common.view.recyclerView.viewHolder.ExtendedRecyclerViewHolder;
 
 @Accessors(prefix = "_")
 public abstract class RecyclerViewCursorAdapter<TItem, TViewHolder extends
@@ -130,7 +130,7 @@ public abstract class RecyclerViewCursorAdapter<TItem, TViewHolder extends
     @NonNull
     protected abstract TItem getItem(@NonNull final Cursor cursor);
 
-    @Getter(value = AccessLevel.PRIVATE, lazy = true)
+    @Getter(value = AccessLevel.PRIVATE)
     @NonNull
     private final _InternalDataSetObserver _internalDataSetObserver =
         new _InternalDataSetObserver();

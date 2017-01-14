@@ -9,6 +9,23 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+import lombok.val;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
+
+import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle.LifecycleTransformer;
+import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.ActivityEvent;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+
 import com.christina.common.contract.Contracts;
 import com.christina.common.event.Events;
 import com.christina.common.event.generic.Event;
@@ -19,24 +36,16 @@ import com.christina.common.view.ViewBinder;
 import com.christina.common.view.observerable.ObservableActivity;
 import com.christina.common.view.observerable.eventArgs.ActivityResultEventArgs;
 import com.christina.common.view.observerable.eventArgs.BundleEventArgs;
-import com.trello.rxlifecycle.LifecycleProvider;
-import com.trello.rxlifecycle.LifecycleTransformer;
-import com.trello.rxlifecycle.RxLifecycle;
-import com.trello.rxlifecycle.android.ActivityEvent;
-import com.trello.rxlifecycle.android.RxLifecycleAndroid;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.Accessors;
-import lombok.val;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
 
 @Accessors(prefix = "_")
 public abstract class ExtendedActivity extends AppCompatActivity
     implements ViewBinder, ObservableActivity, LifecycleProvider<ActivityEvent> {
+    @NonNull
+    @Override
+    public final AppCompatActivity asActivity() {
+        return this;
+    }
+
     @NonNull
     @Override
     public final Event<BundleEventArgs> getActivityCreateEvent() {
@@ -63,6 +72,12 @@ public abstract class ExtendedActivity extends AppCompatActivity
 
     @NonNull
     @Override
+    public final Event<ActivityResultEventArgs> getActivityResultIntoActivityEvent() {
+        return _activityResultIntoActivityEvent;
+    }
+
+    @NonNull
+    @Override
     public final NoticeEvent getActivityResumeEvent() {
         return _activityResumeEvent;
     }
@@ -83,12 +98,6 @@ public abstract class ExtendedActivity extends AppCompatActivity
     @Override
     public final NoticeEvent getActivityStopEvent() {
         return _activityStopEvent;
-    }
-
-    @NonNull
-    @Override
-    public final Event<ActivityResultEventArgs> onActivityResultIntoActivityEvent() {
-        return _activityResultIntoActivityEvent;
     }
 
     @Override
@@ -142,6 +151,10 @@ public abstract class ExtendedActivity extends AppCompatActivity
     }
 
     @CallSuper
+    protected void onAcquireResources() {
+    }
+
+    @CallSuper
     @Override
     protected void onActivityResult(
         final int requestCode, final int resultCode, final Intent data) {
@@ -178,6 +191,8 @@ public abstract class ExtendedActivity extends AppCompatActivity
 
         onInjectMembers();
 
+        onAcquireResources();
+
         _activityCreateEvent.rise(new BundleEventArgs(savedInstanceState));
 
         getLifecycleSubject().onNext(ActivityEvent.CREATE);
@@ -212,6 +227,8 @@ public abstract class ExtendedActivity extends AppCompatActivity
 
         getLifecycleSubject().onNext(ActivityEvent.DESTROY);
 
+        onReleaseResources();
+
         onReleaseInjectedMembers();
     }
 
@@ -229,6 +246,10 @@ public abstract class ExtendedActivity extends AppCompatActivity
 
     @CallSuper
     protected void onReleaseInjectedMembers() {
+    }
+
+    @CallSuper
+    protected void onReleaseResources() {
     }
 
     @CallSuper

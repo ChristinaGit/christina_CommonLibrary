@@ -6,13 +6,14 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.christina.common.contract.Contracts;
-import com.christina.common.view.ViewBinder;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import lombok.Getter;
-import lombok.experimental.Accessors;
+
+import com.christina.common.contract.Contracts;
+import com.christina.common.view.ViewBinder;
 
 @Accessors(prefix = "_")
 public abstract class ExtendedRecyclerViewHolder extends RecyclerView.ViewHolder

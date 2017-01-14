@@ -3,14 +3,14 @@ package com.christina.common.thread;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
 import com.christina.common.contract.Contracts;
 import com.christina.common.utility.HandlerUtils;
 
 import java.util.concurrent.Executor;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 @Accessors(prefix = "_")
 public class MainThreadExecutor implements Executor {
