@@ -26,6 +26,8 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.ActivityEvent;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 
+import com.christina.common.aware.InjectAware;
+import com.christina.common.aware.ResourceAware;
 import com.christina.common.contract.Contracts;
 import com.christina.common.event.Events;
 import com.christina.common.event.generic.Event;
@@ -39,11 +41,17 @@ import com.christina.common.view.observerable.eventArgs.BundleEventArgs;
 
 @Accessors(prefix = "_")
 public abstract class ExtendedActivity extends AppCompatActivity
-    implements ViewBinder, ObservableActivity, LifecycleProvider<ActivityEvent> {
+    implements ViewBinder, ObservableActivity, LifecycleProvider<ActivityEvent>, InjectAware,
+               ResourceAware {
     @NonNull
     @Override
     public final AppCompatActivity asActivity() {
         return this;
+    }
+
+    @NonNull
+    public final Event<ActivityResultEventArgs> getActivityActivityResultEvent() {
+        return _activityActivityResultEvent;
     }
 
     @NonNull
@@ -72,12 +80,6 @@ public abstract class ExtendedActivity extends AppCompatActivity
 
     @NonNull
     @Override
-    public final Event<ActivityResultEventArgs> getActivityResultIntoActivityEvent() {
-        return _activityResultIntoActivityEvent;
-    }
-
-    @NonNull
-    @Override
     public final NoticeEvent getActivityResumeEvent() {
         return _activityResumeEvent;
     }
@@ -98,6 +100,30 @@ public abstract class ExtendedActivity extends AppCompatActivity
     @Override
     public final NoticeEvent getActivityStopEvent() {
         return _activityStopEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getAcquireResourcesEvent() {
+        return _acquireResourcesEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getReleaseResourcesEvent() {
+        return _releaseResourcesEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getInjectMembersEvent() {
+        return _injectMembersEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getReleaseInjectedMembersEvent() {
+        return _releaseInjectedMembersEvent;
     }
 
     @Override
@@ -152,6 +178,7 @@ public abstract class ExtendedActivity extends AppCompatActivity
 
     @CallSuper
     protected void onAcquireResources() {
+        _acquireResourcesEvent.rise();
     }
 
     @CallSuper
@@ -161,7 +188,7 @@ public abstract class ExtendedActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         final val eventArgs = new ActivityResultEventArgs(requestCode, resultCode, data);
-        _activityResultIntoActivityEvent.rise(eventArgs);
+        _activityActivityResultEvent.rise(eventArgs);
     }
 
     @CallSuper
@@ -242,14 +269,17 @@ public abstract class ExtendedActivity extends AppCompatActivity
 
     @CallSuper
     protected void onInjectMembers() {
+        _injectMembersEvent.rise();
     }
 
     @CallSuper
     protected void onReleaseInjectedMembers() {
+        _releaseInjectedMembersEvent.rise();
     }
 
     @CallSuper
     protected void onReleaseResources() {
+        _releaseResourcesEvent.rise();
     }
 
     @CallSuper
@@ -259,6 +289,13 @@ public abstract class ExtendedActivity extends AppCompatActivity
 
         _activityRestoreInstanceStateEvent.rise(new BundleEventArgs(savedInstanceState));
     }
+
+    @NonNull
+    private final ManagedNoticeEvent _acquireResourcesEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedEvent<ActivityResultEventArgs> _activityActivityResultEvent =
+        Events.createEvent();
 
     @NonNull
     private final ManagedEvent<BundleEventArgs> _activityCreateEvent = Events.createEvent();
@@ -274,10 +311,6 @@ public abstract class ExtendedActivity extends AppCompatActivity
         Events.createEvent();
 
     @NonNull
-    private final ManagedEvent<ActivityResultEventArgs> _activityResultIntoActivityEvent =
-        Events.createEvent();
-
-    @NonNull
     private final ManagedNoticeEvent _activityResumeEvent = Events.createNoticeEvent();
 
     @NonNull
@@ -290,9 +323,18 @@ public abstract class ExtendedActivity extends AppCompatActivity
     @NonNull
     private final ManagedNoticeEvent _activityStopEvent = Events.createNoticeEvent();
 
+    @NonNull
+    private final ManagedNoticeEvent _injectMembersEvent = Events.createNoticeEvent();
+
     @Getter(AccessLevel.PRIVATE)
     @NonNull
     private final BehaviorSubject<ActivityEvent> _lifecycleSubject = BehaviorSubject.create();
+
+    @NonNull
+    private final ManagedNoticeEvent _releaseInjectedMembersEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _releaseResourcesEvent = Events.createNoticeEvent();
 
     @Getter(AccessLevel.PROTECTED)
     @Nullable

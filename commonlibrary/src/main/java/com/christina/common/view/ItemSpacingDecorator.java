@@ -8,7 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.val;
 
@@ -36,43 +40,48 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
         final int rowCount = itemCount / columnCount + (itemCount % columnCount == 0 ? 0 : 1);
         final int row = position / columnCount;
 
-        final int verticalSpacing = getVerticalSpacing();
-        final int horizontalSpacing = getHorizontalSpacing();
+        final val padding = getPadding();
+        final val spacing = getSpacing();
+
+        final int leftSpacing = spacing.getLeft();
+        final int rightSpacing = spacing.getRight();
+        final int topSpacing = spacing.getTop();
+        final int bottomSpacing = spacing.getBottom();
+
+        final int leftPadding = padding.getLeft();
+        final int rightPadding = padding.getRight();
+        final int topPadding = padding.getTop();
+        final int bottomPadding = padding.getBottom();
 
         int bottom;
         int top;
         int left;
         int right;
 
-        final int bottomEdge;
-        final int topEdge;
-        final int leftEdge;
-        final int rightEdge;
+        int bottomEdge = bottomPadding;
+        int topEdge = topPadding;
+        int leftEdge = leftPadding;
+        int rightEdge = rightPadding;
+
+        bottom = bottomSpacing;
+        top = topSpacing;
+
+        left = leftSpacing;
+        right = rightSpacing;
 
         if (isBordersCollapseEnabled()) {
-            bottom = verticalSpacing / 2;
-            top = verticalSpacing / 2;
+            bottom /= 2;
+            top /= 2;
 
-            left = horizontalSpacing / 2;
-            right = horizontalSpacing / 2;
-        } else {
-            bottom = verticalSpacing;
-            top = verticalSpacing;
-
-            left = horizontalSpacing;
-            right = horizontalSpacing;
+            left /= 2;
+            right /= 2;
         }
 
         if (isEdgesEnabled()) {
-            bottomEdge = verticalSpacing;
-            topEdge = verticalSpacing;
-            leftEdge = horizontalSpacing;
-            rightEdge = horizontalSpacing;
-        } else {
-            bottomEdge = 0;
-            topEdge = 0;
-            leftEdge = 0;
-            rightEdge = 0;
+            bottomEdge += bottomSpacing;
+            topEdge += topSpacing;
+            leftEdge += leftSpacing;
+            rightEdge += rightSpacing;
         }
 
         if (position < columnCount) {
@@ -99,14 +108,17 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
     }
 
     protected ItemSpacingDecorator(
-        final int horizontalSpacing,
-        final int verticalSpacing,
+        @NonNull final Border padding,
+        @NonNull final Border spacing,
         final boolean bordersCollapseEnabled,
         final boolean edgesEnabled) {
+        Contracts.requireNonNull(padding, "padding == null");
+        Contracts.requireNonNull(spacing, "spacing == null");
+
+        _padding = padding;
+        _spacing = spacing;
         _bordersCollapseEnabled = bordersCollapseEnabled;
         _edgesEnabled = edgesEnabled;
-        _horizontalSpacing = horizontalSpacing;
-        _verticalSpacing = verticalSpacing;
     }
 
     protected int getColumnCount(@NonNull final RecyclerView parent) {
@@ -132,11 +144,35 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
     @Getter
     private final boolean _edgesEnabled;
 
-    @Getter
-    private final int _horizontalSpacing;
+    @NonNull
+    @Getter(AccessLevel.PROTECTED)
+    private final Border _padding;
 
-    @Getter
-    private final int _verticalSpacing;
+    @NonNull
+    @Getter(AccessLevel.PROTECTED)
+    private final Border _spacing;
+
+    @Accessors(prefix = "_")
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ToString(doNotUseGetters = true)
+    public static class Border {
+        @Getter
+        @Setter
+        private int _bottom;
+
+        @Getter
+        @Setter
+        private int _left;
+
+        @Getter
+        @Setter
+        private int _right;
+
+        @Getter
+        @Setter
+        private int _top;
+    }
 
     @Accessors(prefix = "_")
     public static class Builder {
@@ -155,45 +191,99 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
         }
 
         @NonNull
-        public final Builder setHorizontalSpacing(final int spacing) {
-            _horizontalSpacing = spacing;
+        public final Builder setHorizontalPadding(final int leftPadding, final int rightPadding) {
+            final val padding = getPadding();
+            padding.setLeft(leftPadding);
+            padding.setRight(rightPadding);
+
+            return this;
+        }
+
+        @NonNull
+        public final Builder setHorizontalSpacing(final int leftSpacing, final int rightSpacing) {
+            final val spacing = getSpacing();
+            spacing.setLeft(leftSpacing);
+            spacing.setRight(rightSpacing);
+
+            return this;
+        }
+
+        @NonNull
+        public final Builder setPadding(final int padding) {
+            setPadding(padding, padding, padding, padding);
+
+            return this;
+        }
+
+        @NonNull
+        public final Builder setPadding(
+            final int leftPadding,
+            final int topPadding,
+            final int rightPadding,
+            final int bottomPadding) {
+            setVerticalPadding(topPadding, bottomPadding);
+            setHorizontalPadding(leftPadding, rightPadding);
 
             return this;
         }
 
         @NonNull
         public final Builder setSpacing(final int spacing) {
-            _horizontalSpacing = spacing;
-            _verticalSpacing = spacing;
+            setSpacing(spacing, spacing, spacing, spacing);
 
             return this;
         }
 
         @NonNull
-        public final Builder setVerticalSpacing(final int spacing) {
-            _verticalSpacing = spacing;
+        public final Builder setSpacing(
+            final int leftSpacing,
+            final int topSpacing,
+            final int rightSpacing,
+            final int bottomSpacing) {
+            setVerticalSpacing(topSpacing, bottomSpacing);
+            setHorizontalSpacing(leftSpacing, rightSpacing);
+
+            return this;
+        }
+
+        @NonNull
+        public final Builder setVerticalPadding(final int topPadding, final int bottomPadding) {
+            final val padding = getPadding();
+            padding.setTop(topPadding);
+            padding.setBottom(bottomPadding);
+
+            return this;
+        }
+
+        @NonNull
+        public final Builder setVerticalSpacing(final int topSpacing, final int bottomSpacing) {
+            final val spacing = getSpacing();
+            spacing.setTop(topSpacing);
+            spacing.setBottom(bottomSpacing);
 
             return this;
         }
 
         @NonNull
         public ItemSpacingDecorator build() {
-            return new ItemSpacingDecorator(getHorizontalSpacing(),
-                                            getVerticalSpacing(),
+            return new ItemSpacingDecorator(getPadding(),
+                                            getSpacing(),
                                             isCollapseBorders(),
                                             isEnableEdges());
         }
+
+        @NonNull
+        @Getter(AccessLevel.PROTECTED)
+        private final Border _padding = new Border();
+
+        @NonNull
+        @Getter(AccessLevel.PROTECTED)
+        private final Border _spacing = new Border();
 
         @Getter(AccessLevel.PROTECTED)
         private boolean _collapseBorders = false;
 
         @Getter(AccessLevel.PROTECTED)
         private boolean _enableEdges = false;
-
-        @Getter(AccessLevel.PROTECTED)
-        private int _horizontalSpacing = 0;
-
-        @Getter(AccessLevel.PROTECTED)
-        private int _verticalSpacing = 0;
     }
 }

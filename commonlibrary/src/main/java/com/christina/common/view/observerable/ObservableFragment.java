@@ -9,10 +9,11 @@ import com.christina.common.view.observerable.eventArgs.ActivityResultEventArgs;
 import com.christina.common.view.observerable.eventArgs.BundleEventArgs;
 
 public interface ObservableFragment {
+    @NonNull
     Fragment asFragment();
 
     @NonNull
-    Event<ActivityResultEventArgs> getActivityResultIntoFragmentEvent();
+    Event<ActivityResultEventArgs> getFragmentActivityResultEvent();
 
     @NonNull
     NoticeEvent getFragmentAttachEvent();

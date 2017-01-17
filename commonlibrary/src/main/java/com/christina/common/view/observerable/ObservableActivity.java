@@ -13,6 +13,9 @@ public interface ObservableActivity {
     AppCompatActivity asActivity();
 
     @NonNull
+    Event<ActivityResultEventArgs> getActivityActivityResultEvent();
+
+    @NonNull
     Event<BundleEventArgs> getActivityCreateEvent();
 
     @NonNull
@@ -23,9 +26,6 @@ public interface ObservableActivity {
 
     @NonNull
     Event<BundleEventArgs> getActivityRestoreInstanceStateEvent();
-
-    @NonNull
-    Event<ActivityResultEventArgs> getActivityResultIntoActivityEvent();
 
     @NonNull
     NoticeEvent getActivityResumeEvent();

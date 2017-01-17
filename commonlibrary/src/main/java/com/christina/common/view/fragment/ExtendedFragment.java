@@ -29,6 +29,8 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.FragmentEvent;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 
+import com.christina.common.aware.InjectAware;
+import com.christina.common.aware.ResourceAware;
 import com.christina.common.contract.Contracts;
 import com.christina.common.event.Events;
 import com.christina.common.event.generic.Event;
@@ -42,16 +44,17 @@ import com.christina.common.view.observerable.eventArgs.BundleEventArgs;
 
 @Accessors(prefix = "_")
 public abstract class ExtendedFragment extends Fragment
-    implements ViewBinder, ObservableFragment, LifecycleProvider<FragmentEvent> {
+    implements ViewBinder, ObservableFragment, LifecycleProvider<FragmentEvent>, InjectAware,
+               ResourceAware {
+    @NonNull
     @Override
     public final Fragment asFragment() {
         return this;
     }
 
     @NonNull
-    @Override
-    public final Event<ActivityResultEventArgs> getActivityResultIntoFragmentEvent() {
-        return _activityResultIntoFragmentEvent;
+    public final Event<ActivityResultEventArgs> getFragmentActivityResultEvent() {
+        return _fragmentActivityResultEvent;
     }
 
     @NonNull
@@ -132,6 +135,30 @@ public abstract class ExtendedFragment extends Fragment
         return _fragmentViewStateRestoredEvent;
     }
 
+    @NonNull
+    @Override
+    public final NoticeEvent getAcquireResourcesEvent() {
+        return _acquireResourcesEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getReleaseResourcesEvent() {
+        return _releaseResourcesEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getInjectMembersEvent() {
+        return _injectMembersEvent;
+    }
+
+    @NonNull
+    @Override
+    public final NoticeEvent getReleaseInjectedMembersEvent() {
+        return _releaseInjectedMembersEvent;
+    }
+
     @Override
     @NonNull
     @CheckResult
@@ -191,7 +218,7 @@ public abstract class ExtendedFragment extends Fragment
         super.onActivityResult(requestCode, resultCode, data);
 
         final val eventArgs = new ActivityResultEventArgs(requestCode, resultCode, data);
-        _activityResultIntoFragmentEvent.rise(eventArgs);
+        _fragmentActivityResultEvent.rise(eventArgs);
     }
 
     @CallSuper
@@ -332,22 +359,29 @@ public abstract class ExtendedFragment extends Fragment
 
     @CallSuper
     protected void onAcquireResources() {
+        _acquireResourcesEvent.rise();
     }
 
     @CallSuper
     protected void onInjectMembers() {
+        _injectMembersEvent.rise();
     }
 
     @CallSuper
     protected void onReleaseInjectedMembers() {
+        _releaseInjectedMembersEvent.rise();
     }
 
     @CallSuper
     protected void onReleaseResources() {
+        _releaseResourcesEvent.rise();
     }
 
     @NonNull
-    private final ManagedEvent<ActivityResultEventArgs> _activityResultIntoFragmentEvent =
+    private final ManagedNoticeEvent _acquireResourcesEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedEvent<ActivityResultEventArgs> _fragmentActivityResultEvent =
         Events.createEvent();
 
     @NonNull
@@ -390,8 +424,17 @@ public abstract class ExtendedFragment extends Fragment
     private final ManagedEvent<BundleEventArgs> _fragmentViewStateRestoredEvent =
         Events.createEvent();
 
+    @NonNull
+    private final ManagedNoticeEvent _injectMembersEvent = Events.createNoticeEvent();
+
     @Getter(AccessLevel.PRIVATE)
     private final BehaviorSubject<FragmentEvent> _lifecycleSubject = BehaviorSubject.create();
+
+    @NonNull
+    private final ManagedNoticeEvent _releaseInjectedMembersEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _releaseResourcesEvent = Events.createNoticeEvent();
 
     @Getter(AccessLevel.PROTECTED)
     @Nullable
