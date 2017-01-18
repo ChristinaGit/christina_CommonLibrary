@@ -13,29 +13,29 @@ public interface ObservableActivity {
     AppCompatActivity asActivity();
 
     @NonNull
-    Event<ActivityResultEventArgs> getActivityActivityResultEvent();
+    Event<ActivityResultEventArgs> getActivityResultEvent();
 
     @NonNull
-    Event<BundleEventArgs> getActivityCreateEvent();
+    Event<BundleEventArgs> getCreateEvent();
 
     @NonNull
-    NoticeEvent getActivityDestroyEvent();
+    NoticeEvent getDestroyEvent();
 
     @NonNull
-    NoticeEvent getActivityPauseEvent();
+    NoticeEvent getPauseEvent();
 
     @NonNull
-    Event<BundleEventArgs> getActivityRestoreInstanceStateEvent();
+    Event<BundleEventArgs> getRestoreInstanceStateEvent();
 
     @NonNull
-    NoticeEvent getActivityResumeEvent();
+    NoticeEvent getResumeEvent();
 
     @NonNull
-    Event<BundleEventArgs> getActivitySaveInstanceStateEvent();
+    Event<BundleEventArgs> getSaveInstanceStateEvent();
 
     @NonNull
-    NoticeEvent getActivityStartEvent();
+    NoticeEvent getStartEvent();
 
     @NonNull
-    NoticeEvent getActivityStopEvent();
+    NoticeEvent getStopEvent();
 }

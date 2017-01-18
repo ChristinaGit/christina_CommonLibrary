@@ -1,10 +1,10 @@
-package com.christina.common.aware;
+package com.christina.common.adviser;
 
 import android.support.annotation.NonNull;
 
 import com.christina.common.event.notice.NoticeEvent;
 
-public interface ResourceAware {
+public interface ResourceAdviser {
     @NonNull
     NoticeEvent getAcquireResourcesEvent();
 

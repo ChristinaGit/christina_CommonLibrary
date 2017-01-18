@@ -13,44 +13,44 @@ public interface ObservableFragment {
     Fragment asFragment();
 
     @NonNull
-    Event<ActivityResultEventArgs> getFragmentActivityResultEvent();
+    Event<ActivityResultEventArgs> getActivityResultEvent();
 
     @NonNull
-    NoticeEvent getFragmentAttachEvent();
+    NoticeEvent getAttachEvent();
 
     @NonNull
-    Event<BundleEventArgs> getFragmentCreateEvent();
+    Event<BundleEventArgs> getCreateEvent();
 
     @NonNull
-    Event<BundleEventArgs> getFragmentCreateViewEvent();
+    Event<BundleEventArgs> getCreateViewEvent();
 
     @NonNull
-    NoticeEvent getFragmentDestroyEvent();
+    NoticeEvent getDestroyEvent();
 
     @NonNull
-    NoticeEvent getFragmentDestroyViewEvent();
+    NoticeEvent getDestroyViewEvent();
 
     @NonNull
-    NoticeEvent getFragmentDetachEvent();
+    NoticeEvent getDetachEvent();
 
     @NonNull
-    NoticeEvent getFragmentPauseEvent();
+    NoticeEvent getPauseEvent();
 
     @NonNull
-    NoticeEvent getFragmentResumeEvent();
+    NoticeEvent getResumeEvent();
 
     @NonNull
-    Event<BundleEventArgs> getFragmentSaveInstanceStateEvent();
+    Event<BundleEventArgs> getSaveInstanceStateEvent();
 
     @NonNull
-    NoticeEvent getFragmentStartEvent();
+    NoticeEvent getStartEvent();
 
     @NonNull
-    NoticeEvent getFragmentStopEvent();
+    NoticeEvent getStopEvent();
 
     @NonNull
-    Event<BundleEventArgs> getFragmentViewCreatedEvent();
+    Event<BundleEventArgs> getViewCreatedEvent();
 
     @NonNull
-    Event<BundleEventArgs> getFragmentViewStateRestoredEvent();
+    Event<BundleEventArgs> getViewStateRestoredEvent();
 }

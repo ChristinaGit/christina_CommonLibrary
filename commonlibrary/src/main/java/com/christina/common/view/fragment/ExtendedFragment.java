@@ -29,8 +29,7 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.FragmentEvent;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 
-import com.christina.common.aware.InjectAware;
-import com.christina.common.aware.ResourceAware;
+import com.christina.common.adviser.ResourceAdviser;
 import com.christina.common.contract.Contracts;
 import com.christina.common.event.Events;
 import com.christina.common.event.generic.Event;
@@ -44,8 +43,7 @@ import com.christina.common.view.observerable.eventArgs.BundleEventArgs;
 
 @Accessors(prefix = "_")
 public abstract class ExtendedFragment extends Fragment
-    implements ViewBinder, ObservableFragment, LifecycleProvider<FragmentEvent>, InjectAware,
-               ResourceAware {
+    implements ViewBinder, ObservableFragment, LifecycleProvider<FragmentEvent>, ResourceAdviser {
     @NonNull
     @Override
     public final Fragment asFragment() {
@@ -53,86 +51,74 @@ public abstract class ExtendedFragment extends Fragment
     }
 
     @NonNull
-    public final Event<ActivityResultEventArgs> getFragmentActivityResultEvent() {
-        return _fragmentActivityResultEvent;
+    public final Event<ActivityResultEventArgs> getActivityResultEvent() {
+        return _activityResultEvent;
+    }
+
+    @NonNull
+    public final NoticeEvent getAttachEvent() {
+        return _attachEvent;
+    }
+
+    @NonNull
+    public final Event<BundleEventArgs> getCreateEvent() {
+        return _createEvent;
+    }
+
+    @NonNull
+    public final Event<BundleEventArgs> getCreateViewEvent() {
+        return _createViewEvent;
+    }
+
+    @NonNull
+    public final NoticeEvent getDestroyEvent() {
+        return _destroyEvent;
+    }
+
+    @NonNull
+    public final NoticeEvent getDestroyViewEvent() {
+        return _destroyViewEvent;
+    }
+
+    @NonNull
+    public final NoticeEvent getDetachEvent() {
+        return _detachEvent;
+    }
+
+    @NonNull
+    public final NoticeEvent getPauseEvent() {
+        return _pauseEvent;
+    }
+
+    @NonNull
+    public final NoticeEvent getResumeEvent() {
+        return _resumeEvent;
+    }
+
+    @NonNull
+    public final Event<BundleEventArgs> getSaveInstanceStateEvent() {
+        return _saveInstanceStateEvent;
+    }
+
+    @NonNull
+    public final NoticeEvent getStartEvent() {
+        return _startEvent;
+    }
+
+    @NonNull
+    public final NoticeEvent getStopEvent() {
+        return _stopEvent;
     }
 
     @NonNull
     @Override
-    public final NoticeEvent getFragmentAttachEvent() {
-        return _fragmentAttachEvent;
+    public final Event<BundleEventArgs> getViewCreatedEvent() {
+        return _viewCreatedEvent;
     }
 
     @NonNull
-    @Override
-    public final Event<BundleEventArgs> getFragmentCreateEvent() {
-        return _fragmentCreateEvent;
-    }
-
-    @NonNull
-    @Override
-    public final Event<BundleEventArgs> getFragmentCreateViewEvent() {
-        return _fragmentCreateViewEvent;
-    }
-
-    @NonNull
-    @Override
-    public final NoticeEvent getFragmentDestroyEvent() {
-        return _fragmentDestroyEvent;
-    }
-
-    @NonNull
-    @Override
-    public final NoticeEvent getFragmentDestroyViewEvent() {
-        return _fragmentDestroyViewEvent;
-    }
-
-    @NonNull
-    @Override
-    public final NoticeEvent getFragmentDetachEvent() {
-        return _fragmentDetachEvent;
-    }
-
-    @NonNull
-    @Override
-    public final NoticeEvent getFragmentPauseEvent() {
-        return _fragmentPauseEvent;
-    }
-
-    @NonNull
-    @Override
-    public final NoticeEvent getFragmentResumeEvent() {
-        return _fragmentResumeEvent;
-    }
-
-    @NonNull
-    @Override
-    public final Event<BundleEventArgs> getFragmentSaveInstanceStateEvent() {
-        return _fragmentSaveInstanceStateEvent;
-    }
-
-    @NonNull
-    @Override
-    public final NoticeEvent getFragmentStartEvent() {
-        return _fragmentStartEvent;
-    }
-
-    @NonNull
-    @Override
-    public final NoticeEvent getFragmentStopEvent() {
-        return _fragmentStopEvent;
-    }
-
-    @NonNull
-    @Override
-    public final Event<BundleEventArgs> getFragmentViewCreatedEvent() {
-        return _fragmentViewCratedEvent;
-    }
-
-    @NonNull
-    @Override
-    public final Event<BundleEventArgs> getFragmentViewStateRestoredEvent() {
-        return _fragmentViewStateRestoredEvent;
+    public final Event<BundleEventArgs> getViewStateRestoredEvent() {
+        return _viewStateRestoredEvent;
     }
 
     @NonNull
@@ -145,18 +131,6 @@ public abstract class ExtendedFragment extends Fragment
     @Override
     public final NoticeEvent getReleaseResourcesEvent() {
         return _releaseResourcesEvent;
-    }
-
-    @NonNull
-    @Override
-    public final NoticeEvent getInjectMembersEvent() {
-        return _injectMembersEvent;
-    }
-
-    @NonNull
-    @Override
-    public final NoticeEvent getReleaseInjectedMembersEvent() {
-        return _releaseInjectedMembersEvent;
     }
 
     @Override
@@ -218,7 +192,7 @@ public abstract class ExtendedFragment extends Fragment
         super.onActivityResult(requestCode, resultCode, data);
 
         final val eventArgs = new ActivityResultEventArgs(requestCode, resultCode, data);
-        _fragmentActivityResultEvent.rise(eventArgs);
+        _activityResultEvent.rise(eventArgs);
     }
 
     @CallSuper
@@ -226,7 +200,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onAttach(final Context context) {
         super.onAttach(context);
 
-        _fragmentAttachEvent.rise();
+        _attachEvent.rise();
 
         getLifecycleSubject().onNext(FragmentEvent.ATTACH);
     }
@@ -236,7 +210,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        _fragmentCreateEvent.rise(new BundleEventArgs(savedInstanceState));
+        _createEvent.rise(new BundleEventArgs(savedInstanceState));
 
         getLifecycleSubject().onNext(FragmentEvent.CREATE);
     }
@@ -254,7 +228,7 @@ public abstract class ExtendedFragment extends Fragment
 
         onAcquireResources();
 
-        _fragmentCreateViewEvent.rise(new BundleEventArgs(savedInstanceState));
+        _createViewEvent.rise(new BundleEventArgs(savedInstanceState));
 
         return view;
     }
@@ -264,7 +238,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        _fragmentViewCratedEvent.rise(new BundleEventArgs(savedInstanceState));
+        _viewCreatedEvent.rise(new BundleEventArgs(savedInstanceState));
 
         getLifecycleSubject().onNext(FragmentEvent.CREATE_VIEW);
     }
@@ -274,7 +248,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onViewStateRestored(@Nullable final Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
-        _fragmentViewStateRestoredEvent.rise(new BundleEventArgs(savedInstanceState));
+        _viewStateRestoredEvent.rise(new BundleEventArgs(savedInstanceState));
     }
 
     @CallSuper
@@ -282,7 +256,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onStart() {
         super.onStart();
 
-        _fragmentStartEvent.rise();
+        _startEvent.rise();
 
         getLifecycleSubject().onNext(FragmentEvent.START);
     }
@@ -291,7 +265,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onResume() {
         super.onResume();
 
-        _fragmentResumeEvent.rise();
+        _resumeEvent.rise();
 
         getLifecycleSubject().onNext(FragmentEvent.RESUME);
     }
@@ -301,7 +275,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        _fragmentSaveInstanceStateEvent.rise(new BundleEventArgs(outState));
+        _saveInstanceStateEvent.rise(new BundleEventArgs(outState));
     }
 
     @CallSuper
@@ -309,7 +283,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onPause() {
         super.onPause();
 
-        _fragmentPauseEvent.rise();
+        _pauseEvent.rise();
 
         getLifecycleSubject().onNext(FragmentEvent.PAUSE);
     }
@@ -319,7 +293,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onStop() {
         super.onStop();
 
-        _fragmentStopEvent.rise();
+        _stopEvent.rise();
 
         getLifecycleSubject().onNext(FragmentEvent.STOP);
     }
@@ -329,7 +303,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onDestroyView() {
         super.onDestroyView();
 
-        _fragmentDestroyViewEvent.rise();
+        _destroyViewEvent.rise();
 
         getLifecycleSubject().onNext(FragmentEvent.DESTROY_VIEW);
     }
@@ -339,7 +313,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onDestroy() {
         super.onDestroy();
 
-        _fragmentDestroyEvent.rise();
+        _destroyEvent.rise();
 
         getLifecycleSubject().onNext(FragmentEvent.DESTROY);
 
@@ -352,7 +326,7 @@ public abstract class ExtendedFragment extends Fragment
     public void onDetach() {
         super.onDetach();
 
-        _fragmentDetachEvent.rise();
+        _detachEvent.rise();
 
         getLifecycleSubject().onNext(FragmentEvent.DETACH);
     }
@@ -364,12 +338,10 @@ public abstract class ExtendedFragment extends Fragment
 
     @CallSuper
     protected void onInjectMembers() {
-        _injectMembersEvent.rise();
     }
 
     @CallSuper
     protected void onReleaseInjectedMembers() {
-        _releaseInjectedMembersEvent.rise();
     }
 
     @CallSuper
@@ -381,60 +353,51 @@ public abstract class ExtendedFragment extends Fragment
     private final ManagedNoticeEvent _acquireResourcesEvent = Events.createNoticeEvent();
 
     @NonNull
-    private final ManagedEvent<ActivityResultEventArgs> _fragmentActivityResultEvent =
-        Events.createEvent();
+    private final ManagedEvent<ActivityResultEventArgs> _activityResultEvent = Events.createEvent();
 
     @NonNull
-    private final ManagedNoticeEvent _fragmentAttachEvent = Events.createNoticeEvent();
+    private final ManagedNoticeEvent _attachEvent = Events.createNoticeEvent();
 
     @NonNull
-    private final ManagedEvent<BundleEventArgs> _fragmentCreateEvent = Events.createEvent();
+    private final ManagedEvent<BundleEventArgs> _createEvent = Events.createEvent();
 
     @NonNull
-    private final ManagedEvent<BundleEventArgs> _fragmentCreateViewEvent = Events.createEvent();
+    private final ManagedEvent<BundleEventArgs> _createViewEvent = Events.createEvent();
 
     @NonNull
-    private final ManagedNoticeEvent _fragmentDestroyEvent = Events.createNoticeEvent();
+    private final ManagedNoticeEvent _destroyEvent = Events.createNoticeEvent();
 
     @NonNull
-    private final ManagedNoticeEvent _fragmentDestroyViewEvent = Events.createNoticeEvent();
+    private final ManagedNoticeEvent _destroyViewEvent = Events.createNoticeEvent();
 
     @NonNull
-    private final ManagedNoticeEvent _fragmentDetachEvent = Events.createNoticeEvent();
-
-    @NonNull
-    private final ManagedNoticeEvent _fragmentPauseEvent = Events.createNoticeEvent();
-
-    @NonNull
-    private final ManagedNoticeEvent _fragmentResumeEvent = Events.createNoticeEvent();
-
-    @NonNull
-    private final ManagedEvent<BundleEventArgs> _fragmentSaveInstanceStateEvent =
-        Events.createEvent();
-
-    @NonNull
-    private final ManagedNoticeEvent _fragmentStartEvent = Events.createNoticeEvent();
-
-    @NonNull
-    private final ManagedNoticeEvent _fragmentStopEvent = Events.createNoticeEvent();
-
-    @NonNull
-    private final ManagedEvent<BundleEventArgs> _fragmentViewCratedEvent = Events.createEvent();
-
-    private final ManagedEvent<BundleEventArgs> _fragmentViewStateRestoredEvent =
-        Events.createEvent();
-
-    @NonNull
-    private final ManagedNoticeEvent _injectMembersEvent = Events.createNoticeEvent();
+    private final ManagedNoticeEvent _detachEvent = Events.createNoticeEvent();
 
     @Getter(AccessLevel.PRIVATE)
     private final BehaviorSubject<FragmentEvent> _lifecycleSubject = BehaviorSubject.create();
 
     @NonNull
-    private final ManagedNoticeEvent _releaseInjectedMembersEvent = Events.createNoticeEvent();
+    private final ManagedNoticeEvent _pauseEvent = Events.createNoticeEvent();
 
     @NonNull
     private final ManagedNoticeEvent _releaseResourcesEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _resumeEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedEvent<BundleEventArgs> _saveInstanceStateEvent = Events.createEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _startEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _stopEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedEvent<BundleEventArgs> _viewCreatedEvent = Events.createEvent();
+
+    private final ManagedEvent<BundleEventArgs> _viewStateRestoredEvent = Events.createEvent();
 
     @Getter(AccessLevel.PROTECTED)
     @Nullable

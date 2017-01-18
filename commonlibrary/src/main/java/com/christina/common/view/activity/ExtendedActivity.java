@@ -26,8 +26,7 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.ActivityEvent;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 
-import com.christina.common.aware.InjectAware;
-import com.christina.common.aware.ResourceAware;
+import com.christina.common.adviser.ResourceAdviser;
 import com.christina.common.contract.Contracts;
 import com.christina.common.event.Events;
 import com.christina.common.event.generic.Event;
@@ -41,8 +40,7 @@ import com.christina.common.view.observerable.eventArgs.BundleEventArgs;
 
 @Accessors(prefix = "_")
 public abstract class ExtendedActivity extends AppCompatActivity
-    implements ViewBinder, ObservableActivity, LifecycleProvider<ActivityEvent>, InjectAware,
-               ResourceAware {
+    implements ViewBinder, ObservableActivity, LifecycleProvider<ActivityEvent>, ResourceAdviser {
     @NonNull
     @Override
     public final AppCompatActivity asActivity() {
@@ -50,56 +48,48 @@ public abstract class ExtendedActivity extends AppCompatActivity
     }
 
     @NonNull
-    public final Event<ActivityResultEventArgs> getActivityActivityResultEvent() {
-        return _activityActivityResultEvent;
+    public final Event<ActivityResultEventArgs> getActivityResultEvent() {
+        return _activityResultEvent;
     }
 
     @NonNull
-    @Override
-    public final Event<BundleEventArgs> getActivityCreateEvent() {
-        return _activityCreateEvent;
+    public final Event<BundleEventArgs> getCreateEvent() {
+        return _createEvent;
     }
 
     @NonNull
-    @Override
-    public final NoticeEvent getActivityDestroyEvent() {
-        return _activityDestroyEvent;
+    public final NoticeEvent getDestroyEvent() {
+        return _destroyEvent;
     }
 
     @NonNull
-    @Override
-    public final NoticeEvent getActivityPauseEvent() {
-        return _activityPauseEvent;
+    public final NoticeEvent getPauseEvent() {
+        return _pauseEvent;
     }
 
     @NonNull
-    @Override
-    public final Event<BundleEventArgs> getActivityRestoreInstanceStateEvent() {
-        return _activityRestoreInstanceStateEvent;
+    public final Event<BundleEventArgs> getRestoreInstanceStateEvent() {
+        return _restoreInstanceStateEvent;
     }
 
     @NonNull
-    @Override
-    public final NoticeEvent getActivityResumeEvent() {
-        return _activityResumeEvent;
+    public final NoticeEvent getResumeEvent() {
+        return _resumeEvent;
     }
 
     @NonNull
-    @Override
-    public final Event<BundleEventArgs> getActivitySaveInstanceStateEvent() {
-        return _activitySaveInstanceStateEvent;
+    public final Event<BundleEventArgs> getSaveInstanceStateEvent() {
+        return _saveInstanceStateEvent;
     }
 
     @NonNull
-    @Override
-    public final NoticeEvent getActivityStartEvent() {
-        return _activityStartEvent;
+    public final NoticeEvent getStartEvent() {
+        return _startEvent;
     }
 
     @NonNull
-    @Override
-    public final NoticeEvent getActivityStopEvent() {
-        return _activityStopEvent;
+    public final NoticeEvent getStopEvent() {
+        return _stopEvent;
     }
 
     @NonNull
@@ -112,18 +102,6 @@ public abstract class ExtendedActivity extends AppCompatActivity
     @Override
     public final NoticeEvent getReleaseResourcesEvent() {
         return _releaseResourcesEvent;
-    }
-
-    @NonNull
-    @Override
-    public final NoticeEvent getInjectMembersEvent() {
-        return _injectMembersEvent;
-    }
-
-    @NonNull
-    @Override
-    public final NoticeEvent getReleaseInjectedMembersEvent() {
-        return _releaseInjectedMembersEvent;
     }
 
     @Override
@@ -188,7 +166,7 @@ public abstract class ExtendedActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         final val eventArgs = new ActivityResultEventArgs(requestCode, resultCode, data);
-        _activityActivityResultEvent.rise(eventArgs);
+        _activityResultEvent.rise(eventArgs);
     }
 
     @CallSuper
@@ -196,7 +174,7 @@ public abstract class ExtendedActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
 
-        _activityPauseEvent.rise();
+        _pauseEvent.rise();
 
         getLifecycleSubject().onNext(ActivityEvent.PAUSE);
     }
@@ -206,7 +184,7 @@ public abstract class ExtendedActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        _activityResumeEvent.rise();
+        _resumeEvent.rise();
 
         getLifecycleSubject().onNext(ActivityEvent.RESUME);
     }
@@ -220,7 +198,7 @@ public abstract class ExtendedActivity extends AppCompatActivity
 
         onAcquireResources();
 
-        _activityCreateEvent.rise(new BundleEventArgs(savedInstanceState));
+        _createEvent.rise(new BundleEventArgs(savedInstanceState));
 
         getLifecycleSubject().onNext(ActivityEvent.CREATE);
     }
@@ -230,7 +208,7 @@ public abstract class ExtendedActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        _activityStartEvent.rise();
+        _startEvent.rise();
 
         getLifecycleSubject().onNext(ActivityEvent.START);
     }
@@ -242,7 +220,7 @@ public abstract class ExtendedActivity extends AppCompatActivity
 
         getLifecycleSubject().onNext(ActivityEvent.STOP);
 
-        _activityStopEvent.rise();
+        _stopEvent.rise();
     }
 
     @CallSuper
@@ -250,7 +228,7 @@ public abstract class ExtendedActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
 
-        _activityDestroyEvent.rise();
+        _destroyEvent.rise();
 
         getLifecycleSubject().onNext(ActivityEvent.DESTROY);
 
@@ -264,17 +242,15 @@ public abstract class ExtendedActivity extends AppCompatActivity
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        _activitySaveInstanceStateEvent.rise(new BundleEventArgs(outState));
+        _saveInstanceStateEvent.rise(new BundleEventArgs(outState));
     }
 
     @CallSuper
     protected void onInjectMembers() {
-        _injectMembersEvent.rise();
     }
 
     @CallSuper
     protected void onReleaseInjectedMembers() {
-        _releaseInjectedMembersEvent.rise();
     }
 
     @CallSuper
@@ -287,54 +263,45 @@ public abstract class ExtendedActivity extends AppCompatActivity
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        _activityRestoreInstanceStateEvent.rise(new BundleEventArgs(savedInstanceState));
+        _restoreInstanceStateEvent.rise(new BundleEventArgs(savedInstanceState));
     }
 
     @NonNull
     private final ManagedNoticeEvent _acquireResourcesEvent = Events.createNoticeEvent();
 
     @NonNull
-    private final ManagedEvent<ActivityResultEventArgs> _activityActivityResultEvent =
-        Events.createEvent();
+    private final ManagedEvent<ActivityResultEventArgs> _activityResultEvent = Events.createEvent();
 
     @NonNull
-    private final ManagedEvent<BundleEventArgs> _activityCreateEvent = Events.createEvent();
+    private final ManagedEvent<BundleEventArgs> _createEvent = Events.createEvent();
 
     @NonNull
-    private final ManagedNoticeEvent _activityDestroyEvent = Events.createNoticeEvent();
-
-    @NonNull
-    private final ManagedNoticeEvent _activityPauseEvent = Events.createNoticeEvent();
-
-    @NonNull
-    private final ManagedEvent<BundleEventArgs> _activityRestoreInstanceStateEvent =
-        Events.createEvent();
-
-    @NonNull
-    private final ManagedNoticeEvent _activityResumeEvent = Events.createNoticeEvent();
-
-    @NonNull
-    private final ManagedEvent<BundleEventArgs> _activitySaveInstanceStateEvent =
-        Events.createEvent();
-
-    @NonNull
-    private final ManagedNoticeEvent _activityStartEvent = Events.createNoticeEvent();
-
-    @NonNull
-    private final ManagedNoticeEvent _activityStopEvent = Events.createNoticeEvent();
-
-    @NonNull
-    private final ManagedNoticeEvent _injectMembersEvent = Events.createNoticeEvent();
+    private final ManagedNoticeEvent _destroyEvent = Events.createNoticeEvent();
 
     @Getter(AccessLevel.PRIVATE)
     @NonNull
     private final BehaviorSubject<ActivityEvent> _lifecycleSubject = BehaviorSubject.create();
 
     @NonNull
-    private final ManagedNoticeEvent _releaseInjectedMembersEvent = Events.createNoticeEvent();
+    private final ManagedNoticeEvent _pauseEvent = Events.createNoticeEvent();
 
     @NonNull
     private final ManagedNoticeEvent _releaseResourcesEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedEvent<BundleEventArgs> _restoreInstanceStateEvent = Events.createEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _resumeEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedEvent<BundleEventArgs> _saveInstanceStateEvent = Events.createEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _startEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedNoticeEvent _stopEvent = Events.createNoticeEvent();
 
     @Getter(AccessLevel.PROTECTED)
     @Nullable
