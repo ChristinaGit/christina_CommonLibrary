@@ -1,6 +1,7 @@
 package com.christina.common.extension.delegate;
 
 import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
@@ -10,11 +11,16 @@ import lombok.experimental.Accessors;
 import lombok.val;
 
 import com.christina.common.R;
-import com.christina.common.utility.AnimationViewUtils;
 import com.christina.common.extension.view.ContentLoaderProgressBar;
+import com.christina.common.utility.AnimationViewUtils;
 
 @Accessors(prefix = "_")
 public class LoadingViewDelegate {
+    @NonNull
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public final void invalidateContentView() {
         final val contentView = getContentView();
         final val noContentView = getNoContentView();
@@ -47,6 +53,17 @@ public class LoadingViewDelegate {
         }
     }
 
+    public final void invalidateErrorView() {
+        final val errorView = getErrorView();
+        if (errorView != null) {
+            if (isErrorVisible()) {
+                errorView.setVisibility(View.VISIBLE);
+            } else {
+                errorView.setVisibility(View.GONE);
+            }
+        }
+    }
+
     public final void invalidateLoadingView() {
         final val loadingView = getLoadingView();
         if (loadingView != null) {
@@ -63,6 +80,14 @@ public class LoadingViewDelegate {
             _contentVisible = visible;
 
             onContentVisibilityChanged();
+        }
+    }
+
+    public final void setErrorVisible(final boolean visible) {
+        if (_errorVisible != visible) {
+            _errorVisible = visible;
+
+            onErrorVisibilityChanged();
         }
     }
 
@@ -86,12 +111,14 @@ public class LoadingViewDelegate {
     public void hideAll() {
         setContentVisible(false);
         setLoadingVisible(false);
+        setErrorVisible(false);
     }
 
     @CallSuper
     public void invalidateViews() {
         invalidateContentView();
         invalidateLoadingView();
+        invalidateErrorView();
     }
 
     @CallSuper
@@ -104,12 +131,21 @@ public class LoadingViewDelegate {
         setHasContent(hasContent);
         setContentVisible(true);
         setLoadingVisible(false);
+        setErrorVisible(false);
+    }
+
+    @CallSuper
+    public void showError() {
+        setContentVisible(false);
+        setLoadingVisible(false);
+        setErrorVisible(true);
     }
 
     @CallSuper
     public void showLoading() {
         setContentVisible(false);
         setLoadingVisible(true);
+        setErrorVisible(false);
     }
 
     @CallSuper
@@ -120,6 +156,11 @@ public class LoadingViewDelegate {
     @CallSuper
     protected void onContentVisibilityChanged() {
         invalidateContentView();
+    }
+
+    @CallSuper
+    protected void onErrorVisibilityChanged() {
+        invalidateErrorView();
     }
 
     @CallSuper
@@ -134,6 +175,14 @@ public class LoadingViewDelegate {
 
     @Getter
     private boolean _contentVisible;
+
+    @Getter
+    @Setter
+    @Nullable
+    private View _errorView;
+
+    @Getter
+    private boolean _errorVisible;
 
     @Getter
     @Accessors(fluent = true, prefix = "_")
@@ -151,4 +200,59 @@ public class LoadingViewDelegate {
     @Setter
     @Nullable
     private View _noContentView;
+
+    public static class Builder {
+        @NonNull
+        public LoadingViewDelegate build() {
+            final val loadingViewDelegate = new LoadingViewDelegate();
+
+            loadingViewDelegate.setContentView(_contentView);
+            loadingViewDelegate.setErrorView(_errorView);
+            loadingViewDelegate.setNoContentView(_noContentView);
+            loadingViewDelegate.setLoadingView(_loadingView);
+            loadingViewDelegate.hideAll();
+
+            return loadingViewDelegate;
+        }
+
+        @NonNull
+        public Builder setContentView(@Nullable final View contentView) {
+            _contentView = contentView;
+
+            return this;
+        }
+
+        @NonNull
+        public Builder setErrorView(@Nullable final View errorView) {
+            _errorView = errorView;
+
+            return this;
+        }
+
+        @NonNull
+        public Builder setLoadingView(@Nullable final ContentLoaderProgressBar loadingView) {
+            _loadingView = loadingView;
+
+            return this;
+        }
+
+        @NonNull
+        public Builder setNoContentView(@Nullable final View noContentView) {
+            _noContentView = noContentView;
+
+            return this;
+        }
+
+        @Nullable
+        private View _contentView;
+
+        @Nullable
+        private View _errorView;
+
+        @Nullable
+        private ContentLoaderProgressBar _loadingView;
+
+        @Nullable
+        private View _noContentView;
+    }
 }
