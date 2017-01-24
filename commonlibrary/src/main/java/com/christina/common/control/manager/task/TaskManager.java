@@ -14,6 +14,4 @@ public interface TaskManager {
 
     @NonNull
     Executor getUIExecutor();
-
-
 }

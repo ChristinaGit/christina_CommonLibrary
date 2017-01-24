@@ -12,8 +12,8 @@ import lombok.experimental.Accessors;
 import lombok.val;
 
 import com.christina.common.contract.Contracts;
-import com.christina.common.utility.ResourceUtils;
 import com.christina.common.extension.view.recyclerView.viewHolder.ExtendedRecyclerViewHolder;
+import com.christina.common.utility.ResourceUtils;
 
 @Accessors(prefix = "_")
 public abstract class RecyclerViewCursorAdapter<TItem, TViewHolder extends

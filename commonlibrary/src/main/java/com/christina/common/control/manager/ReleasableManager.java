@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.val;
 
-import com.christina.common.control.adviser.ResourceAdviser;
 import com.christina.common.contract.Contracts;
+import com.christina.common.control.adviser.ResourceAdviser;
 import com.christina.common.event.notice.NoticeEventHandler;
 
 @Accessors(prefix = "_")
@@ -34,6 +34,10 @@ public abstract class ReleasableManager {
         }
     };
 
+    @Getter(AccessLevel.PROTECTED)
+    @NonNull
+    private final ResourceAdviser _resourceAdviser;
+
     @NonNull
     private final NoticeEventHandler _releaseResourcesHandler = new NoticeEventHandler() {
         @Override
@@ -46,8 +50,4 @@ public abstract class ReleasableManager {
             resourceAdviser.getReleaseResourcesEvent().removeHandler(_releaseResourcesHandler);
         }
     };
-
-    @Getter(AccessLevel.PROTECTED)
-    @NonNull
-    private final ResourceAdviser _resourceAdviser;
 }

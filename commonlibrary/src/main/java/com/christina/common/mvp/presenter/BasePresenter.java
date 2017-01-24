@@ -77,6 +77,10 @@ public abstract class BasePresenter<TScreen extends Screen> implements Presenter
         screen.getScreenDestroyEvent().removeHandler(_screenDestroyHandler);
     }
 
+    @Getter(AccessLevel.PROTECTED)
+    @Nullable
+    private TScreen _screen;
+
     @NonNull
     private final NoticeEventHandler _screenAppearHandler = new NoticeEventHandler() {
         @Override
@@ -132,8 +136,4 @@ public abstract class BasePresenter<TScreen extends Screen> implements Presenter
             }
         }
     };
-
-    @Getter(AccessLevel.PROTECTED)
-    @Nullable
-    private TScreen _screen;
 }

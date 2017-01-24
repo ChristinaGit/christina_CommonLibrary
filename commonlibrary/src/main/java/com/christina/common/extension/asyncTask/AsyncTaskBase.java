@@ -47,7 +47,8 @@ public abstract class AsyncTaskBase<TResult, TError>
     protected abstract TError convertExceptionToError(@NonNull Exception e);
 
     @Nullable
-    protected abstract TResult doInBackground() throws Exception;
+    protected abstract TResult doInBackground()
+        throws Exception;
 
     @Getter(AccessLevel.PROTECTED)
     @NonNull

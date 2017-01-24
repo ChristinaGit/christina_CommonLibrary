@@ -14,7 +14,6 @@ import java.util.concurrent.Executor;
 
 @Accessors(prefix = "_")
 public class AndroidTaskManager implements TaskManager {
-
     @Override
     public void execute(@NonNull final Runnable task) {
         Contracts.requireNonNull(task, "task == null");
