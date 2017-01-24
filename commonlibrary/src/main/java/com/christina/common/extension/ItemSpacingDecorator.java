@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import lombok.AccessLevel;
@@ -34,11 +35,14 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
         super.getItemOffsets(outRect, view, parent, state);
 
         final int itemCount = parent.getAdapter().getItemCount();
-        final int columnCount = getColumnCount(parent);
+        final int spanCount = getSpanCount(parent);
+        final int spanIndex = getSpanIndex(view);
         final int position = parent.getChildAdapterPosition(view);
-        final int column = position % columnCount;
-        final int rowCount = itemCount / columnCount + (itemCount % columnCount == 0 ? 0 : 1);
-        final int row = position / columnCount;
+
+        final boolean isFirstColumn = spanIndex == 0;
+        final boolean isLastColumn = spanIndex == spanCount - 1;
+        final boolean isFirstRow = position < spanCount;
+        final boolean isLastRow = position > (itemCount - spanCount - 1);
 
         final val padding = getPadding();
         final val spacing = getSpacing();
@@ -84,19 +88,19 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
             rightEdge += rightSpacing;
         }
 
-        if (position < columnCount) {
+        if (isFirstRow) {
             top = topEdge;
         }
 
-        if (row == rowCount - 1) {
+        if (isLastRow) {
             bottom = bottomEdge;
         }
 
-        if (column == 0) {
+        if (isFirstColumn) {
             left = leftEdge;
         }
 
-        if (column == columnCount - 1) {
+        if (isLastColumn) {
             right = rightEdge;
         }
 
@@ -121,7 +125,7 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
         _edgesEnabled = edgesEnabled;
     }
 
-    protected int getColumnCount(@NonNull final RecyclerView parent) {
+    protected int getSpanCount(@NonNull final RecyclerView parent) {
         Contracts.requireNonNull(parent, "parent == null");
 
         final int spanCount;
@@ -131,11 +135,32 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
             spanCount = ((GridLayoutManager) layoutManager).getSpanCount();
         } else if (layoutManager instanceof LinearLayoutManager) {
             spanCount = 1;
+        } else if (layoutManager instanceof StaggeredGridLayoutManager) {
+            spanCount = ((StaggeredGridLayoutManager) layoutManager).getSpanCount();
         } else {
             spanCount = 1;
         }
 
         return spanCount;
+    }
+
+    protected int getSpanIndex(@NonNull final View view) {
+        Contracts.requireNonNull(view, "view == null");
+
+        final int spanIndex;
+
+        final val layoutParams = view.getLayoutParams();
+        if (layoutParams instanceof GridLayoutManager.LayoutParams) {
+            spanIndex = ((GridLayoutManager.LayoutParams) layoutParams).getSpanIndex();
+        } else if (layoutParams instanceof StaggeredGridLayoutManager.LayoutParams) {
+            spanIndex = ((StaggeredGridLayoutManager.LayoutParams) layoutParams).getSpanIndex();
+        } else if (layoutParams instanceof RecyclerView.LayoutParams) {
+            spanIndex = 1;
+        } else {
+            spanIndex = 1;
+        }
+
+        return spanIndex;
     }
 
     @Getter
