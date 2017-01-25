@@ -20,7 +20,7 @@
         <item name="android:paddingBottom">@dimen/card_large_secondary_text_padding_bottom</item>
         <item name="android:paddingStart">@dimen/card_large_secondary_text_padding_start</item>
         <item name="android:paddingEnd">@dimen/card_large_secondary_text_padding_end</item>
-        <item name="android:lines">2</item>
+        <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
         <item name="android:includeFontPadding">false</item>
     </style>
