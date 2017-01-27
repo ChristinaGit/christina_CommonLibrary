@@ -122,8 +122,11 @@ public class LoadingViewDelegate {
     }
 
     @CallSuper
-    public void showContent() {
-        showContent(true);
+    public void resetLoading() {
+        final val loadingView = getLoadingView();
+        if (loadingView != null) {
+            loadingView.reset(isLoadingVisible());
+        }
     }
 
     @CallSuper
@@ -132,6 +135,11 @@ public class LoadingViewDelegate {
         setContentVisible(true);
         setLoadingVisible(false);
         setErrorVisible(false);
+    }
+
+    @CallSuper
+    public void showContent() {
+        showContent(true);
     }
 
     @CallSuper

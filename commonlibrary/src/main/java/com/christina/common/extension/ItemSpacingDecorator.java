@@ -155,9 +155,9 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
         } else if (layoutParams instanceof StaggeredGridLayoutManager.LayoutParams) {
             spanIndex = ((StaggeredGridLayoutManager.LayoutParams) layoutParams).getSpanIndex();
         } else if (layoutParams instanceof RecyclerView.LayoutParams) {
-            spanIndex = 1;
+            spanIndex = 0;
         } else {
-            spanIndex = 1;
+            spanIndex = 0;
         }
 
         return spanIndex;

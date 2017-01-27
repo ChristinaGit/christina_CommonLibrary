@@ -76,6 +76,15 @@ public class ContentLoaderProgressBar extends ProgressBar {
     }
 
     @CallSuper
+    public void reset(final boolean shown) {
+        removeCallbacks(_hideCallback);
+        removeCallbacks(_showCallback);
+        _shown = shown;
+        _startTime = NO_TIME;
+        setVisibility(shown ? VISIBLE : GONE);
+    }
+
+    @CallSuper
     public void show() {
         if (!_shown) {
             _shown = true;

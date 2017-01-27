@@ -2,17 +2,29 @@ package com.christina.common.utility.tuple;
 
 import android.support.annotation.Nullable;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@ToString(doNotUseGetters = true)
+@Accessors(prefix = "_")
 public final class Tuple3<T1, T2, T3> {
-    @Nullable
-    public T1 first;
+    /*package-private*/ Tuple3(
+        @Nullable final T1 first, @Nullable final T2 second, @Nullable final T3 third) {
+        _first = first;
+        _second = second;
+        _third = third;
+    }
 
+    @Getter
     @Nullable
-    public T2 second;
+    private final T1 _first;
 
+    @Getter
     @Nullable
-    public T3 third;
+    private final T2 _second;
+
+    @Getter
+    @Nullable
+    private final T3 _third;
 }
