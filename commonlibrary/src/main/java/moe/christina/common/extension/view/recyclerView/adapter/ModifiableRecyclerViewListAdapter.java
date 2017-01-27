@@ -11,7 +11,8 @@ import moe.christina.common.extension.view.recyclerView.viewHolder.ExtendedRecyc
 import java.util.Collection;
 
 @Accessors(prefix = "_")
-public abstract class ModifiableRecyclerViewListAdapter<TItem, TViewHolder extends ExtendedRecyclerViewHolder>
+public abstract class ModifiableRecyclerViewListAdapter<TItem, TViewHolder extends
+    ExtendedRecyclerViewHolder>
 
     extends RecyclerViewListAdapter<TItem, TViewHolder> {
     public final void addItem(final int position, @NonNull final TItem newItem) {

@@ -38,7 +38,9 @@ public class ContentLoaderProgressBar extends ProgressBar {
     }
 
     public ContentLoaderProgressBar(
-        @NonNull final Context context, @Nullable final AttributeSet attrs, int defStyleAttr) {
+        @NonNull final Context context,
+        @Nullable final AttributeSet attrs,
+        final int defStyleAttr) {
         super(Contracts.requireNonNull(context, "context == null"), attrs, defStyleAttr);
 
         initialize(attrs, defStyleAttr, 0);
@@ -48,8 +50,8 @@ public class ContentLoaderProgressBar extends ProgressBar {
     public ContentLoaderProgressBar(
         @NonNull final Context context,
         @Nullable final AttributeSet attrs,
-        int defStyleAttr,
-        int defStyleRes) {
+        final int defStyleAttr,
+        final int defStyleRes) {
         super(Contracts.requireNonNull(context, "context == null"),
               attrs,
               defStyleAttr,
@@ -99,7 +101,7 @@ public class ContentLoaderProgressBar extends ProgressBar {
 
     @CallSuper
     protected void initialize(
-        @Nullable final AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        @Nullable final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
         _shown = getVisibility() == View.VISIBLE;
     }
 

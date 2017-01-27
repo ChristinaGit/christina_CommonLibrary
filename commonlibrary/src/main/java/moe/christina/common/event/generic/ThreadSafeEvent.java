@@ -12,6 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class ThreadSafeEvent<TEventArgs extends EventArgs>
     implements ManagedEvent<TEventArgs> {
+    @Override
     public final void addHandler(@NonNull final EventHandler<TEventArgs> handler) {
         Contracts.requireNonNull(handler, "handler == null");
 

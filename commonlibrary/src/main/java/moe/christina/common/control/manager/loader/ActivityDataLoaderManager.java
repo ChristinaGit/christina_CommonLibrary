@@ -25,8 +25,8 @@ public class ActivityDataLoaderManager implements DataLoaderManager {
     @Override
     public <TResult, TError> void startLoader(
         final int loaderId,
-        @NonNull Loader<AsyncResult<TResult, TError>> loader,
-        @NonNull AsyncCallback<TResult, TError> callback) {
+        @NonNull final Loader<AsyncResult<TResult, TError>> loader,
+        @NonNull final AsyncCallback<TResult, TError> callback) {
         Contracts.requireNonNull(loader, "loader == null");
         Contracts.requireNonNull(callback, "callback == null");
 

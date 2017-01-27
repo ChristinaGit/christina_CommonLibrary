@@ -21,7 +21,7 @@ import moe.christina.common.extension.eventArgs.ActivityResultEventArgs;
 
 @Accessors(prefix = "_")
 public abstract class ActivityNavigationManager extends ReleasableManager {
-    public ActivityNavigationManager(
+    protected ActivityNavigationManager(
         @NonNull final ResourceAdviser resourceAdviser,
         @NonNull final ObservableActivity observableActivity) {
         super(Contracts.requireNonNull(resourceAdviser, "resourceAdviser == null"));
@@ -36,13 +36,13 @@ public abstract class ActivityNavigationManager extends ReleasableManager {
     }
 
     protected final void registerNavigationCallback(
-        int requestCode, @NonNull final NavigationCallback callback) {
+        final int requestCode, @NonNull final NavigationCallback callback) {
         Contracts.requireNonNull(callback, "callback == null");
 
         getNavigationCallbacks().append(requestCode, callback);
     }
 
-    protected final void unregisterNavigationCallback(int requestCode) {
+    protected final void unregisterNavigationCallback(final int requestCode) {
         getNavigationCallbacks().remove(requestCode);
     }
 

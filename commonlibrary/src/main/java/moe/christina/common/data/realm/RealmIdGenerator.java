@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Accessors(prefix = "_")
 public final class RealmIdGenerator {
-    public final long generateNextId(@NonNull Class<? extends RealmModel> modelClass) {
+    public final long generateNextId(@NonNull final Class<? extends RealmModel> modelClass) {
         Contracts.requireNonNull(modelClass, "modelClass == null");
 
         synchronized (_lock$maximumKeys) {

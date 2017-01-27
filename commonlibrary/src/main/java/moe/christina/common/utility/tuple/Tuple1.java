@@ -13,7 +13,6 @@ public final class Tuple1<T1> {
         _first = first;
     }
 
-
     @Getter
     @Nullable
     private final T1 _first;

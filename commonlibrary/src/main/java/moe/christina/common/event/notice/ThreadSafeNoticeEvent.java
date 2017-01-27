@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class ThreadSafeNoticeEvent implements ManagedNoticeEvent {
+    @Override
     public final void addHandler(@NonNull final NoticeEventHandler handler) {
         Contracts.requireNonNull(handler, "handler == null");
 

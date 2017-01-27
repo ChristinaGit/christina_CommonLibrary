@@ -49,61 +49,73 @@ public abstract class ExtendedFragment extends Fragment
         return this;
     }
 
+    @Override
     @NonNull
     public final Event<ActivityResultEventArgs> getActivityResultEvent() {
         return _activityResultEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getAttachEvent() {
         return _attachEvent;
     }
 
+    @Override
     @NonNull
     public final Event<BundleEventArgs> getCreateEvent() {
         return _createEvent;
     }
 
+    @Override
     @NonNull
     public final Event<BundleEventArgs> getCreateViewEvent() {
         return _createViewEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getDestroyEvent() {
         return _destroyEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getDestroyViewEvent() {
         return _destroyViewEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getDetachEvent() {
         return _detachEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getPauseEvent() {
         return _pauseEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getResumeEvent() {
         return _resumeEvent;
     }
 
+    @Override
     @NonNull
     public final Event<BundleEventArgs> getSaveInstanceStateEvent() {
         return _saveInstanceStateEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getStartEvent() {
         return _startEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getStopEvent() {
         return _stopEvent;
@@ -115,6 +127,7 @@ public abstract class ExtendedFragment extends Fragment
         return _viewCreatedEvent;
     }
 
+    @Override
     @NonNull
     public final Event<BundleEventArgs> getViewStateRestoredEvent() {
         return _viewStateRestoredEvent;

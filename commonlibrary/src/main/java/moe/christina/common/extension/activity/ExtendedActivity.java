@@ -46,46 +46,55 @@ public abstract class ExtendedActivity extends AppCompatActivity
         return this;
     }
 
+    @Override
     @NonNull
     public final Event<ActivityResultEventArgs> getActivityResultEvent() {
         return _activityResultEvent;
     }
 
+    @Override
     @NonNull
     public final Event<BundleEventArgs> getCreateEvent() {
         return _createEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getDestroyEvent() {
         return _destroyEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getPauseEvent() {
         return _pauseEvent;
     }
 
+    @Override
     @NonNull
     public final Event<BundleEventArgs> getRestoreInstanceStateEvent() {
         return _restoreInstanceStateEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getResumeEvent() {
         return _resumeEvent;
     }
 
+    @Override
     @NonNull
     public final Event<BundleEventArgs> getSaveInstanceStateEvent() {
         return _saveInstanceStateEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getStartEvent() {
         return _startEvent;
     }
 
+    @Override
     @NonNull
     public final NoticeEvent getStopEvent() {
         return _stopEvent;

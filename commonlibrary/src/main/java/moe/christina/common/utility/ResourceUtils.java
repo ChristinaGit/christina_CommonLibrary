@@ -12,7 +12,7 @@ public final class ResourceUtils {
             try {
                 closeable.close();
                 closed = true;
-            } catch (final Exception e) {
+            } catch (final Exception ignored) {
                 closed = false;
             }
         }

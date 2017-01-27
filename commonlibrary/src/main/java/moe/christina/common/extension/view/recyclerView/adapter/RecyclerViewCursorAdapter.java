@@ -16,7 +16,8 @@ import moe.christina.common.extension.view.recyclerView.viewHolder.ExtendedRecyc
 import moe.christina.common.utility.ResourceUtils;
 
 @Accessors(prefix = "_")
-public abstract class RecyclerViewCursorAdapter<TItem, TViewHolder extends ExtendedRecyclerViewHolder>
+public abstract class RecyclerViewCursorAdapter<TItem, TViewHolder extends
+    ExtendedRecyclerViewHolder>
     extends RecyclerViewAdapter<TItem, TViewHolder> {
 
     @Override
@@ -131,8 +132,7 @@ public abstract class RecyclerViewCursorAdapter<TItem, TViewHolder extends Exten
 
     @Getter(value = AccessLevel.PRIVATE)
     @NonNull
-    private final _InternalDataSetObserver _internalDataSetObserver =
-        new _InternalDataSetObserver();
+    private final InternalDataSetObserver _internalDataSetObserver = new InternalDataSetObserver();
 
     @Getter
     @Nullable
@@ -141,7 +141,7 @@ public abstract class RecyclerViewCursorAdapter<TItem, TViewHolder extends Exten
     @Getter
     private boolean _dataValid = false;
 
-    private final class _InternalDataSetObserver extends DataSetObserver {
+    private final class InternalDataSetObserver extends DataSetObserver {
         @Override
         public void onChanged() {
             super.onChanged();
