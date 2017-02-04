@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.val;
 
-import moe.christina.common.contract.Contracts;
 import moe.christina.common.extension.view.recyclerView.viewHolder.ExtendedRecyclerViewHolder;
 import moe.christina.common.utility.ResourceUtils;
 
@@ -23,8 +22,6 @@ public abstract class RecyclerViewCursorAdapter<TItem, TViewHolder extends
     @Override
     @NonNull
     public TItem getItem(final int position) {
-        Contracts.requireInRange(position, 0, getItemCount() - 1, new IndexOutOfBoundsException());
-
         final TItem item;
 
         final val cursor = getCursor();

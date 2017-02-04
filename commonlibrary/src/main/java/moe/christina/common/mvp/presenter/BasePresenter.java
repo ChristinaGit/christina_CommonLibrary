@@ -99,10 +99,10 @@ public abstract class BasePresenter<TScreen extends Screen> implements Presenter
     private final NoticeEventHandler _screenCreateHandler = new NoticeEventHandler() {
         @Override
         public void onEvent() {
-            final val presentableView = getScreen();
+            final val screen = getScreen();
 
-            if (presentableView != null) {
-                onScreenCreate(presentableView);
+            if (screen != null) {
+                onScreenCreate(screen);
             } else {
                 throw new IllegalStateException("Screen is null in internal event.");
             }
@@ -113,10 +113,10 @@ public abstract class BasePresenter<TScreen extends Screen> implements Presenter
     private final NoticeEventHandler _screenDestroyHandler = new NoticeEventHandler() {
         @Override
         public void onEvent() {
-            final val presentableView = getScreen();
+            final val screen = getScreen();
 
-            if (presentableView != null) {
-                onScreenDestroy(presentableView);
+            if (screen != null) {
+                onScreenDestroy(screen);
             } else {
                 throw new IllegalStateException("Screen is null in internal event.");
             }
@@ -127,10 +127,10 @@ public abstract class BasePresenter<TScreen extends Screen> implements Presenter
     private final NoticeEventHandler _screenDisappearHandler = new NoticeEventHandler() {
         @Override
         public void onEvent() {
-            final val presentableView = getScreen();
+            final val screen = getScreen();
 
-            if (presentableView != null) {
-                onScreenDisappear(presentableView);
+            if (screen != null) {
+                onScreenDisappear(screen);
             } else {
                 throw new IllegalStateException("Screen is null in internal event.");
             }

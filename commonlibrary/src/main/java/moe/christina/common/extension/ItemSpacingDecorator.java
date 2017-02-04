@@ -9,7 +9,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -178,10 +177,16 @@ public class ItemSpacingDecorator extends RecyclerView.ItemDecoration {
     private final Border _spacing;
 
     @Accessors(prefix = "_")
-    @AllArgsConstructor
     @NoArgsConstructor
     @ToString(doNotUseGetters = true)
     public static class Border {
+        public Border(final int left, final int top, final int right, final int bottom) {
+            _left = left;
+            _top = top;
+            _right = right;
+            _bottom = bottom;
+        }
+
         @Getter
         @Setter
         private int _bottom;

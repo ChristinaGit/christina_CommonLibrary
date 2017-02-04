@@ -1,6 +1,7 @@
 package moe.christina.common.control.manager.loader;
 
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -62,6 +63,7 @@ public class ActivityDataLoaderManager implements DataLoaderManager {
             return getLoader();
         }
 
+        @CallSuper
         @Override
         public void onLoadFinished(
             final Loader<AsyncResult<TResult, TError>> loader,

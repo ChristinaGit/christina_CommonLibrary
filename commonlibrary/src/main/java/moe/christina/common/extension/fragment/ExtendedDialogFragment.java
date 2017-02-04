@@ -40,6 +40,7 @@ import moe.christina.common.event.notice.NoticeEvent;
 import moe.christina.common.extension.ViewBinder;
 import moe.christina.common.extension.eventArgs.ActivityResultEventArgs;
 import moe.christina.common.extension.eventArgs.BundleEventArgs;
+import moe.christina.common.extension.eventArgs.PermissionResultEventArgs;
 
 @Accessors(prefix = "_")
 public abstract class ExtendedDialogFragment extends AppCompatDialogFragment
@@ -96,6 +97,12 @@ public abstract class ExtendedDialogFragment extends AppCompatDialogFragment
     @NonNull
     public final NoticeEvent getPauseEvent() {
         return _pauseEvent;
+    }
+
+    @NonNull
+    @Override
+    public final Event<PermissionResultEventArgs> getPermissionResultEvent() {
+        return _permissionResultEvent;
     }
 
     @Override
@@ -206,6 +213,21 @@ public abstract class ExtendedDialogFragment extends AppCompatDialogFragment
 
         final val eventArgs = new ActivityResultEventArgs(requestCode, resultCode, data);
         _activityResultEvent.rise(eventArgs);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+        final int requestCode,
+        @NonNull final String[] permissions,
+        @NonNull final int[] grantResults) {
+        //@formatter:off
+        super.onRequestPermissionsResult(
+            requestCode,
+            Contracts.requireNonNull(permissions, "permissions == null"),
+            Contracts.requireNonNull(grantResults, "grantResults == null"));
+        //@formatter:on
+
+        _permissionResultEvent.rise(new PermissionResultEventArgs(permissions, grantResults));
     }
 
     @CallSuper
@@ -391,6 +413,10 @@ public abstract class ExtendedDialogFragment extends AppCompatDialogFragment
 
     @NonNull
     private final ManagedNoticeEvent _pauseEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedEvent<PermissionResultEventArgs> _permissionResultEvent =
+        Events.createEvent();
 
     @NonNull
     private final ManagedNoticeEvent _releaseResourcesEvent = Events.createNoticeEvent();

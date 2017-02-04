@@ -7,6 +7,7 @@ import moe.christina.common.event.generic.Event;
 import moe.christina.common.event.notice.NoticeEvent;
 import moe.christina.common.extension.eventArgs.ActivityResultEventArgs;
 import moe.christina.common.extension.eventArgs.BundleEventArgs;
+import moe.christina.common.extension.eventArgs.PermissionResultEventArgs;
 
 public interface ObservableFragment {
     @NonNull
@@ -35,6 +36,9 @@ public interface ObservableFragment {
 
     @NonNull
     NoticeEvent getPauseEvent();
+
+    @NonNull
+    Event<PermissionResultEventArgs> getPermissionResultEvent();
 
     @NonNull
     NoticeEvent getResumeEvent();

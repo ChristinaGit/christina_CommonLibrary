@@ -12,8 +12,6 @@ public abstract class RecyclerViewAdapter<TItem, TViewHolder extends ExtendedRec
     @CallSuper
     @Override
     public void onBindViewHolder(final TViewHolder holder, final int position) {
-        Contracts.requireInRange(position, 0, getItemCount() - 1, new IndexOutOfBoundsException());
-
         if (holder != null) {
             onBindViewHolder(holder, getItem(position), position);
         }
@@ -27,6 +25,5 @@ public abstract class RecyclerViewAdapter<TItem, TViewHolder extends ExtendedRec
         @NonNull final TViewHolder holder, @NonNull final TItem item, final int position) {
         Contracts.requireNonNull(holder, "holder == null");
         Contracts.requireNonNull(item, "item == null");
-        Contracts.requireInRange(position, 0, getItemCount() - 1, new IndexOutOfBoundsException());
     }
 }

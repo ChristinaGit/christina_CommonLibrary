@@ -23,7 +23,6 @@ public abstract class ModifiableRecyclerViewListAdapter<TItem, TViewHolder exten
 
     public final void addItem(
         final int position, @NonNull final TItem newItem, final boolean notify) {
-        Contracts.requireInRange(position, 0, getItemCount(), new IndexOutOfBoundsException());
         Contracts.requireNonNull(newItem, "newItem == null");
 
         final val items = getItems();
@@ -84,14 +83,10 @@ public abstract class ModifiableRecyclerViewListAdapter<TItem, TViewHolder exten
     }
 
     public final void removeItem(final int position) {
-        Contracts.requireInRange(position, 0, getItemCount() - 1, new IndexOutOfBoundsException());
-
         removeItem(position, true);
     }
 
     public final void removeItem(final int position, final boolean notify) {
-        Contracts.requireInRange(position, 0, getItemCount() - 1, new IndexOutOfBoundsException());
-
         final val items = getItems();
 
         if (items != null) {

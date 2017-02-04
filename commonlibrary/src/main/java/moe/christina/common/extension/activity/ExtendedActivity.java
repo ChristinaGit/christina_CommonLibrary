@@ -36,6 +36,7 @@ import moe.christina.common.event.notice.NoticeEvent;
 import moe.christina.common.extension.ViewBinder;
 import moe.christina.common.extension.eventArgs.ActivityResultEventArgs;
 import moe.christina.common.extension.eventArgs.BundleEventArgs;
+import moe.christina.common.extension.eventArgs.PermissionResultEventArgs;
 
 @Accessors(prefix = "_")
 public abstract class ExtendedActivity extends AppCompatActivity
@@ -68,6 +69,12 @@ public abstract class ExtendedActivity extends AppCompatActivity
     @NonNull
     public final NoticeEvent getPauseEvent() {
         return _pauseEvent;
+    }
+
+    @NonNull
+    @Override
+    public final Event<PermissionResultEventArgs> getPermissionResultEvent() {
+        return _permissionResultEvent;
     }
 
     @Override
@@ -197,6 +204,21 @@ public abstract class ExtendedActivity extends AppCompatActivity
         getLifecycleSubject().onNext(ActivityEvent.RESUME);
     }
 
+    @Override
+    public void onRequestPermissionsResult(
+        final int requestCode,
+        @NonNull final String[] permissions,
+        @NonNull final int[] grantResults) {
+        //@formatter:off
+        super.onRequestPermissionsResult(
+            requestCode,
+            Contracts.requireNonNull(permissions, "permissions == null"),
+            Contracts.requireNonNull(grantResults, "grantResults == null"));
+        //@formatter:on
+
+        _permissionResultEvent.rise(new PermissionResultEventArgs(permissions, grantResults));
+    }
+
     @CallSuper
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -292,6 +314,10 @@ public abstract class ExtendedActivity extends AppCompatActivity
 
     @NonNull
     private final ManagedNoticeEvent _pauseEvent = Events.createNoticeEvent();
+
+    @NonNull
+    private final ManagedEvent<PermissionResultEventArgs> _permissionResultEvent =
+        Events.createEvent();
 
     @NonNull
     private final ManagedNoticeEvent _releaseResourcesEvent = Events.createNoticeEvent();

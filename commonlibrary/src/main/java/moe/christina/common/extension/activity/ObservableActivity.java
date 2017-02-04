@@ -7,6 +7,7 @@ import moe.christina.common.event.generic.Event;
 import moe.christina.common.event.notice.NoticeEvent;
 import moe.christina.common.extension.eventArgs.ActivityResultEventArgs;
 import moe.christina.common.extension.eventArgs.BundleEventArgs;
+import moe.christina.common.extension.eventArgs.PermissionResultEventArgs;
 
 public interface ObservableActivity {
     @NonNull
@@ -23,6 +24,9 @@ public interface ObservableActivity {
 
     @NonNull
     NoticeEvent getPauseEvent();
+
+    @NonNull
+    Event<PermissionResultEventArgs> getPermissionResultEvent();
 
     @NonNull
     Event<BundleEventArgs> getRestoreInstanceStateEvent();

@@ -1,6 +1,7 @@
 package moe.christina.common.control.manager.navigation;
 
 import android.content.Intent;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +9,6 @@ import android.util.SparseArray;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.val;
 
@@ -56,23 +56,17 @@ public abstract class ActivityNavigationManager extends ReleasableManager {
         getObservableActivity().getActivityResultEvent().removeHandler(_activityResultHandler);
     }
 
-    protected abstract void onActivityResult(
+    @CallSuper
+    protected void onActivityResult(
         final int requestCode,
         final int resultCode,
         @Nullable final Intent data,
-        @Nullable final NavigationCallback callback);
+        @Nullable final NavigationCallback callback) {
+    }
 
     @Getter(value = AccessLevel.PRIVATE)
     @NonNull
     private final SparseArray<NavigationCallback> _navigationCallbacks = new SparseArray<>();
-
-    @Getter(value = AccessLevel.PROTECTED)
-    @NonNull
-    private final ObservableActivity _observableActivity;
-
-    @Getter(AccessLevel.PROTECTED)
-    @Setter(AccessLevel.PROTECTED)
-    private boolean _autoReleaseCallbacks = false;
 
     @NonNull
     private final EventHandler<ActivityResultEventArgs> _activityResultHandler =
@@ -90,9 +84,11 @@ public abstract class ActivityNavigationManager extends ReleasableManager {
 
                 onActivityResult(requestCode, resultCode, data, callback);
 
-                if (isAutoReleaseCallbacks()) {
-                    unregisterNavigationCallback(requestCode);
-                }
+                unregisterNavigationCallback(requestCode);
             }
         };
+
+    @Getter(value = AccessLevel.PROTECTED)
+    @NonNull
+    private final ObservableActivity _observableActivity;
 }
